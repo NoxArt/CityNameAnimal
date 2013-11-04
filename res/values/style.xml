@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+
+	<!-- Colors -->
+	<!--
+	<color name="front">#CBF2FF</color>
+	<color name="front_darker">#353946</color>
+	<color name="front_secondary">#e35</color>
+	<color name="front_tertiary">#59D</color>
+	<color name="text_shadow">#246</color>
+	-->
+	
+	<!-- Putting it together -->
+	<style name="Theme.CityName" parent="android:style/Theme.Holo">
+	</style>
+
+</resources>
