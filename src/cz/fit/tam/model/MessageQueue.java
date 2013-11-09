@@ -1,16 +1,14 @@
 package cz.fit.tam.model;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
+import cz.fit.tam.utils.HttpConnect;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONException;
@@ -22,11 +20,15 @@ public class MessageQueue {
 		public boolean isValid(Message msg);
 	}
 	
+	private static String COMMAND_GET_MESSAGES = "get_messages";
+	
 	private Integer lastMessageId = 0;
 	
 	private Integer gameId;
 	
 	private URL serverUrl;
+	
+	private HttpConnect connection;
 	
 	private Player player;
 	
@@ -38,8 +40,22 @@ public class MessageQueue {
 		this.player = player;
 	}
 	
-	public void sendMessage(Message message) {
+	private HttpConnect getConnection() {
+		if( connection == null ) {
+			connection = new HttpConnect(serverUrl);
+		}
 		
+		return connection;
+	}
+	
+	public void sendMessage(HashMap<String, String> arguments) throws IOException {
+		HttpConnect urlConnection = getConnection();
+		
+		urlConnection.post(arguments);
+	}
+
+	public List<Message> getMessages() {
+		return messages;
 	}
 	
 	public List<Message> getNewMessages() throws MalformedURLException, IOException {
@@ -56,19 +72,26 @@ public class MessageQueue {
 	}
 
 	public List<Message> getNewMessages(MessageFilter filter) throws MalformedURLException, IOException {
-		HttpURLConnection urlConnection = (HttpURLConnection)serverUrl.openConnection();
+		HttpConnect urlConnection = getConnection();
+		
+		Map<String, String> arguments = new HashMap<String, String>();
+		arguments.put("command", MessageQueue.COMMAND_GET_MESSAGES);
+		arguments.put("game_id", gameId.toString());
+		arguments.put("token", player.getToken().getValue());
+				
 		try {
-			JSONObject json = stringToJson(urlConnection.getInputStream());
-			return parseMessages(json, filter);
-		} catch (IOException ex) {
-			Logger.getLogger(MessageQueue.class.getName()).log(Level.SEVERE, null, ex);
+			JSONObject json = new JSONObject(urlConnection.post(arguments));
+			
+			List<Message> newMessages = parseMessages(json, filter);
+			messages.addAll(newMessages);
+			
+			return newMessages;
 		} catch (JSONException ex) {
 			Logger.getLogger(MessageQueue.class.getName()).log(Level.SEVERE, null, ex);
-		} finally {
-			urlConnection.disconnect();
 		}
 		
 		return null;
+		
 	}
 	
 	private List<Message> parseMessages(JSONObject json, MessageFilter filter) throws JSONException {
@@ -95,23 +118,6 @@ public class MessageQueue {
 		}
 		
 		return result;
-	}
-	
-	private JSONObject stringToJson(InputStream stream) throws JSONException, IOException {
-		InputStream in = new BufferedInputStream(stream);
-		
-		return new JSONObject(fromStream(in));
-	}
-	
-	public static String fromStream(InputStream in) throws IOException
-	{
-		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-		StringBuilder out = new StringBuilder();
-		String line;
-		while ((line = reader.readLine()) != null) {
-			out.append(line);
-		}
-		return out.toString();
 	}
 	
 }
