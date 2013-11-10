@@ -77,6 +77,10 @@ public class GameClient {
 		arguments.put("command", GameClient.COMMAND_GET_MESSAGES);
 		arguments.put("game_id", gameId.toString());
 		arguments.put("token", player.getToken().getValue());
+		
+		if( lastMessageId > 0 ) {
+			arguments.put("since_id", lastMessageId.toString());
+		}
 				
 		try {
 			JSONObject json = new JSONObject(urlConnection.post(arguments));
