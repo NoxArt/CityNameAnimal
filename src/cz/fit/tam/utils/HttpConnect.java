@@ -1,6 +1,6 @@
 package cz.fit.tam.utils;
 
-import cz.fit.tam.model.MessageQueue;
+import cz.fit.tam.model.GameClient;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,7 +51,7 @@ public class HttpConnect {
 			
 			return Strings.fromStream(stream);
 		} catch (IOException ex) {
-			Logger.getLogger(MessageQueue.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
 		} finally {
 			connection.disconnect();
 		}
