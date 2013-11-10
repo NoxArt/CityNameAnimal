@@ -6,6 +6,14 @@ public class Game {
 	
 	private MessageQueue client;
 	
-	
+	private Integer playerLimit;
+
+	public String getName() {
+		return name;
+	}
+
+	public Integer getPlayerLimit() {
+		return playerLimit;
+	}
 		
 }
