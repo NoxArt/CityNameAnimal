@@ -81,9 +81,13 @@ public class GameClient {
 		if( lastMessageId > 0 ) {
 			arguments.put("since_id", lastMessageId.toString());
 		}
-				
+		
+		return getResponse(urlConnection.post(arguments), filter);
+	}
+	
+	private List<Message> getResponse(String result, MessageFilter filter) {
 		try {
-			JSONObject json = new JSONObject(urlConnection.post(arguments));
+			JSONObject json = new JSONObject(result);
 			
 			List<Message> newMessages = parseMessages(json, filter);
 			messages.addAll(newMessages);
@@ -94,7 +98,6 @@ public class GameClient {
 		}
 		
 		return null;
-		
 	}
 	
 	private List<Message> parseMessages(JSONObject json, MessageFilter filter) throws JSONException {
