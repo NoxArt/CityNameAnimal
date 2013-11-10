@@ -35,8 +35,8 @@ public class GameClient {
 	
 	private boolean connected = false;
 
-	public GameClient(MessageQueue messaging, String playerName) {
-		this.messaging = messaging;
+	public GameClient(String serverUrl, String playerName) throws MalformedURLException {
+		this.messaging = new MessageQueue(serverUrl);
 		this.playerName = playerName;
 	}
 	

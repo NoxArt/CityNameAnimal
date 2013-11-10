@@ -8,6 +8,10 @@ public class Game {
 	
 	private Integer playerLimit;
 
+	public Game(MessageQueue client) {
+		this.client = client;
+	}
+
 	public String getName() {
 		return name;
 	}
