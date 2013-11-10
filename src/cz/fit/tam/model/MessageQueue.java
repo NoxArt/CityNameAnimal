@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class GameClient {
+public class MessageQueue {
 	
 	public interface MessageFilter {
 		public boolean isValid(Message msg);
@@ -34,7 +34,7 @@ public class GameClient {
 	
 	private List<Message> messages = new ArrayList<Message>();
 
-	public GameClient(String serverUrl, Player player) throws MalformedURLException {
+	public MessageQueue(String serverUrl, Player player) throws MalformedURLException {
 		this.serverUrl = new URL(serverUrl);
 		this.player = player;
 	}
@@ -47,10 +47,10 @@ public class GameClient {
 		return connection;
 	}
 	
-	public void sendMessage(HashMap<String, String> arguments) throws IOException {
+	public List<Message> sendMessage(HashMap<String, String> arguments) throws IOException {
 		HttpConnect urlConnection = getConnection();
 		
-		urlConnection.post(arguments);
+		return getResponse(urlConnection.post(arguments), null);
 	}
 
 	public List<Message> getMessages() {
@@ -74,7 +74,7 @@ public class GameClient {
 		HttpConnect urlConnection = getConnection();
 		
 		Map<String, String> arguments = new HashMap<String, String>();
-		arguments.put("command", GameClient.COMMAND_GET_MESSAGES);
+		arguments.put("command", MessageQueue.COMMAND_GET_MESSAGES);
 		arguments.put("game_id", gameId.toString());
 		arguments.put("token", player.getToken().getValue());
 		
@@ -94,7 +94,7 @@ public class GameClient {
 			
 			return newMessages;
 		} catch (JSONException ex) {
-			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(MessageQueue.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		
 		return null;

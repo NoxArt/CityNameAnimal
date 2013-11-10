@@ -4,7 +4,7 @@ public class Game {
 	
 	private String name;
 	
-	private GameClient client;
+	private MessageQueue client;
 	
 	
 		
