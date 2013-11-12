@@ -1,11 +1,11 @@
 package cz.fit.tam.model;
 
+import cz.fit.tam.utils.Connector;
 import cz.fit.tam.utils.HttpConnect;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +26,7 @@ public class MessageQueue {
 	
 	private URL serverUrl;
 	
-	private HttpConnect connection;
+	private Connector connection;
 	
 	private List<Message> messages = new ArrayList<Message>();
 
@@ -34,7 +34,7 @@ public class MessageQueue {
 		this.serverUrl = new URL(serverUrl);
 	}
 	
-	private HttpConnect getConnection() {
+	private Connector getConnection() {
 		if( connection == null ) {
 			connection = new HttpConnect(serverUrl);
 		}
@@ -62,10 +62,8 @@ public class MessageQueue {
 	}
 	
 	public JSONObject sendMessage(Map<String, String> arguments) throws IOException {
-		HttpConnect urlConnection = getConnection();
-		
 		try {
-			return new JSONObject(urlConnection.post(arguments));
+			return new JSONObject(getConnection().post(arguments));
 		} catch (JSONException ex) {
 			Logger.getLogger(MessageQueue.class.getName()).log(Level.SEVERE, null, ex);
 			return null;
@@ -73,10 +71,8 @@ public class MessageQueue {
 	}
 	
 	public List<Message> getMessages(Map<String, String> arguments, MessageFilter filter) throws IOException {
-		HttpConnect urlConnection = getConnection();
-		
 		try {
-			JSONObject json = new JSONObject(urlConnection.post(arguments));
+			JSONObject json = new JSONObject(getConnection().post(arguments));
 			
 			List<Message> newMessages = parseMessages(json, filter);
 			messages.addAll(newMessages);

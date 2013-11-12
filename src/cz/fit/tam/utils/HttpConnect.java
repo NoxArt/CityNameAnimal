@@ -17,7 +17,7 @@ import javax.net.ssl.HttpsURLConnection;
  * 
  * see @HttpURLConnection
  */
-public class HttpConnect {
+public class HttpConnect implements Connector {
 
 	private URL rootUrl;
 	
@@ -71,7 +71,7 @@ public class HttpConnect {
 	}
 	
 	
-	public static String buildHttpQuery(Map<String, String> parameters) throws UnsupportedEncodingException {
+	private static String buildHttpQuery(Map<String, String> parameters) throws UnsupportedEncodingException {
 		String params = "";
 		for (Map.Entry<String, String> entry: parameters.entrySet()) {
 			if( params.length() > 0 ) {
