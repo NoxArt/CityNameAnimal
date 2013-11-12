@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Město/jméno</string>
+    <string name="newGame">Nová hra</string>
+    <string name="connectToGame">Připojit ke hře</string>
+    <string name="statistics">Statistiky</string>
+    
+    <!-- Types of inputs -->
+    <string name="mesto">Město</string>
+    <string name="jmeno">Jméno</string>
+    <string name="rostlina">Rostlina</string>
+    <string name="zvire">Zvíře</string>
+    <string name="vec">Věc</string>
+    
+    <!-- Image alt -->
+    <string name="banner_hand">Obrázek ruky s tužkou</string>
 </resources>
