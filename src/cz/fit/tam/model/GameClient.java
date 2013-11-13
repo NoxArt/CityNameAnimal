@@ -1,5 +1,6 @@
 package cz.fit.tam.model;
 
+import android.text.TextUtils;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.HashMap;
@@ -44,11 +45,16 @@ public class GameClient {
 		return connected;
 	}
 	
-	public void createGame(Game game) {
+	public void createGame(GameProperties game) {
 		Map<String, String> arguments = new HashMap<String, String>();
 		arguments.put("command", GameClient.COMMAND_CREATE_GAME);
 		arguments.put("name", game.getName());
+		arguments.put("language", game.getLanguage());
 		arguments.put("player_limit", game.getPlayerLimit().toString());
+		arguments.put("time_limit", game.getTimeLimit().toString());
+		arguments.put("round_limit", game.getRoundLimit().toString());
+		arguments.put("evaluation", game.getEvaluation().toString());
+		arguments.put("categories", TextUtils.join(",", game.getCategories()));
 		
 		try {
 			JSONObject identifiers = messaging.sendMessage(arguments);
