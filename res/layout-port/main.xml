@@ -5,113 +5,106 @@
     android:background="@drawable/shape"
     android:orientation="vertical" >
 
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginTop="30dp"
+        android:orientation="vertical" >
 
-    
-<RelativeLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="left"
-    android:layout_marginTop="30dp"
-    android:orientation="vertical" >
+        <LinearLayout
+            android:id="@+id/inputTypes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
 
+            <TextView
+                android:id="@+id/mestoTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="30dp"
+                android:gravity="left"
+                android:text="@string/mesto"
+                android:textColor="@color/green"
+                android:textSize="25sp" />
 
+            <TextView
+                android:id="@+id/jmenoTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/jmeno"
+                android:textColor="@color/green"
+                android:textSize="25sp" />
 
-<LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical" 
-    android:id="@+id/inputTypes">
-    
-<TextView
-    android:id="@+id/mestoTextView"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:textColor="@color/green"
-    android:textSize="25sp"
-    android:text="@string/mesto"
-    android:layout_marginTop="30dp"
-    android:layout_marginLeft="10dp"
-    android:gravity="left"
-    />
-<TextView
-    android:id="@+id/jmenoTextView"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:textColor="@color/green"
-    android:textSize="25sp"
-    android:text="@string/jmeno"
-    android:layout_marginLeft="10dp"
-    />
-<TextView
-    android:id="@+id/rostlinaTextView"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:textColor="@color/green"
-    android:textSize="25sp"
-    android:text="@string/rostlina"
-    android:layout_marginLeft="10dp"
-    />
-<TextView
-    android:id="@+id/zvireTextView"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:textColor="@color/green"
-    android:textSize="25sp"
-    android:text="@string/zvire"
-    android:layout_marginLeft="10dp"
-    />
-<TextView
-    android:id="@+id/vecTextView"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:textColor="@color/green"
-    android:textSize="25sp"
-    android:text="@string/vec"
-    android:layout_marginLeft="10dp"
-    />
-</LinearLayout>
-<ImageView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_toRightOf="@id/inputTypes"
-    android:adjustViewBounds="true"
-    android:contentDescription="@string/banner_hand"
-    android:layout_marginTop="10dp"
-    android:src="@drawable/hand" />
-</RelativeLayout>
+            <TextView
+                android:id="@+id/rostlinaTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/rostlina"
+                android:textColor="@color/green"
+                android:textSize="25sp" />
 
+            <TextView
+                android:id="@+id/zvireTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/zvire"
+                android:textColor="@color/green"
+                android:textSize="25sp" />
 
-<LinearLayout
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:gravity="center_horizontal"
-    android:orientation="vertical" >
+            <TextView
+                android:id="@+id/vecTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/vec"
+                android:textColor="@color/green"
+                android:textSize="25sp" />
+        </LinearLayout>
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@id/inputTypes"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/banner_hand"
+            android:src="@drawable/hand" />
+    </RelativeLayout>
 
-<Button
-    android:id="@+id/newGame"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="@string/newGame" 
-    android:minWidth="150dp"
-    android:layout_marginTop="30dp"/>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical" >
 
-<Button
-    android:id="@+id/connectToGame"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="@string/connectToGame" 
-    android:minWidth="150dp"
-    android:layout_marginTop="10dp"/>
+        <Button
+            android:id="@+id/newGame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:minWidth="150dp"
+            android:text="@string/newGame" />
 
-<Button
-    android:id="@+id/statistics"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="@string/statistics" 
-    android:minWidth="150dp"
-    android:layout_marginTop="10dp"/>
-</LinearLayout>
+        <Button
+            android:id="@+id/connectToGame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:minWidth="150dp"
+            android:text="@string/connectToGame" />
+
+        <Button
+            android:id="@+id/statistics"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:minWidth="150dp"
+            android:text="@string/statistics" />
+    </LinearLayout>
 
 </LinearLayout>
-

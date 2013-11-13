@@ -1,18 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    >
-<TextView
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:text="Hello World, MainActivity"
-    />
-<TextView
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:text="Hello World, MainActivity"
-    />
-</LinearLayout>
+    android:background="@drawable/shape"
+    android:orientation="vertical" >
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/statistics"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:minWidth="150dp"
+            android:text="@string/statistics" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/newGame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:minWidth="150dp"
+            android:text="@string/newGame" />
+
+        <Button
+            android:id="@+id/connectToGame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:minWidth="150dp"
+            android:text="@string/connectToGame" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:id="@+id/inputTypes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/mestoTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="30dp"
+                android:gravity="left"
+                android:text="@string/mesto"
+                android:textColor="@color/green"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/jmenoTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/jmeno"
+                android:textColor="@color/green"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/rostlinaTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/rostlina"
+                android:textColor="@color/green"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/zvireTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/zvire"
+                android:textColor="@color/green"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/vecTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/vec"
+                android:textColor="@color/green"
+                android:textSize="25sp" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@id/inputTypes"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/banner_hand"
+            android:src="@drawable/hand" />
+    </RelativeLayout>
+
+</RelativeLayout>
