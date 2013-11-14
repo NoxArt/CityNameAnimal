@@ -7,10 +7,18 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 /**
  * Wrapper for HttpURLConnection
@@ -25,6 +33,20 @@ public class HttpConnect implements Connector {
 		this.rootUrl = rootUrl;
 	}
 	
+	class TrustEveryoneManager implements X509TrustManager {
+		public void checkClientTrusted(X509Certificate[] arg0, String arg1){}
+		public void checkServerTrusted(X509Certificate[] arg0, String arg1){}
+		public X509Certificate[] getAcceptedIssuers() {
+			return null;
+		}
+	}
+	
+	public class NullHostNameVerifier implements HostnameVerifier {
+		public boolean verify(String hostname, SSLSession session) {
+			return true;
+		}
+	}
+	
 	/**
 	 * @link http://www.xyzws.com/Javafaq/how-to-use-httpurlconnection-post-data-to-web-server/139
 	 * 
@@ -34,6 +56,20 @@ public class HttpConnect implements Connector {
 	 */
 	public String post(Map<String, String> parameters) throws IOException {
 		HttpsURLConnection connection = (HttpsURLConnection)rootUrl.openConnection();
+		
+		connection.setHostnameVerifier(new NullHostNameVerifier());
+		TrustManager[] myTrustManagerArray = new TrustManager[]{new TrustEveryoneManager()};
+		
+		try {
+			SSLContext sc = SSLContext.getInstance("TLS");
+			sc.init(null, myTrustManagerArray, new java.security.SecureRandom());
+			connection.setSSLSocketFactory(sc.getSocketFactory());
+		} catch (NoSuchAlgorithmException ex) {
+			Logger.getLogger(HttpConnect.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (KeyManagementException ex) {
+			Logger.getLogger(HttpConnect.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		
 		String params = buildHttpQuery(parameters);
 		
 		connection.setRequestMethod("POST");
@@ -46,17 +82,18 @@ public class HttpConnect implements Connector {
 		
 		addParameters(params, connection);
 		
+		String result = null;
 		try {
 			InputStream stream = connection.getInputStream();
 			
-			return Strings.fromStream(stream);
+			result = Strings.fromStream(stream);
 		} catch (IOException ex) {
 			Logger.getLogger(MessageQueue.class.getName()).log(Level.SEVERE, null, ex);
 		} finally {
 			connection.disconnect();
 		}
 		
-		return null;
+		return result;
 	}
 	
 	/**

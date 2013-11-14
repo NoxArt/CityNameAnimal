@@ -1,6 +1,11 @@
 package cz.fit.tam.model;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class GameProperties {
+	
+	private Integer id;
 	
 	private String language;
 	
@@ -37,6 +42,38 @@ public class GameProperties {
 		this.evaluation = evaluation;
 		this.categories = categories;
 	}
+	
+	public GameProperties(
+		String language,
+		String name,
+		int playerLimit,
+		int playerCount,
+		int timeLimit,
+		int roundLimit,
+		String evaluation,
+		String categories
+	) {
+		this.language = language;
+		this.name = name;
+		this.playerLimit = Integer.valueOf(playerLimit);
+		this.playerCount = Integer.valueOf(playerCount);
+		this.timeLimit = Integer.valueOf(timeLimit);
+		this.roundLimit = Integer.valueOf(roundLimit);
+		this.evaluation = evaluation;
+		this.categories = categories.split("|");
+	}
+
+	public void setId(Integer id) throws Exception {
+		if( this.id != null ) {
+			throw new Exception("ID already set");
+		}
+		
+		this.id = id;
+	}	
+	
+	public Integer getId() {
+		return id;
+	}
 
 	public String getLanguage() {
 		return language;
@@ -70,6 +107,17 @@ public class GameProperties {
 		return categories;
 	}
 	
-	
+	public static GameProperties jsonToGame(JSONObject json) throws JSONException {
+		return new GameProperties(
+			json.getString("language"),
+			json.getString("name"),
+			Integer.valueOf(json.getString("player_total")),
+			Integer.valueOf(json.getString("player_count")),
+			Integer.valueOf(json.getString("time_limit")),
+			Integer.valueOf(json.getString("round_limit")),
+			json.getString("evaluation"),
+			json.getString("categories").split("|")
+		);
+	}
 	
 }

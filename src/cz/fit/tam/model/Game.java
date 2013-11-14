@@ -1,11 +1,13 @@
 package cz.fit.tam.model;
 
+import android.content.Context;
+import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Game {
-	
-	private Integer id;
 	
 	private GameProperties properties;
 	
@@ -25,7 +27,7 @@ public class Game {
 	}
 
 	public Integer getId() {
-		return id;
+		return getProperties().getId();
 	}
 	
 	public boolean isRunning() {
@@ -49,13 +51,20 @@ public class Game {
 	}
 	
 	public void connect(Integer id) {
-		if( isConnected() ) {
+		if( isConnected() || this.getProperties().getId() != null ) {
 			throw new IllegalStateException();
 		}
-	
-		this.id = id;
+		try {
+			this.getProperties().setId(id);
+		} catch (Exception ex) {
+			Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+		}
 		
 		client.connect(id);
+	}
+	
+	public List<GameProperties> getGames(Context c) {
+		return client.getGames();
 	}
 	
 }

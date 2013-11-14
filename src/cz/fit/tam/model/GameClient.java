@@ -3,11 +3,14 @@ package cz.fit.tam.model;
 import android.text.TextUtils;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,6 +25,7 @@ public class GameClient {
 	
 	public class NotConnectedException extends IllegalAccessException {}
 	
+	private static String COMMAND_GET_GAMES = "get_games";
 	private static String COMMAND_CREATE_GAME = "create_game";
 	private static String COMMAND_JOIN_GAME = "join_game";
 	private static String COMMAND_GET_MESSAGES = "get_messages";
@@ -94,6 +98,45 @@ public class GameClient {
 			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
 			throw new CommandFailedException(ex);
 		}
+	}
+	
+	public List<GameProperties> getGames() {
+		return getGames(null);
+	}
+	
+	public List<GameProperties> getGames(Map<String, String> filter) {
+		List<GameProperties> games = new ArrayList<GameProperties>();
+		
+		String filters;
+		if( filter == null ) {
+			filters = "{}";
+		} else {
+			filters = (new JSONObject(filter)).toString();
+		}
+		
+		Map<String, String> arguments = new HashMap<String, String>();
+		arguments.put("command", GameClient.COMMAND_GET_GAMES);
+		arguments.put("game_filter", filters);
+		
+		try {
+			JSONObject result = messaging.sendMessage(arguments);
+			JSONArray results = result.getJSONArray("result");
+			
+			for (int i = 0; i < results.length(); i++) {
+				JSONObject game = results.getJSONObject(i);
+				
+				games.add(GameProperties.jsonToGame(game));
+			}
+			
+			return games;
+		} catch (JSONException ex) {
+			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
+			throw new CommandFailedException(ex);
+		} catch (IOException ex) {
+			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
+			throw new CommandFailedException(ex);
+		}
+
 	}
 	
 	public List<Message> getNewMessages() throws MalformedURLException, NotConnectedException {
