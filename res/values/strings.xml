@@ -4,6 +4,14 @@
     <string name="newGame">Nová hra</string>
     <string name="connectToGame">Připojit ke hře</string>
     <string name="statistics">Statistiky</string>
+    <string name="nazev">Název</string>
+    <string name="scoring">Vyhodnocování</string>
+    <string name="scoringAuto">Automatícky</string>
+    <string name="scoringManually">Ručně</string>
+    <string name="timeLimit">Časový limit</string>
+    <string name="categories">Kategorie</string>
+    <string name="numberOfCirkles">Počet kol</string>
+    <string name="create">Vytvořit</string>
     
     <!-- Types of inputs -->
     <string name="mesto">Město</string>
@@ -14,4 +22,7 @@
     
     <!-- Image alt -->
     <string name="banner_hand">Obrázek ruky s tužkou</string>
+    
+    <!-- Hints for inputs -->
+    <string name="nazevHint">Název hry</string>
 </resources>

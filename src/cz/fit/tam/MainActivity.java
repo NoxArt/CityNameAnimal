@@ -3,11 +3,12 @@ package cz.fit.tam;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.content.res.Resources;
+import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class MainActivity extends Activity
@@ -34,5 +35,21 @@ public class MainActivity extends Activity
         	textView.setText(currentTextSpannable);
         	
         }
+        
+        setEventClickListeners(savedInstanceState);
+        
+    }
+    
+    private void setEventClickListeners(Bundle savedInstanceState) {
+    	Button btn = (Button) findViewById(R.id.newGame);
+    	btn.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				Intent myIntent1 = new Intent(MainActivity.this, NewGameActivity.class);
+			    MainActivity.this.startActivity(myIntent1);
+			}
+		});
     }
 }
+
