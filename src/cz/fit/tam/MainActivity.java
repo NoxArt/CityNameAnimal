@@ -41,13 +41,23 @@ public class MainActivity extends Activity
     }
     
     private void setEventClickListeners(Bundle savedInstanceState) {
-    	Button btn = (Button) findViewById(R.id.newGame);
-    	btn.setOnClickListener(new View.OnClickListener() {
+    	Button btnNewGame = (Button) findViewById(R.id.newGame);
+    	btnNewGame.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View arg0) {
 				Intent myIntent1 = new Intent(MainActivity.this, NewGameActivity.class);
 			    MainActivity.this.startActivity(myIntent1);
+			}
+		});
+    	
+    	Button btnConnectToGame = (Button) findViewById(R.id.connectToGame);
+    	btnConnectToGame.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent myIntent1 = new Intent(MainActivity.this, ConnectToGameActivity.class);
+			    MainActivity.this.startActivity(myIntent1);	
 			}
 		});
     }

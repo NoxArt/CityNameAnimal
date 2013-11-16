@@ -21,6 +21,7 @@
             </intent-filter>
         </activity>
 		<activity android:name="cz.fit.tam.NewGameActivity"/>
+		<activity android:name="cz.fit.tam.ConnectToGameActivity"/>
     </application>
 
 </manifest>

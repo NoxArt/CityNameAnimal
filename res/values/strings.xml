@@ -3,15 +3,19 @@
     <string name="app_name">Město/jméno</string>
     <string name="newGame">Nová hra</string>
     <string name="connectToGame">Připojit ke hře</string>
+    <string name="connect">Připojit</string>
     <string name="statistics">Statistiky</string>
     <string name="nazev">Název</string>
-    <string name="scoring">Vyhodnocování</string>
+    <string name="scoring">Vyhodnoc</string>
     <string name="scoringAuto">Automatícky</string>
     <string name="scoringManually">Ručně</string>
     <string name="timeLimit">Časový limit</string>
     <string name="categories">Kategorie</string>
     <string name="numberOfCirkles">Počet kol</string>
     <string name="create">Vytvořit</string>
+    <string name="numberOfPlayers">Počet hráčů</string>
+    <string name="gamesPlayed">Odehrano kol</string>
+    <string name="limit">Limit</string>
     
     <!-- Types of inputs -->
     <string name="mesto">Město</string>
