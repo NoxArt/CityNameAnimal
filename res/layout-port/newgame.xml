@@ -70,6 +70,7 @@
 
         <RadioButton
             style="@style/Theme.CityName"
+            android:paddingLeft="80dp"
             android:id="@+id/radio_auto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -78,6 +79,7 @@
 
         <RadioButton
             android:id="@+id/radio_manually"
+            android:paddingLeft="80dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/scoringManually" />
@@ -102,6 +104,7 @@
             android:layout_marginTop="10dp"
             android:text="@string/timeLimit"
             android:textAllCaps="true"
+            android:layout_centerVertical="true"
             android:textColor="@color/blue"
             android:textSize="15sp" />
 
@@ -138,21 +141,26 @@
             
      <CheckBox android:id="@+id/chkBxCity"
         android:layout_width="wrap_content"
+        android:paddingLeft="80dp"
         android:layout_height="wrap_content"
         android:text="@string/mesto"/>
     <CheckBox android:id="@+id/chkBxName"
+        android:paddingLeft="80dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/jmeno"/>
     <CheckBox android:id="@+id/chkBxAnimal"
+        android:paddingLeft="80dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/zvire"/>
     <CheckBox android:id="@+id/chkBxThing"
+        android:paddingLeft="80dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/vec"/>
     <CheckBox android:id="@+id/chkBxPlant"
+        android:paddingLeft="80dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/rostlina"/>
