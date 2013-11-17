@@ -4,15 +4,20 @@
  */
 package cz.fit.tam.model;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 /**
- *
+ * 
  * @author Nox
  */
-public class Token {
-	
+public class Token implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4078349728434426668L;
 	private String value;
 	private Calendar validUntil;
 
@@ -30,9 +35,9 @@ public class Token {
 	public String getValue() {
 		return value;
 	}
-	
+
 	public boolean isValid() {
 		return (new GregorianCalendar()).before(this.validUntil);
 	}
-	
+
 }

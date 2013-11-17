@@ -1,9 +1,11 @@
 package cz.fit.tam.utils;
 
 import cz.fit.tam.model.MessageQueue;
+
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -13,6 +15,7 @@ import java.security.cert.X509Certificate;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -25,8 +28,12 @@ import javax.net.ssl.X509TrustManager;
  * 
  * see @HttpURLConnection
  */
-public class HttpConnect implements Connector {
+public class HttpConnect implements Connector, Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2749074164793695726L;
 	private URL rootUrl;
 	
 	public HttpConnect(URL rootUrl) {

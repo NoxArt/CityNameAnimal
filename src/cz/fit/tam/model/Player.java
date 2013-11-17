@@ -4,12 +4,14 @@
  */
 package cz.fit.tam.model;
 
+import java.io.Serializable;
+
 /**
- *
+ * 
  * @author Nox
  */
-public class Player {
-	
+public class Player implements Serializable {
+
 	private String name;
 	private Token token;
 	private Integer id;
@@ -23,12 +25,12 @@ public class Player {
 		this.token = token;
 		this.id = id;
 	}
-	
+
 	public void connected(Token token, Integer id) {
 		this.token = token;
 		this.id = id;
 	}
-	
+
 	public boolean isConnected() {
 		return this.id == null;
 	}
@@ -44,9 +46,9 @@ public class Player {
 	public Integer getId() {
 		return id;
 	}
-	
+
 	public boolean isAdmin() {
 		return false;
 	}
-	
+
 }

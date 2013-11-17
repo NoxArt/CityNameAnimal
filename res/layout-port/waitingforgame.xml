@@ -20,38 +20,169 @@
             android:textAllCaps="true"
             android:textColor="@color/dirtyWhite"
             android:textSize="20sp" />
-        
-        <TableLayout
-            android:id="@+id/tableGamesInfo"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:stretchColumns="1" >
 
-            <TableRow
-                android:id="@+id/tableRow1"
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            
+            android:layout_marginTop="20dp" >
+
+            <TextView
+                android:id="@+id/game_nameText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/nazev"
+                android:textAllCaps="true"
+                android:textColor="@color/blue"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/game_name"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp" >
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/game_nameText"/>
+        </RelativeLayout>
 
-                <TextView
-                    android:layout_width="0dip"
-                    android:layout_weight="1"
-                    android:textStyle="bold"
-                    android:text="@string/nazev" />
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:background="@color/grey" />
 
-                <TextView
-                    android:layout_width="0dip"
-                    android:layout_weight="1"
-                    android:textStyle="bold"
-                    android:text="@string/numberOfPlayers" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp" >
 
-                <TextView
-                    android:layout_width="0dip"
-                    android:layout_gravity="right"
-                    android:textStyle="bold"
-                    android:layout_weight="1" />
-            </TableRow>
-        </TableLayout>
+            <TextView
+                android:id="@+id/game_maxPlayersText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/playerLimit"
+                android:textAllCaps="true"
+                android:textColor="@color/blue"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/game_maxPlayers"
+                android:layout_width="fill_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/game_maxPlayersText" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:background="@color/grey" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp" >
+
+            <TextView
+                android:id="@+id/playerCountText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/numberOfPlayers"
+                android:textAllCaps="true"
+                android:textColor="@color/blue"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/playerCount"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/playerCountText" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:background="@color/grey" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp" >
+
+            <TextView
+                android:id="@+id/evaluationText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/scoring_full"
+                android:textAllCaps="true"
+                android:textColor="@color/blue"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/evaluation"
+                android:layout_width="fill_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/evaluationText" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:background="@color/grey" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:layout_marginTop="20dp">
+
+            <TextView
+                android:id="@+id/timeLimitText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/timeLimit"
+                android:textAllCaps="true"
+                android:textColor="@color/blue"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/timeLimit"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/timeLimitText" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:background="@color/grey" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp" >
+
+            <TextView
+                android:id="@+id/categoriesText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/categories"
+                android:textAllCaps="true"
+                android:textColor="@color/blue"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/categories"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/categoriesText" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:background="@color/grey" />
     </LinearLayout>
 
 </ScrollView>

@@ -1,7 +1,9 @@
 package cz.fit.tam;
 
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -111,8 +113,7 @@ public class NewGameActivity extends Activity {
 					GameProperties gameProps = new GameProperties("cz",
 							gameName, playerLimit, null, totalSeconds,
 							roundLimit, evaluation, categories);
-					Intent myIntent1 = new Intent(NewGameActivity.this,
-							WaitForGameActivity.class);
+
 					String serverUrl = getResources().getString(
 							R.string.serverUrl);
 					try {
@@ -130,7 +131,7 @@ public class NewGameActivity extends Activity {
 						// myIntent1.putParcelableArrayListExtra(name, value),
 						// value),
 						// value)("Game properties", gameProps);
-						NewGameActivity.this.startActivity(myIntent1);
+
 					} catch (MalformedURLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -232,11 +233,23 @@ public class NewGameActivity extends Activity {
 
 	private class CreateGameAsyncTask extends
 			AsyncTask<ArrayList<Object>, Void, Boolean> {
+		private GameProperties gameProps = null;
+		private GameClient gameClient = null;
+		
 		protected Boolean doInBackground(ArrayList<Object>... wrapper) {
-			GameClient gameClient = (GameClient) wrapper[0].get(0);
-			GameProperties gameProps = (GameProperties) wrapper[0].get(1);
+			gameClient = (GameClient) wrapper[0].get(0);
+			gameProps = (GameProperties) wrapper[0].get(1);
 			gameClient.createGame(gameProps);
 			return true;
 		}
+		
+		protected void onPostExecute(Boolean result) {
+			//activity.setGameProperties(result);
+			Intent myIntent1 = new Intent(NewGameActivity.this,
+					WaitForGameActivity.class);
+			myIntent1.putExtra(getResources().getString(R.string.gamePropertiesStr), (Serializable) gameProps);
+			myIntent1.putExtra(getResources().getString(R.string.gameClientStr), (Serializable) gameClient);
+			NewGameActivity.this.startActivity(myIntent1);
+		} 
 	}
 }
