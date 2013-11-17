@@ -61,7 +61,7 @@ public class GameClient {
 		arguments.put("categories", TextUtils.join(",", game.getCategories()));
 		
 		try {
-			JSONObject identifiers = messaging.sendMessage(arguments);
+			JSONObject identifiers = messaging.sendMessage(arguments).getJSONObject("result");
 			
 			Token playerToken = new Token(identifiers.getString("player_token"));
 			Token adminToken = new Token(identifiers.getString("admin_token"));
@@ -84,7 +84,7 @@ public class GameClient {
 		arguments.put("game_id", joiningGameId.toString());
 		
 		try {
-			JSONObject identifiers = messaging.sendMessage(arguments);
+			JSONObject identifiers = messaging.sendMessage(arguments).getJSONObject("result");
 			
 			Token playerToken = new Token(identifiers.getString("player_token"));
 			player = new Player(playerName, playerToken, identifiers.getInt("player_id"));
