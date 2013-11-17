@@ -1,11 +1,24 @@
 package cz.fit.tam;
 
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+
 import android.app.Activity;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.NumberPicker;
+import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
+import cz.fit.tam.model.GameClient;
+import cz.fit.tam.model.GameProperties;
 
 public class NewGameActivity extends Activity {
 	final private int SECONDS_MINUTES_MIN_VALUE = 0;
@@ -26,6 +39,142 @@ public class NewGameActivity extends Activity {
 		configureNumberPickers();
 
 		configureSeekBar();
+		setEventClickListeners();
+
+	}
+
+	private void setEventClickListeners() {
+		Button btnNewGame = (Button) findViewById(R.id.createGame);
+
+		btnNewGame.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				/* Get user input */
+				String gameName = ((TextView) findViewById(R.id.game_name))
+						.getText().toString();
+				String playerName = ((TextView) findViewById(R.id.game_playerName))
+						.getText().toString();
+				/* Get user evaluation input */
+				String evaluation = null;
+				boolean auto = ((RadioButton) findViewById(R.id.radio_auto))
+						.isChecked();
+				if (auto == true) {
+					evaluation = GameProperties.AUTO_EVALUATION;
+				} else {
+					evaluation = GameProperties.MANUAL_EVALUATION;
+				}
+				/* Get user's time limit input */
+				int minuteLimit = ((NumberPicker) findViewById(R.id.minutePicker))
+						.getValue();
+				int secondLimit = ((NumberPicker) findViewById(R.id.secondPicker))
+						.getValue();
+				int totalSeconds = minuteLimit * 60 + secondLimit;
+				/* Get user's round limit input */
+				int roundLimit = ((SeekBar) findViewById(R.id.numberOfCirles))
+						.getProgress() + 1;
+
+				int numOfCategories = 0;
+				ArrayList<CheckBox> checkboxes = new ArrayList<CheckBox>();
+				checkboxes.add((CheckBox) findViewById(R.id.chkBxAnimal));
+				checkboxes.add((CheckBox) findViewById(R.id.chkBxCity));
+				checkboxes.add((CheckBox) findViewById(R.id.chkBxName));
+				checkboxes.add((CheckBox) findViewById(R.id.chkBxPlant));
+				checkboxes.add((CheckBox) findViewById(R.id.chkBxThing));
+				/* Count number of categories user has selected */
+				for (CheckBox chkBx : checkboxes) {
+					if (chkBx.isChecked()) {
+						numOfCategories++;
+					}
+				}
+				String[] categories = new String[numOfCategories];
+				/* Get categories which user has selected to array */
+				int j = 0;
+				for (int i = 0; i < checkboxes.size(); i++) {
+					if (checkboxes.get(i).isChecked()) {
+						categories[j] = checkboxes.get(i).getText().toString();
+						Log.v("CATEGORY", categories[j]);
+						j++;
+					}
+				}
+				/* If user's input is valid, create game, go to next activity */
+				if (isUserInputValid(gameName, playerName, categories,
+						(TextView) findViewById(R.id.game_maxPlayers))) {
+					/* Get user's player limit input */
+					int playerLimit = Integer
+							.parseInt(((TextView) findViewById(R.id.game_maxPlayers))
+									.getText().toString());
+
+					GameProperties gameProps = new GameProperties("cz",
+							gameName, playerLimit, null, totalSeconds,
+							roundLimit, evaluation, categories);
+					Intent myIntent1 = new Intent(NewGameActivity.this,
+							WaitForGameActivity.class);
+					String serverUrl = getResources().getString(
+							R.string.serverUrl);
+					try {
+						GameClient gameClient = new GameClient(
+								serverUrl, playerName);
+						ArrayList<Object> gameClientPropsWrapper = new ArrayList<Object>();
+						gameClientPropsWrapper.add(gameClient);
+						gameClientPropsWrapper.add(gameProps);
+						CreateGameAsyncTask createGameThread = new CreateGameAsyncTask();
+						createGameThread.execute(gameClientPropsWrapper);
+						//gameClient.createGame(gameProps);
+						// myIntent1.putExtra("Game properties",
+						// (Serializable) gameProps);
+
+						// myIntent1.putParcelableArrayListExtra(name, value),
+						// value),
+						// value)("Game properties", gameProps);
+						NewGameActivity.this.startActivity(myIntent1);
+					} catch (MalformedURLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+				}
+
+			}
+		});
+
+	}
+
+	private boolean isUserInputValid(String gameName, String playerName,
+			String[] categories, TextView numOfPlayers) {
+		if ("".equals(gameName) || gameName == null) {
+			String text = getResources().getString(R.string.enterGameName);
+			Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+			return false;
+		}
+
+		if ("".equals(playerName) || playerName == null) {
+			String text = getResources().getString(R.string.enterPlayerName);
+			Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+			return false;
+		}
+
+		if (categories.length == 0) {
+			String text = getResources().getString(R.string.chooseGameCategory);
+			Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+			return false;
+		}
+		try {
+			int numOfPlayersInt = Integer.parseInt(numOfPlayers.getText()
+					.toString());
+			if (numOfPlayersInt < 2) {
+				String text = getResources().getString(
+						R.string.enterMorePlayers);
+				Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+				return false;
+			}
+		} catch (Exception e) {
+			String text = getResources().getString(R.string.enterMorePlayers);
+			Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+			return false;
+		}
+
+		return true;
 
 	}
 
@@ -76,5 +225,15 @@ public class NewGameActivity extends Activity {
 								.valueOf(progress + 1));
 					}
 				});
+	}
+
+	private class CreateGameAsyncTask extends
+			AsyncTask<ArrayList<Object>, Void, Boolean> {
+		protected Boolean doInBackground(ArrayList<Object>... wrapper) {
+			GameClient gameClient = (GameClient) wrapper[0].get(0);
+			GameProperties gameProps = (GameProperties) wrapper[0].get(1);
+			gameClient.createGame(gameProps);
+			return true;
+		}
 	}
 }

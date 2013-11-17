@@ -21,10 +21,12 @@
         android:textColor="@color/dirtyWhite"
         android:textSize="20sp" />
 
-    <View
+
+        
+           <View
         android:layout_width="fill_parent"
         android:layout_height="1dip"
-        android:background="@color/grey" />
+        android:background="@color/grey" /> 
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -46,6 +48,65 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/game_nameText"
             android:hint="@string/nazevHint" />
+    </RelativeLayout>
+    
+               <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:background="@color/grey" /> 
+        
+               
+               
+                   <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/game_playerNameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/playerName"
+            android:textAllCaps="true"
+            android:textColor="@color/blue"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/game_playerName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/game_playerNameText"
+            android:hint="@string/playerNameHint" />
+    </RelativeLayout>
+    
+               <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:background="@color/grey" /> 
+               
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/game_maxPlayersText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/playerLimit"
+            android:textAllCaps="true"
+            android:textColor="@color/blue"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/game_maxPlayers"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/game_maxPlayersText"
+            android:inputType="number"
+            android:text="@string/defaultPlayerLim"
+            android:hint="@string/limitPlayersHint" />
     </RelativeLayout>
 
     <View

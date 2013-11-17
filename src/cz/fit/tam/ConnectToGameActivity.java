@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -15,6 +16,8 @@ import android.widget.TextView;
 import cz.fit.tam.model.GameProperties;
 
 public class ConnectToGameActivity extends Activity {
+	
+	private ArrayList<GameProperties> sampleProps = new ArrayList<GameProperties>();;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -28,11 +31,9 @@ public class ConnectToGameActivity extends Activity {
 		GameProperties sampleProp2 = new GameProperties("CZ",
 				"Názornááá ukázkaaaaaaaaaaaaaaaaaaaaa aaa", 10, 5, 300, 100,
 				"ručně", categories);
-		ArrayList<GameProperties> sampleProps = null;
 		try {
 			sampleProp.setId(1);
 			sampleProp2.setId(2);
-			sampleProps = new ArrayList<GameProperties>();
 			sampleProps.add(sampleProp);
 			sampleProps.add(sampleProp2);
 		} catch (Exception e) {
@@ -138,9 +139,17 @@ public class ConnectToGameActivity extends Activity {
 	}
 
 	private void setConnectClickEventListenter(Button button) {
-		// Intent myIntent1 = new Intent(ConnectToGameActivity.this,
-		// NewGameActivity.class);
-		// ConnectToGameActivity.this.startActivity(myIntent1);
+		button.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent myIntent1 = new Intent(ConnectToGameActivity.this,
+						WaitForGameActivity.class);
+				//myIntent1.putExtra(WaitForGameActivity.GAME_PROP_STR, null);
+				ConnectToGameActivity.this.startActivity(myIntent1);
+			}
+		});
+
 	}
 
 }

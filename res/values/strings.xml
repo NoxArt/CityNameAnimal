@@ -16,17 +16,32 @@
     <string name="numberOfPlayers">Počet hráčů</string>
     <string name="gamesPlayed">Odehrano kol</string>
     <string name="limit">Limit</string>
+    <string name="waitingForGame">Čekání na hru</string>
+    <string name="playerLimit">Maximální počet hráčů</string>
+    <string name="defaultPlayerLim">5</string>
+    <string name="playerName">Vaše jméno</string>
     
     <!-- Types of inputs -->
-    <string name="mesto">Město</string>
-    <string name="jmeno">Jméno</string>
+    <string name="mesto">Mesto</string>
+    <string name="jmeno">Jmeno</string>
     <string name="rostlina">Rostlina</string>
-    <string name="zvire">Zvíře</string>
-    <string name="vec">Věc</string>
+    <string name="zvire">Zvire</string>
+    <string name="vec">Vec</string>
     
     <!-- Image alt -->
     <string name="banner_hand">Obrázek ruky s tužkou</string>
     
     <!-- Hints for inputs -->
     <string name="nazevHint">Název hry</string>
+    <string name="limitPlayersHint">5</string>
+    <string name="playerNameHint">Vaše jméno</string>
+    
+    <!--  Toast messages -->
+    <string name="enterGameName">Napíš název hry</string>
+    <string name="enterPlayerName">Napíš své jméno</string>
+    <string name="chooseGameCategory">Vyber aspon jednu kategorii</string>
+    <string name="enterMorePlayers">Musíme mit aspon 2 hráče</string>
+    
+    <!-- Configurations -->
+    <string name="serverUrl">https://fit.noxart.cz/tam/</string>
 </resources>
