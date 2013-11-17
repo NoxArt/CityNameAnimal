@@ -127,6 +127,7 @@
     <RadioGroup
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:checkedButton="@+id/radio_manually"
         android:orientation="vertical" >
 
         <RadioButton
@@ -204,26 +205,31 @@
         android:layout_width="wrap_content"
         android:paddingLeft="80dp"
         android:layout_height="wrap_content"
+        android:checked="true"
         android:text="@string/mesto"/>
     <CheckBox android:id="@+id/chkBxName"
         android:paddingLeft="80dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:checked="true"
         android:text="@string/jmeno"/>
     <CheckBox android:id="@+id/chkBxAnimal"
         android:paddingLeft="80dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:checked="true"
         android:text="@string/zvire"/>
     <CheckBox android:id="@+id/chkBxThing"
         android:paddingLeft="80dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:checked="true"
         android:text="@string/vec"/>
     <CheckBox android:id="@+id/chkBxPlant"
         android:paddingLeft="80dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:checked="true"
         android:text="@string/rostlina"/>
     
     <View

@@ -11,6 +11,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+/*
+ * @author Ievgen
+ */
 public class MainActivity extends Activity
 {
     /** Called when the activity is first created. */

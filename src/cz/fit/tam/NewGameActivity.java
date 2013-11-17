@@ -20,6 +20,9 @@ import android.widget.Toast;
 import cz.fit.tam.model.GameClient;
 import cz.fit.tam.model.GameProperties;
 
+/*
+ * @author Ievgen
+ */
 public class NewGameActivity extends Activity {
 	final private int SECONDS_MINUTES_MIN_VALUE = 0;
 	final private int SEEK_BAR_DEFAULT = 0;
@@ -60,9 +63,9 @@ public class NewGameActivity extends Activity {
 				boolean auto = ((RadioButton) findViewById(R.id.radio_auto))
 						.isChecked();
 				if (auto == true) {
-					evaluation = "auto";//GameProperties.AUTO_EVALUATION;
+					evaluation = GameProperties.EVALUATION_AUTO;
 				} else {
-					evaluation = "manual";//GameProperties.MANUAL_EVALUATION;
+					evaluation = GameProperties.EVALUATION_MANUAL;
 				}
 				/* Get user's time limit input */
 				int minuteLimit = ((NumberPicker) findViewById(R.id.minutePicker))

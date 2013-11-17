@@ -22,11 +22,11 @@
     <string name="playerName">Vaše jméno</string>
     
     <!-- Types of inputs -->
-    <string name="mesto">Mesto</string>
-    <string name="jmeno">Jmeno</string>
+    <string name="mesto">Město</string>
+    <string name="jmeno">Jméno</string>
     <string name="rostlina">Rostlina</string>
-    <string name="zvire">Zvire</string>
-    <string name="vec">Vec</string>
+    <string name="zvire">Zvíře</string>
+    <string name="vec">Věc</string>
     
     <!-- Image alt -->
     <string name="banner_hand">Obrázek ruky s tužkou</string>

@@ -1,10 +1,13 @@
 package cz.fit.tam;
 
+import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -13,45 +16,67 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
+import cz.fit.tam.model.GameClient;
 import cz.fit.tam.model.GameProperties;
 
+/*
+ * @author Ievgen
+ */
 public class ConnectToGameActivity extends Activity {
-	
-	private ArrayList<GameProperties> sampleProps = new ArrayList<GameProperties>();;
 
+	// private ArrayList<GameProperties> sampleProps = new
+	// ArrayList<GameProperties>();
+
+	private GameClient gameClient = null;
+    private List<GameProperties> gameProps = null;
+	
+    public GameClient getGameClient() {
+		return gameClient;
+	}
+    
+    public void setGameProperties(List<GameProperties> gameProperties) {
+    	this.gameProps = gameProperties;
+		int orientation = getResources().getConfiguration().orientation;
+		getResources().getConfiguration();
+		if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+			setGamesInfoPortrait(gameProps);
+		} else {
+			setGamesInfoLandscape(gameProps);
+		}
+    }
+	
+	
+	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.connecttogame);
 		setEventClickListeners();
-
-		/* Set sample data */
-		String[] categories = { "Město", "Jméno", "Zviře" };
-		GameProperties sampleProp = new GameProperties("CZ", "Sample", 10, 5,
-				300, 100, "auto", categories);
-		GameProperties sampleProp2 = new GameProperties("CZ",
-				"Názornááá ukázkaaaaaaaaaaaaaaaaaaaaa aaa", 10, 5, 300, 100,
-				"ručně", categories);
+		String serverUrl = getResources().getString(R.string.serverUrl);
 		try {
-			sampleProp.setId(1);
-			sampleProp2.setId(2);
-			sampleProps.add(sampleProp);
-			sampleProps.add(sampleProp2);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			gameClient = new GameClient(serverUrl, null);
+		} catch (MalformedURLException e1) {
+			e1.printStackTrace();
 		}
+		//gameProps = gameClient.getGames();
+		GetGamesAsyncTask getGames = new GetGamesAsyncTask();
+		getGames.execute(this);
+		/* Set sample data */
+		/*
+		 * String[] categories = { "Město", "Jméno", "Zviře" }; GameProperties
+		 * sampleProp = new GameProperties("CZ", "Sample", 10, 5, 300, 100,
+		 * "auto", categories); GameProperties sampleProp2 = new
+		 * GameProperties("CZ", "Názornááá ukázkaaaaaaaaaaaaaaaaaaaaa aaa", 10,
+		 * 5, 300, 100, "ručně", categories); try { sampleProp.setId(1);
+		 * sampleProp2.setId(2); sampleProps.add(sampleProp);
+		 * sampleProps.add(sampleProp2); } catch (Exception e) { // TODO
+		 * Auto-generated catch block e.printStackTrace(); }
+		 */
 
-		int orientation = getResources().getConfiguration().orientation;
-		getResources().getConfiguration();
-		if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-			setGamesInfoPortrait(sampleProps);
-		} else {
-			setGamesInfoLandscape(sampleProps);
-		}
+
 
 	}
 
-	private void setGamesInfoPortrait(ArrayList<GameProperties> props) {
+	private void setGamesInfoPortrait(List<GameProperties> props) {
 		TableLayout tableGamesInfo = (TableLayout) findViewById(R.id.tableGamesInfo);
 
 		/* Make all columns have the same width */
@@ -78,7 +103,7 @@ public class ConnectToGameActivity extends Activity {
 		}
 	}
 
-	private void setGamesInfoLandscape(ArrayList<GameProperties> props) {
+	private void setGamesInfoLandscape(List<GameProperties> props) {
 		TableLayout tableGamesInfo = (TableLayout) findViewById(R.id.tableGamesInfo);
 
 		/* Make all columns have the same width */
@@ -140,16 +165,30 @@ public class ConnectToGameActivity extends Activity {
 
 	private void setConnectClickEventListenter(Button button) {
 		button.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				Intent myIntent1 = new Intent(ConnectToGameActivity.this,
 						WaitForGameActivity.class);
-				//myIntent1.putExtra(WaitForGameActivity.GAME_PROP_STR, null);
+				// myIntent1.putExtra(WaitForGameActivity.GAME_PROP_STR, null);
 				ConnectToGameActivity.this.startActivity(myIntent1);
 			}
 		});
 
+	}
+
+	private class GetGamesAsyncTask extends
+			AsyncTask<ConnectToGameActivity, Void, List<GameProperties>> {
+		ConnectToGameActivity activity = null;
+		protected List<GameProperties> doInBackground(ConnectToGameActivity... activity) {
+			this.activity = activity[0];
+			GameClient gameClient = activity[0].getGameClient();
+			return gameClient.getGames();
+		}
+		
+		protected void onPostExecute(List<GameProperties> result){
+			activity.setGameProperties(result);
+		}
 	}
 
 }
