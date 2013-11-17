@@ -1,18 +1,19 @@
 package cz.fit.tam.model;
 
-import android.text.TextUtils;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.text.TextUtils;
 
 
 public class GameClient {
@@ -62,12 +63,11 @@ public class GameClient {
 		
 		try {
 			JSONObject identifiers = messaging.sendMessage(arguments).getJSONObject("result");
-			
 			Token playerToken = new Token(identifiers.getString("player_token"));
 			Token adminToken = new Token(identifiers.getString("admin_token"));
 			player = new Admin(adminToken, playerName, playerToken, identifiers.getInt("player_id"));
 			
-			gameId = identifiers.getInt("game_id");
+			gameId = identifiers.getInt("id");
 			connected = true;
 		} catch (JSONException ex) {
 			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);

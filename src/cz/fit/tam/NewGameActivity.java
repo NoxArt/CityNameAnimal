@@ -60,9 +60,9 @@ public class NewGameActivity extends Activity {
 				boolean auto = ((RadioButton) findViewById(R.id.radio_auto))
 						.isChecked();
 				if (auto == true) {
-					evaluation = GameProperties.AUTO_EVALUATION;
+					evaluation = "auto";//GameProperties.AUTO_EVALUATION;
 				} else {
-					evaluation = GameProperties.MANUAL_EVALUATION;
+					evaluation = "manual";//GameProperties.MANUAL_EVALUATION;
 				}
 				/* Get user's time limit input */
 				int minuteLimit = ((NumberPicker) findViewById(R.id.minutePicker))
