@@ -1,19 +1,22 @@
 package cz.fit.tam.model;
 
-import android.content.Context;
-import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Game {
+	
+	public class GameIsStoppedException extends RuntimeException {}
 	
 	private GameProperties properties;
 	
 	private GameClient client;
 	
 	private boolean running;	
+	
+	private boolean stopped = false;
 	
 	private List<ChatMessage> chatMessages = new ArrayList<ChatMessage>();
 
@@ -32,6 +35,14 @@ public class Game {
 	
 	public boolean isRunning() {
 		return running;
+	}
+
+	public boolean isStopped() {
+		return stopped;
+	}
+	
+	public boolean isAdmin() {
+		return client.getPlayer() instanceof Admin;
 	}
 	
 	public boolean isConnected() {
@@ -54,6 +65,11 @@ public class Game {
 		if( isConnected() || this.getProperties().getId() != null ) {
 			throw new IllegalStateException();
 		}
+
+		if( isStopped() ) {
+			throw new GameIsStoppedException();
+		}
+		
 		try {
 			this.getProperties().setId(id);
 		} catch (Exception ex) {
@@ -61,10 +77,57 @@ public class Game {
 		}
 		
 		client.connect(id);
+		try {
+			properties.setId(id);
+		} catch (Exception ex) {
+			Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+		}
 	}
 	
-	public List<GameProperties> getGames(Context c) {
+	public List<GameProperties> getGames() {
 		return client.getGames();
 	}
+	
+	public void stop() {
+		if( isConnected() || isAdmin() == false ) {
+			throw new IllegalStateException();
+		}
+		
+		client.stop(properties.getId());
+		stopped = true;
+	}
+	
+	public void leave() {
+		if( isConnected() ) {
+			throw new IllegalStateException();
+		}
+		
+		client.leave(properties.getId());
+		stopped = true;
+	}
+    
+    public void sendWords(String[] words) {
+        if( isConnected()  ) {
+			throw new IllegalStateException();
+		}
+        
+        if( isStopped() ) {
+            throw new GameIsStoppedException();
+        }
+        
+        client.sendWords(words);
+    }
+    
+    public void sendEvaluations(Map<String, String[]> evaluations) {
+        if( isConnected()  ) {
+			throw new IllegalStateException();
+		}
+        
+        if( isStopped() ) {
+            throw new GameIsStoppedException();
+        }
+        
+        client.sendEvaluation(evaluations);
+    }
 	
 }
