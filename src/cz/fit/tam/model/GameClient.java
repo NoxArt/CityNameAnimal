@@ -138,14 +138,12 @@ public class GameClient implements Serializable {
 	public void stop(Integer gameId) {
 		Map<String, String> arguments = new HashMap<String, String>();
 		arguments.put("command", GameClient.COMMAND_STOP_GAME);
-		Log.v("STOP GAME", gameId.toString());
 		arguments.put("id", gameId.toString());
 		arguments.put("admin_token", ((Admin) player).getAdminToken()
 				.getValue());
 
 		try {
-			JSONObject response = messaging.sendMessage(arguments);
-			Log.v("STOP GAME", response.toString());
+			messaging.sendMessage(arguments);
 			connected = false;
 		} catch (IOException ex) {
 			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE,

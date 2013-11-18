@@ -243,7 +243,6 @@ public class NewGameActivity extends Activity {
 		}
 
 		protected void onPostExecute(Boolean result) {
-			// activity.setGameProperties(result);
 
 			Intent myIntent1 = new Intent(NewGameActivity.this,
 					WaitForGameActivity.class);

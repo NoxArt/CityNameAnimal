@@ -3,10 +3,10 @@ package cz.fit.tam;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 import cz.fit.tam.model.Game;
-import cz.fit.tam.model.GameClient;
 import cz.fit.tam.model.GameProperties;
 
 /*
@@ -95,12 +95,7 @@ public class WaitForGameActivity extends Activity {
 
 		protected Boolean doInBackground(WaitForGameActivity... activity) {
 			activityWait = activity[0];
-			try {
-				activity[0].getCurrentGame().stop();
-			} catch (Exception e) {
-				Toast.makeText(activity[0], "ERROR " + e.getMessage(),
-						Toast.LENGTH_SHORT).show();
-			}
+			activity[0].getCurrentGame().stop();
 			return true;
 		}
 
