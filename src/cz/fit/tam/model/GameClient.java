@@ -34,8 +34,13 @@ public class GameClient implements Serializable {
 
 	private static String COMMAND_GET_GAMES = "get_games";
 	private static String COMMAND_CREATE_GAME = "create_game";
+	private static String COMMAND_STOP_GAME = "stop_game";
 	private static String COMMAND_JOIN_GAME = "join_game";
+	private static String COMMAND_LEAVE_GAME = "leave_game";
 	private static String COMMAND_GET_MESSAGES = "get_messages";
+    private static String COMMAND_POST_MESSAGE = "post_message";
+    private static String ACTION_SEND_WORDS = "send_words";
+    private static String ACTION_SEND_EVALUATION = "send_evaluation";
 
 	private MessageQueue messaging;
 
@@ -61,6 +66,10 @@ public class GameClient implements Serializable {
 		return connected;
 	}
 
+	public Player getPlayer() {
+		return player;
+	}
+
 	public void createGame(GameProperties game) {
 		Map<String, String> arguments = new HashMap<String, String>();
 		arguments.put("command", GameClient.COMMAND_CREATE_GAME);
@@ -70,7 +79,7 @@ public class GameClient implements Serializable {
 		arguments.put("time_limit", game.getTimeLimit().toString());
 		arguments.put("round_limit", game.getRoundLimit().toString());
 		arguments.put("evaluation", game.getEvaluation().toString());
-		arguments.put("categories", TextUtils.join(",", game.getCategories()));
+		arguments.put("categories", combine(game.getCategories()));
 
 		try {
 			JSONObject identifiers = messaging.sendMessage(arguments)
@@ -118,6 +127,70 @@ public class GameClient implements Serializable {
 			throw new CommandFailedException(ex);
 		}
 	}
+	
+	public void stop(Integer gameId) {
+		Map<String, String> arguments = new HashMap<String, String>();
+		arguments.put("command", GameClient.COMMAND_STOP_GAME);
+		arguments.put("game_id", gameId.toString());
+		arguments.put("admin_token", ((Admin)player).getAdminToken().getValue());
+
+		try {
+			messaging.sendMessage(arguments);
+			connected = false;
+		} catch (IOException ex) {
+			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
+			throw new CommandFailedException(ex);
+		}
+	}
+	
+	public void leave(Integer gameId) {
+		Map<String, String> arguments = new HashMap<String, String>();
+		arguments.put("command", GameClient.COMMAND_LEAVE_GAME);
+		arguments.put("game_id", gameId.toString());
+		arguments.put("token", player.getToken().getValue());
+
+		try {
+			messaging.sendMessage(arguments);
+			connected = false;
+		} catch (IOException ex) {
+			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
+			throw new CommandFailedException(ex);
+		}
+	}
+    
+    public void sendWords(String[] words) {
+        Map<String, String> arguments = new HashMap<String, String>();
+		arguments.put("command", GameClient.COMMAND_POST_MESSAGE);
+		arguments.put("game_id", gameId.toString());
+		arguments.put("token", player.getToken().getValue());
+        arguments.put("action", GameClient.ACTION_SEND_WORDS);
+        arguments.put("words", combine(words));
+        
+		try {
+			messaging.sendMessage(arguments);
+			connected = false;
+		} catch (IOException ex) {
+			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
+			throw new CommandFailedException(ex);
+		}
+    }
+    
+    public void sendEvaluation(Map<String, String[]> evaluations) {
+        Map<String, String> arguments = new HashMap<String, String>();
+		arguments.put("command", GameClient.COMMAND_POST_MESSAGE);
+		arguments.put("game_id", gameId.toString());
+		arguments.put("token", player.getToken().getValue());
+        arguments.put("action", GameClient.ACTION_SEND_EVALUATION);
+        arguments.put("evaluations", combine(evaluations));
+        
+		try {
+			messaging.sendMessage(arguments);
+			connected = false;
+		} catch (IOException ex) {
+			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
+			throw new CommandFailedException(ex);
+		}
+    }
 
 	public List<GameProperties> getGames() {
 		return getGames(null);
@@ -197,5 +270,23 @@ public class GameClient implements Serializable {
 			return null;
 		}
 	}
+    
+    private String combine(Map<String, String[]> values) {
+        String evaluation[] = new String[values.size()];
+        int i = 0;
+        for(String[] words: values.values()) {
+            evaluation[i++] = combine(words);
+        }
+        
+        return combine(evaluation, "|");
+    }
+    
+    private String combine(String[] strings) {
+        return combine(strings, ",");
+    }
+    
+    private String combine(String[] strings, String glue) {
+        return TextUtils.join(glue, strings);
+    }
 
 }
