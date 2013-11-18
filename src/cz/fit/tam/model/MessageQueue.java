@@ -72,7 +72,13 @@ public class MessageQueue implements Serializable {
 	public JSONObject sendMessage(Map<String, String> arguments)
 			throws IOException {
 		try {
-			return new JSONObject(getConnection().post(arguments));
+            String result = getConnection().post(arguments);
+            
+            if( result.length() == 0 ) {
+                return null;
+            } else {
+                return new JSONObject(result);
+            }
 		} catch (JSONException ex) {
 			Logger.getLogger(MessageQueue.class.getName()).log(Level.SEVERE,
 					null, ex);
