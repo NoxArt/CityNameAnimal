@@ -116,6 +116,14 @@ public class GameProperties implements Serializable {
 		return categories;
 	}
 
+	public void incrementNumberOfPlayers() {
+		if (playerCount != null) {
+			playerCount++;
+		} else {
+			playerCount = 1;
+		}
+	}
+
 	public static GameProperties jsonToGame(JSONObject json)
 			throws JSONException {
 		return new GameProperties(Integer.valueOf(json.getString("id")),

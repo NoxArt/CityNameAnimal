@@ -35,6 +35,16 @@ public class NewGameActivity extends Activity {
 	final private int TWENTY_NINE = 29;
 
 	TextView numberOfCirclesText = null;
+	private GameClient gameClient = null;
+	private GameProperties newGameProperties = null;
+
+	public GameClient getGameClient() {
+		return gameClient;
+	}
+
+	public GameProperties getNewGameProperties() {
+		return newGameProperties;
+	}
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -98,7 +108,6 @@ public class NewGameActivity extends Activity {
 				for (int i = 0; i < checkboxes.size(); i++) {
 					if (checkboxes.get(i).isChecked()) {
 						categories[j] = checkboxes.get(i).getText().toString();
-						Log.v("CATEGORY", categories[j]);
 						j++;
 					}
 				}
@@ -110,27 +119,17 @@ public class NewGameActivity extends Activity {
 							.parseInt(((TextView) findViewById(R.id.game_maxPlayers))
 									.getText().toString());
 
-					GameProperties gameProps = new GameProperties("cz",
-							gameName, playerLimit, null, totalSeconds,
-							roundLimit, evaluation, categories);
+					newGameProperties = new GameProperties("cz", gameName,
+							playerLimit, null, totalSeconds, roundLimit,
+							evaluation, categories);
 
 					String serverUrl = getResources().getString(
 							R.string.serverUrl);
 					try {
-						GameClient gameClient = new GameClient(
-								serverUrl, playerName);
-						ArrayList<Object> gameClientPropsWrapper = new ArrayList<Object>();
-						gameClientPropsWrapper.add(gameClient);
-						gameClientPropsWrapper.add(gameProps);
-						CreateGameAsyncTask createGameThread = new CreateGameAsyncTask();
-						createGameThread.execute(gameClientPropsWrapper);
-						//gameClient.createGame(gameProps);
-						// myIntent1.putExtra("Game properties",
-						// (Serializable) gameProps);
+						gameClient = new GameClient(serverUrl, playerName);
 
-						// myIntent1.putParcelableArrayListExtra(name, value),
-						// value),
-						// value)("Game properties", gameProps);
+						CreateGameAsyncTask createGameThread = new CreateGameAsyncTask();
+						createGameThread.execute(NewGameActivity.this);
 
 					} catch (MalformedURLException e) {
 						// TODO Auto-generated catch block
@@ -232,24 +231,34 @@ public class NewGameActivity extends Activity {
 	}
 
 	private class CreateGameAsyncTask extends
-			AsyncTask<ArrayList<Object>, Void, Boolean> {
+			AsyncTask<NewGameActivity, Void, Boolean> {
 		private GameProperties gameProps = null;
 		private GameClient gameClient = null;
-		
-		protected Boolean doInBackground(ArrayList<Object>... wrapper) {
-			gameClient = (GameClient) wrapper[0].get(0);
-			gameProps = (GameProperties) wrapper[0].get(1);
-			gameClient.createGame(gameProps);
+
+		protected Boolean doInBackground(NewGameActivity... activity) {
+			gameClient = (GameClient) activity[0].getGameClient();
+			gameProps = (GameProperties) activity[0].getNewGameProperties();
+			try {
+				gameClient.createGame(gameProps);
+			} catch (Exception e) {
+				Toast.makeText(activity[0], "ERROR " + e.getMessage(),
+						Toast.LENGTH_SHORT).show();
+			}
 			return true;
 		}
-		
+
 		protected void onPostExecute(Boolean result) {
-			//activity.setGameProperties(result);
+			// activity.setGameProperties(result);
+			gameProps.incrementNumberOfPlayers();
 			Intent myIntent1 = new Intent(NewGameActivity.this,
 					WaitForGameActivity.class);
-			myIntent1.putExtra(getResources().getString(R.string.gamePropertiesStr), (Serializable) gameProps);
-			myIntent1.putExtra(getResources().getString(R.string.gameClientStr), (Serializable) gameClient);
+			myIntent1.putExtra(
+					getResources().getString(R.string.gamePropertiesStr),
+					(Serializable) gameProps);
+			myIntent1.putExtra(
+					getResources().getString(R.string.gameClientStr),
+					(Serializable) gameClient);
 			NewGameActivity.this.startActivity(myIntent1);
-		} 
+		}
 	}
 }

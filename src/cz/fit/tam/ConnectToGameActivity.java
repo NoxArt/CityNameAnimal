@@ -2,7 +2,6 @@ package cz.fit.tam;
 
 import java.io.Serializable;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -10,14 +9,15 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-import android.widget.Toast;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
+import android.widget.Toast;
 import cz.fit.tam.model.GameClient;
 import cz.fit.tam.model.GameProperties;
 
@@ -26,12 +26,17 @@ import cz.fit.tam.model.GameProperties;
  */
 public class ConnectToGameActivity extends Activity {
 
-    
 	private GameClient gameClient = null;
 	private List<GameProperties> gameProps = null;
+	private GameProperties chosenGameProps = null;
+	TableLayout tableGamesInfo = null;
 
 	public GameClient getGameClient() {
 		return gameClient;
+	}
+
+	public GameProperties getChosenGameProperties() {
+		return chosenGameProps;
 	}
 
 	public void setGameProperties(List<GameProperties> gameProperties) {
@@ -59,8 +64,15 @@ public class ConnectToGameActivity extends Activity {
 		getGames.execute(this);
 	}
 
+	public void onRestart() {
+		super.onRestart();
+		tableGamesInfo.removeAllViews();
+		GetGamesAsyncTask getGames = new GetGamesAsyncTask();
+		getGames.execute(this);
+	}
+
 	private void setGamesInfoPortrait(List<GameProperties> props) {
-		TableLayout tableGamesInfo = (TableLayout) findViewById(R.id.tableGamesInfo);
+		tableGamesInfo = (TableLayout) findViewById(R.id.tableGamesInfo);
 
 		/* Make all columns have the same width */
 		LayoutParams layoutParams = new LayoutParams();
@@ -165,19 +177,28 @@ public class ConnectToGameActivity extends Activity {
 				if (isInputValid(userName)) {
 					int gameId = v.getId();
 					gameClient.setPlayerName(userName.getText().toString());
-					GameProperties props = getGamePropertiesById(gameId);
-					Intent myIntent1 = new Intent(ConnectToGameActivity.this,
-							WaitForGameActivity.class);
-					myIntent1.putExtra(getResources().getString(R.string.gamePropertiesStr), (Serializable) props);
-					myIntent1.putExtra(getResources().getString(R.string.gameClientStr), (Serializable) gameClient);
-					ConnectToGameActivity.this.startActivity(myIntent1);
+					chosenGameProps = getGamePropertiesById(gameId);
+
+					ConnectToGameAsyncTask connectAsync = new ConnectToGameAsyncTask();
+					connectAsync.execute(ConnectToGameActivity.this);
+
+					// Intent myIntent1 = new Intent(ConnectToGameActivity.this,
+					// WaitForGameActivity.class);
+					/*
+					 * myIntent1.putExtra( getResources()
+					 * .getString(R.string.gamePropertiesStr), (Serializable)
+					 * props); myIntent1.putExtra(
+					 * getResources().getString(R.string.gameClientStr),
+					 * (Serializable) gameClient);
+					 * ConnectToGameActivity.this.startActivity(myIntent1);
+					 */
 				}
 			}
 		});
 	}
-	
-	private GameProperties getGamePropertiesById (Integer gameId) {
-		for (GameProperties props: gameProps) {
+
+	private GameProperties getGamePropertiesById(Integer gameId) {
+		for (GameProperties props : gameProps) {
 			if (props.getId().equals(gameId)) {
 				return props;
 			}
@@ -193,11 +214,54 @@ public class ConnectToGameActivity extends Activity {
 				ConnectToGameActivity... activity) {
 			this.activity = activity[0];
 			GameClient gameClient = activity[0].getGameClient();
-			return gameClient.getGames();
+			List<GameProperties> serverResponse = null;
+			try {
+				serverResponse = gameClient.getGames();
+			} catch (Exception e) {
+				Log.e("ERROR", e.getMessage());
+				Toast.makeText(this.activity, "ERROR " + e.getMessage(),
+						Toast.LENGTH_SHORT).show();
+			}
+			return serverResponse;
 		}
 
 		protected void onPostExecute(List<GameProperties> result) {
 			activity.setGameProperties(result);
+		}
+	}
+
+	private class ConnectToGameAsyncTask extends
+			AsyncTask<ConnectToGameActivity, Void, Boolean> {
+		private GameProperties gameProps = null;
+		private GameClient gameClient = null;
+		private ConnectToGameActivity connectActivity = null;
+
+		protected Boolean doInBackground(ConnectToGameActivity... wrapper) {
+			connectActivity = wrapper[0];
+			gameClient = wrapper[0].getGameClient();
+			gameProps = wrapper[0].getChosenGameProperties();
+			try {
+				gameClient.connect(gameProps.getId());
+			} catch (Exception e) {
+				Log.e("ERROR", e.getMessage());
+				Toast.makeText(connectActivity, "ERROR " + e.getMessage(),
+						Toast.LENGTH_SHORT).show();
+			}
+			return true;
+		}
+
+		protected void onPostExecute(Boolean result) {
+			// activity.setGameProperties(result);
+			gameProps.incrementNumberOfPlayers();
+			Intent myIntent1 = new Intent(ConnectToGameActivity.this,
+					WaitForGameActivity.class);
+			myIntent1.putExtra(
+					getResources().getString(R.string.gamePropertiesStr),
+					(Serializable) gameProps);
+			myIntent1.putExtra(
+					getResources().getString(R.string.gameClientStr),
+					(Serializable) gameClient);
+			ConnectToGameActivity.this.startActivity(myIntent1);
 		}
 	}
 
