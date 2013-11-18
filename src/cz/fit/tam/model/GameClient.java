@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 public class GameClient implements Serializable {
 
@@ -38,9 +39,9 @@ public class GameClient implements Serializable {
 	private static String COMMAND_JOIN_GAME = "join_game";
 	private static String COMMAND_LEAVE_GAME = "leave_game";
 	private static String COMMAND_GET_MESSAGES = "get_messages";
-    private static String COMMAND_POST_MESSAGE = "post_message";
-    private static String ACTION_SEND_WORDS = "send_words";
-    private static String ACTION_SEND_EVALUATION = "send_evaluation";
+	private static String COMMAND_POST_MESSAGE = "post_message";
+	private static String ACTION_SEND_WORDS = "send_words";
+	private static String ACTION_SEND_EVALUATION = "send_evaluation";
 
 	private MessageQueue messaging;
 
@@ -90,6 +91,12 @@ public class GameClient implements Serializable {
 					identifiers.getInt("player_id"));
 
 			gameId = identifiers.getInt("id");
+			try {
+				game.setId(gameId);
+			} catch (Exception e) {
+				Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE,
+						null, e);
+			}
 			connected = true;
 		} catch (JSONException ex) {
 			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE,
@@ -127,22 +134,26 @@ public class GameClient implements Serializable {
 			throw new CommandFailedException(ex);
 		}
 	}
-	
+
 	public void stop(Integer gameId) {
 		Map<String, String> arguments = new HashMap<String, String>();
 		arguments.put("command", GameClient.COMMAND_STOP_GAME);
-		arguments.put("game_id", gameId.toString());
-		arguments.put("admin_token", ((Admin)player).getAdminToken().getValue());
+		Log.v("STOP GAME", gameId.toString());
+		arguments.put("id", gameId.toString());
+		arguments.put("admin_token", ((Admin) player).getAdminToken()
+				.getValue());
 
 		try {
-			messaging.sendMessage(arguments);
+			JSONObject response = messaging.sendMessage(arguments);
+			Log.v("STOP GAME", response.toString());
 			connected = false;
 		} catch (IOException ex) {
-			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE,
+					null, ex);
 			throw new CommandFailedException(ex);
 		}
 	}
-	
+
 	public void leave(Integer gameId) {
 		Map<String, String> arguments = new HashMap<String, String>();
 		arguments.put("command", GameClient.COMMAND_LEAVE_GAME);
@@ -153,44 +164,47 @@ public class GameClient implements Serializable {
 			messaging.sendMessage(arguments);
 			connected = false;
 		} catch (IOException ex) {
-			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE,
+					null, ex);
 			throw new CommandFailedException(ex);
 		}
 	}
-    
-    public void sendWords(String[] words) {
-        Map<String, String> arguments = new HashMap<String, String>();
+
+	public void sendWords(String[] words) {
+		Map<String, String> arguments = new HashMap<String, String>();
 		arguments.put("command", GameClient.COMMAND_POST_MESSAGE);
 		arguments.put("game_id", gameId.toString());
 		arguments.put("token", player.getToken().getValue());
-        arguments.put("action", GameClient.ACTION_SEND_WORDS);
-        arguments.put("words", combine(words));
-        
+		arguments.put("action", GameClient.ACTION_SEND_WORDS);
+		arguments.put("words", combine(words));
+
 		try {
 			messaging.sendMessage(arguments);
 			connected = false;
 		} catch (IOException ex) {
-			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE,
+					null, ex);
 			throw new CommandFailedException(ex);
 		}
-    }
-    
-    public void sendEvaluation(Map<String, String[]> evaluations) {
-        Map<String, String> arguments = new HashMap<String, String>();
+	}
+
+	public void sendEvaluation(Map<String, String[]> evaluations) {
+		Map<String, String> arguments = new HashMap<String, String>();
 		arguments.put("command", GameClient.COMMAND_POST_MESSAGE);
 		arguments.put("game_id", gameId.toString());
 		arguments.put("token", player.getToken().getValue());
-        arguments.put("action", GameClient.ACTION_SEND_EVALUATION);
-        arguments.put("evaluations", combine(evaluations));
-        
+		arguments.put("action", GameClient.ACTION_SEND_EVALUATION);
+		arguments.put("evaluations", combine(evaluations));
+
 		try {
 			messaging.sendMessage(arguments);
 			connected = false;
 		} catch (IOException ex) {
-			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE,
+					null, ex);
 			throw new CommandFailedException(ex);
 		}
-    }
+	}
 
 	public List<GameProperties> getGames() {
 		return getGames(null);
@@ -270,23 +284,23 @@ public class GameClient implements Serializable {
 			return null;
 		}
 	}
-    
-    private String combine(Map<String, String[]> values) {
-        String evaluation[] = new String[values.size()];
-        int i = 0;
-        for(String[] words: values.values()) {
-            evaluation[i++] = combine(words);
-        }
-        
-        return combine(evaluation, "|");
-    }
-    
-    private String combine(String[] strings) {
-        return combine(strings, ",");
-    }
-    
-    private String combine(String[] strings, String glue) {
-        return TextUtils.join(glue, strings);
-    }
+
+	private String combine(Map<String, String[]> values) {
+		String evaluation[] = new String[values.size()];
+		int i = 0;
+		for (String[] words : values.values()) {
+			evaluation[i++] = combine(words);
+		}
+
+		return combine(evaluation, "|");
+	}
+
+	private String combine(String[] strings) {
+		return combine(strings, ",");
+	}
+
+	private String combine(String[] strings, String glue) {
+		return TextUtils.join(glue, strings);
+	}
 
 }

@@ -19,6 +19,7 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
+import cz.fit.tam.model.Game;
 import cz.fit.tam.model.GameClient;
 import cz.fit.tam.model.GameProperties;
 
@@ -35,15 +36,10 @@ public class NewGameActivity extends Activity {
 	final private int TWENTY_NINE = 29;
 
 	TextView numberOfCirclesText = null;
-	private GameClient gameClient = null;
-	private GameProperties newGameProperties = null;
+	private Game newGame = null;
 
-	public GameClient getGameClient() {
-		return gameClient;
-	}
-
-	public GameProperties getNewGameProperties() {
-		return newGameProperties;
+	public Game getNewGame() {
+		return newGame;
 	}
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -119,15 +115,16 @@ public class NewGameActivity extends Activity {
 							.parseInt(((TextView) findViewById(R.id.game_maxPlayers))
 									.getText().toString());
 
-					newGameProperties = new GameProperties("cz", gameName,
-							playerLimit, null, totalSeconds, roundLimit,
-							evaluation, categories);
+					GameProperties newGameProperties = new GameProperties("cz",
+							gameName, playerLimit, null, totalSeconds,
+							roundLimit, evaluation, categories);
 
 					String serverUrl = getResources().getString(
 							R.string.serverUrl);
 					try {
-						gameClient = new GameClient(serverUrl, playerName);
-
+						GameClient gameClient = new GameClient(serverUrl,
+								playerName);
+						newGame = new Game(newGameProperties, gameClient);
 						CreateGameAsyncTask createGameThread = new CreateGameAsyncTask();
 						createGameThread.execute(NewGameActivity.this);
 
@@ -232,14 +229,12 @@ public class NewGameActivity extends Activity {
 
 	private class CreateGameAsyncTask extends
 			AsyncTask<NewGameActivity, Void, Boolean> {
-		private GameProperties gameProps = null;
-		private GameClient gameClient = null;
+		private Game newGame = null;
 
 		protected Boolean doInBackground(NewGameActivity... activity) {
-			gameClient = (GameClient) activity[0].getGameClient();
-			gameProps = (GameProperties) activity[0].getNewGameProperties();
+			newGame = activity[0].getNewGame();
 			try {
-				gameClient.createGame(gameProps);
+				activity[0].getNewGame().create();
 			} catch (Exception e) {
 				Toast.makeText(activity[0], "ERROR " + e.getMessage(),
 						Toast.LENGTH_SHORT).show();
@@ -249,15 +244,11 @@ public class NewGameActivity extends Activity {
 
 		protected void onPostExecute(Boolean result) {
 			// activity.setGameProperties(result);
-			gameProps.incrementNumberOfPlayers();
+
 			Intent myIntent1 = new Intent(NewGameActivity.this,
 					WaitForGameActivity.class);
-			myIntent1.putExtra(
-					getResources().getString(R.string.gamePropertiesStr),
-					(Serializable) gameProps);
-			myIntent1.putExtra(
-					getResources().getString(R.string.gameClientStr),
-					(Serializable) gameClient);
+			myIntent1.putExtra(getResources().getString(R.string.gameStr),
+					(Serializable) newGame);
 			NewGameActivity.this.startActivity(myIntent1);
 		}
 	}

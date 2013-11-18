@@ -49,4 +49,5 @@
     <!-- Object types names to pass data between activities -->
     <string name="gamePropertiesStr">GameProperties</string>
     <string name="gameClientStr">GameClient</string>
+    <string name="gameStr">Game</string>
 </resources>

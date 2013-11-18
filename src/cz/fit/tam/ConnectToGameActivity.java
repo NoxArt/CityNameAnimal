@@ -18,6 +18,7 @@ import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
+import cz.fit.tam.model.Game;
 import cz.fit.tam.model.GameClient;
 import cz.fit.tam.model.GameProperties;
 
@@ -29,13 +30,24 @@ public class ConnectToGameActivity extends Activity {
 	private GameClient gameClient = null;
 	private List<GameProperties> gameProps = null;
 	private GameProperties chosenGameProps = null;
+	private Game selectedGame = null;
+	private Integer selectedGameId = null;
+
 	TableLayout tableGamesInfo = null;
+
+	public Integer getSelectedGameId() {
+		return selectedGameId;
+	}
+
+	public Game getSelectedGame() {
+		return selectedGame;
+	}
 
 	public GameClient getGameClient() {
 		return gameClient;
 	}
 
-	public GameProperties getChosenGameProperties() {
+	public GameProperties getGameProps() {
 		return chosenGameProps;
 	}
 
@@ -175,10 +187,10 @@ public class ConnectToGameActivity extends Activity {
 			public void onClick(View v) {
 				TextView userName = (TextView) findViewById(R.id.game_playerName);
 				if (isInputValid(userName)) {
-					int gameId = v.getId();
+					selectedGameId = v.getId();
 					gameClient.setPlayerName(userName.getText().toString());
-					chosenGameProps = getGamePropertiesById(gameId);
-
+					chosenGameProps = getGamePropertiesById(selectedGameId);
+					selectedGame = new Game(chosenGameProps, gameClient);
 					ConnectToGameAsyncTask connectAsync = new ConnectToGameAsyncTask();
 					connectAsync.execute(ConnectToGameActivity.this);
 
@@ -232,16 +244,14 @@ public class ConnectToGameActivity extends Activity {
 
 	private class ConnectToGameAsyncTask extends
 			AsyncTask<ConnectToGameActivity, Void, Boolean> {
-		private GameProperties gameProps = null;
-		private GameClient gameClient = null;
 		private ConnectToGameActivity connectActivity = null;
 
 		protected Boolean doInBackground(ConnectToGameActivity... wrapper) {
 			connectActivity = wrapper[0];
-			gameClient = wrapper[0].getGameClient();
-			gameProps = wrapper[0].getChosenGameProperties();
+
 			try {
-				gameClient.connect(gameProps.getId());
+				connectActivity.getSelectedGame().connect(
+						connectActivity.getSelectedGameId());
 			} catch (Exception e) {
 				Log.e("ERROR", e.getMessage());
 				Toast.makeText(connectActivity, "ERROR " + e.getMessage(),
@@ -252,15 +262,10 @@ public class ConnectToGameActivity extends Activity {
 
 		protected void onPostExecute(Boolean result) {
 			// activity.setGameProperties(result);
-			gameProps.incrementNumberOfPlayers();
 			Intent myIntent1 = new Intent(ConnectToGameActivity.this,
 					WaitForGameActivity.class);
-			myIntent1.putExtra(
-					getResources().getString(R.string.gamePropertiesStr),
-					(Serializable) gameProps);
-			myIntent1.putExtra(
-					getResources().getString(R.string.gameClientStr),
-					(Serializable) gameClient);
+			myIntent1.putExtra(getResources().getString(R.string.gameStr),
+					(Serializable) connectActivity.getSelectedGame());
 			ConnectToGameActivity.this.startActivity(myIntent1);
 		}
 	}

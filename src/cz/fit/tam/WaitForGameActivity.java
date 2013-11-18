@@ -1,8 +1,11 @@
 package cz.fit.tam;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
+import cz.fit.tam.model.Game;
 import cz.fit.tam.model.GameClient;
 import cz.fit.tam.model.GameProperties;
 
@@ -11,16 +14,29 @@ import cz.fit.tam.model.GameProperties;
  */
 public class WaitForGameActivity extends Activity {
 	public static final String GAME_PROP_STR = "Game properties";
+	Game currentGame = null;
+
+	public Game getCurrentGame() {
+		return currentGame;
+	}
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.waitingforgame);
-		GameProperties gameProps = (GameProperties) getIntent()
-				.getSerializableExtra(
-						getResources().getString(R.string.gamePropertiesStr));
-		GameClient gameClient = (GameClient) getIntent().getSerializableExtra(
-				getResources().getString(R.string.gameClientStr));
-		setGameInfo(gameProps);
+		currentGame = (Game) getIntent().getSerializableExtra(
+				getResources().getString(R.string.gameStr));
+		setGameInfo(currentGame.getProperties());
+	}
+
+	public void onStop() {
+		super.onStop();
+		if (currentGame.isAdmin()) {
+			StopGameAsyncTask stopTask = new StopGameAsyncTask();
+			stopTask.execute(this);
+		} else {
+			LeaveGameAsyncTask leaveTask = new LeaveGameAsyncTask();
+			leaveTask.execute(this);
+		}
 	}
 
 	private void setGameInfo(GameProperties gameProps) {
@@ -54,4 +70,39 @@ public class WaitForGameActivity extends Activity {
 		return returnVal;
 	}
 
+	private class LeaveGameAsyncTask extends
+			AsyncTask<WaitForGameActivity, Void, Boolean> {
+
+		private WaitForGameActivity activityWait = null;
+
+		protected Boolean doInBackground(WaitForGameActivity... activity) {
+			activityWait = activity[0];
+			try {
+				activity[0].getCurrentGame().leave();
+			} catch (Exception e) {
+				Toast.makeText(activity[0], "ERROR " + e.getMessage(),
+						Toast.LENGTH_SHORT).show();
+			}
+			return true;
+		}
+
+	}
+
+	private class StopGameAsyncTask extends
+			AsyncTask<WaitForGameActivity, Void, Boolean> {
+
+		private WaitForGameActivity activityWait = null;
+
+		protected Boolean doInBackground(WaitForGameActivity... activity) {
+			activityWait = activity[0];
+			try {
+				activity[0].getCurrentGame().stop();
+			} catch (Exception e) {
+				Toast.makeText(activity[0], "ERROR " + e.getMessage(),
+						Toast.LENGTH_SHORT).show();
+			}
+			return true;
+		}
+
+	}
 }
