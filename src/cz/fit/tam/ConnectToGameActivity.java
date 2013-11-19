@@ -252,10 +252,13 @@ public class ConnectToGameActivity extends Activity {
 			try {
 				connectActivity.getSelectedGame().connect(
 						connectActivity.getSelectedGameId());
+            } catch( Game.AlreadyConnectedException e ) {
+                Log.e("ERROR", "Already connected");
 			} catch (Exception e) {
-				Log.e("ERROR", e.getMessage());
-				Toast.makeText(connectActivity, "ERROR " + e.getMessage(),
-						Toast.LENGTH_SHORT).show();
+				Log.e("ERROR", e.getClass().getName());
+                
+				/*Toast.makeText(connectActivity, "ERROR " + e.getMessage(),
+						Toast.LENGTH_SHORT).show();*/
 			}
 			return true;
 		}

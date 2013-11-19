@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 import cz.fit.tam.model.Game;
+import cz.fit.tam.model.GameClient;
 import cz.fit.tam.model.GameProperties;
 
 /*
@@ -79,7 +80,9 @@ public class WaitForGameActivity extends Activity {
 			activityWait = activity[0];
 			try {
 				activity[0].getCurrentGame().leave();
-			} catch (Exception e) {
+			} catch(Game.NotConnectedException e) {
+                Log.e("ERROR", "Leaving when not connected");
+            } catch (Exception e) {
 				Toast.makeText(activity[0], "ERROR " + e.getMessage(),
 						Toast.LENGTH_SHORT).show();
 			}
