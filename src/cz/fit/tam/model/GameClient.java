@@ -168,13 +168,18 @@ public class GameClient implements Serializable {
 		}
 	}
 
-	public void sendWords(String[] words) {
+	public void sendWords(Integer round, String[] words) {
 		Map<String, String> arguments = new HashMap<String, String>();
 		arguments.put("command", GameClient.COMMAND_POST_MESSAGE);
 		arguments.put("game_id", gameId.toString());
-		arguments.put("token", player.getToken().getValue());
-		arguments.put("action", GameClient.ACTION_SEND_WORDS);
-		arguments.put("words", combine(words));
+        arguments.put("token", player.getToken().getValue());
+        
+        Map<String, String> data = new HashMap<String, String>();
+		data.put("action", GameClient.ACTION_SEND_WORDS);
+        data.put("round", round.toString());
+		data.put("words", combine(words));
+        
+        arguments.put("data", (new JSONObject(data)).toString());
 
 		try {
 			messaging.sendMessage(arguments);
@@ -186,13 +191,17 @@ public class GameClient implements Serializable {
 		}
 	}
 
+    /*
 	public void sendEvaluation(Map<String, String[]> evaluations) {
 		Map<String, String> arguments = new HashMap<String, String>();
 		arguments.put("command", GameClient.COMMAND_POST_MESSAGE);
 		arguments.put("game_id", gameId.toString());
 		arguments.put("token", player.getToken().getValue());
-		arguments.put("action", GameClient.ACTION_SEND_EVALUATION);
-		arguments.put("evaluations", combine(evaluations));
+        
+        Map<String, String> data = new HashMap<String, String>();
+		data.put("action", GameClient.ACTION_SEND_EVALUATION);
+		data.put("evaluations", combine(evaluations));
+        
 
 		try {
 			messaging.sendMessage(arguments);
@@ -203,6 +212,7 @@ public class GameClient implements Serializable {
 			throw new CommandFailedException(ex);
 		}
 	}
+    */
 
 	public List<GameProperties> getGames() {
 		return getGames(null);

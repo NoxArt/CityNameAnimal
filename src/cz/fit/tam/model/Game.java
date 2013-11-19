@@ -122,7 +122,7 @@ public class Game implements Serializable {
 		stopped = true;
 	}
 
-	public void sendWords(String[] words) {
+	public void sendWords(Integer round, String[] words) {
 		if (isConnected()) {
 			throw new IllegalStateException();
 		}
@@ -131,9 +131,10 @@ public class Game implements Serializable {
 			throw new GameIsStoppedException();
 		}
 
-		client.sendWords(words);
+		client.sendWords(round, words);
 	}
 
+    /*
 	public void sendEvaluations(Map<String, String[]> evaluations) {
 		if (isConnected()) {
 			throw new IllegalStateException();
@@ -145,5 +146,6 @@ public class Game implements Serializable {
 
 		client.sendEvaluation(evaluations);
 	}
+    */
 
 }
