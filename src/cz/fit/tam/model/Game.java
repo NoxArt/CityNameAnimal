@@ -105,6 +105,10 @@ public class Game implements Serializable {
 	public List<GameProperties> getGames() {
 		return client.getGames();
 	}
+    
+    public List<Player> getPlayers() {
+		return client.getPlayers(getId());
+	}
 
 	public void stop() {
 		if (isConnected() == false) {

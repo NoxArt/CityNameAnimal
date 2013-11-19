@@ -34,14 +34,16 @@ public class GameClient implements Serializable {
 	}
 
 	private static String COMMAND_GET_GAMES = "get_games";
+    private static String COMMAND_GET_PLAYERS = "get_players";
 	private static String COMMAND_CREATE_GAME = "create_game";
 	private static String COMMAND_STOP_GAME = "stop_game";
+    private static String COMMAND_START_GAME = "start_game";
 	private static String COMMAND_JOIN_GAME = "join_game";
 	private static String COMMAND_LEAVE_GAME = "leave_game";
 	private static String COMMAND_GET_MESSAGES = "get_messages";
 	private static String COMMAND_POST_MESSAGE = "post_message";
 	private static String ACTION_SEND_WORDS = "send_words";
-	private static String ACTION_SEND_EVALUATION = "send_evaluation";
+	//private static String ACTION_SEND_EVALUATION = "send_evaluation";
 
 	private MessageQueue messaging;
 
@@ -81,6 +83,7 @@ public class GameClient implements Serializable {
 		arguments.put("round_limit", game.getRoundLimit().toString());
 		arguments.put("evaluation", game.getEvaluation().toString());
 		arguments.put("categories", combine(game.getCategories()));
+        arguments.put("player_name", playerName);
 
 		try {
 			JSONObject identifiers = messaging.sendMessage(arguments)
@@ -113,6 +116,7 @@ public class GameClient implements Serializable {
 		Map<String, String> arguments = new HashMap<String, String>();
 		arguments.put("command", GameClient.COMMAND_JOIN_GAME);
 		arguments.put("game_id", joiningGameId.toString());
+        arguments.put("player_name", playerName);
 
 		try {
 			JSONObject identifiers = messaging.sendMessage(arguments)
@@ -243,6 +247,33 @@ public class GameClient implements Serializable {
 			}
 
 			return games;
+		} catch (JSONException ex) {
+			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE,
+					null, ex);
+			throw new CommandFailedException(ex);
+		} catch (IOException ex) {
+			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE,
+					null, ex);
+			throw new CommandFailedException(ex);
+		}
+
+	}
+    
+    public List<Player> getPlayers(Integer gameId) {
+		List<Player> players = new ArrayList<Player>();
+
+		Map<String, String> arguments = new HashMap<String, String>();
+		arguments.put("command", GameClient.COMMAND_GET_PLAYERS);
+        arguments.put("token", player.getToken().getValue());
+		arguments.put("id", gameId.toString());
+
+		try {
+			String results = messaging.sendMessage(arguments).getString("result");
+            for(String name: results.split(",")) {
+                players.add(new Player(name));
+            }
+
+			return players;
 		} catch (JSONException ex) {
 			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE,
 					null, ex);
