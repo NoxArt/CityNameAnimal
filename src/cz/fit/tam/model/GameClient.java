@@ -16,6 +16,7 @@ import org.json.JSONObject;
 
 import android.text.TextUtils;
 import android.util.Log;
+import java.util.Calendar;
 
 public class GameClient implements Serializable {
 
@@ -177,9 +178,9 @@ public class GameClient implements Serializable {
 		arguments.put("command", GameClient.COMMAND_POST_MESSAGE);
 		arguments.put("game_id", gameId.toString());
         arguments.put("token", player.getToken().getValue());
+        arguments.put("type", GameClient.ACTION_SEND_WORDS);
         
         Map<String, String> data = new HashMap<String, String>();
-		data.put("action", GameClient.ACTION_SEND_WORDS);
         data.put("round", round.toString());
 		data.put("words", combine(words));
         
@@ -194,6 +195,21 @@ public class GameClient implements Serializable {
 			throw new CommandFailedException(ex);
 		}
 	}
+    
+    public void startGame(Integer gameId) {
+        Map<String, String> arguments = new HashMap<String, String>();
+		arguments.put("command", GameClient.COMMAND_START_GAME);
+		arguments.put("game_id", gameId.toString());
+        arguments.put("token", player.getToken().getValue());
+
+		try {
+			messaging.sendMessage(arguments);
+		} catch (IOException ex) {
+			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE,
+					null, ex);
+			throw new CommandFailedException(ex);
+		}
+    }
 
     /*
 	public void sendEvaluation(Map<String, String[]> evaluations) {

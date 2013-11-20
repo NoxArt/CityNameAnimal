@@ -2,6 +2,7 @@ package cz.fit.tam.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,6 +14,11 @@ public class Game implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1143771934418399254L;
+    
+    public static final String PHASE_INITIALIZED = "initalize";
+    public static final String PHASE_WAITING = "waiting";
+    public static final String PHASE_RUNNING = "running";
+    public static final String PHASE_FINISHED = "finished";
 
 	public class GameIsStoppedException extends RuntimeException {}
     
@@ -26,9 +32,9 @@ public class Game implements Serializable {
 
 	private GameClient client;
 
-	private boolean running;
-
-	private boolean stopped = false;
+	private String phase = PHASE_INITIALIZED;
+    
+    private Integer startsAt = null;
 
 	private List<ChatMessage> chatMessages = new ArrayList<ChatMessage>();
 
@@ -50,11 +56,11 @@ public class Game implements Serializable {
 	}
 
 	public boolean isRunning() {
-		return running;
+		return phase.compareTo(PHASE_RUNNING) == 0 || (startsAt != null && startsAt > (new Date()).getTime());
 	}
 
 	public boolean isStopped() {
-		return stopped;
+		return phase.compareTo(PHASE_FINISHED) == 0;
 	}
 
 	public boolean isAdmin() {
@@ -101,6 +107,10 @@ public class Game implements Serializable {
 			Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
+    
+    public void startGame() {
+        client.startGame(getId());
+    }
 
 	public List<GameProperties> getGames() {
 		return client.getGames();
@@ -120,7 +130,7 @@ public class Game implements Serializable {
         }
 
 		client.stop(properties.getId());
-		stopped = true;
+		phase = PHASE_FINISHED;
 	}
 
 	public void leave() {
@@ -129,7 +139,7 @@ public class Game implements Serializable {
 		}
 
 		client.leave(properties.getId());
-		stopped = true;
+		phase = PHASE_FINISHED;
 	}
 
 	public void sendWords(Integer round, String[] words) {
