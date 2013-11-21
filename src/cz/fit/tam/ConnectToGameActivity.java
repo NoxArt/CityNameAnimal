@@ -230,9 +230,7 @@ public class ConnectToGameActivity extends Activity {
 			try {
 				serverResponse = gameClient.getGames();
 			} catch (Exception e) {
-				Log.e("ERROR", e.getMessage());
-				Toast.makeText(this.activity, "ERROR " + e.getMessage(),
-						Toast.LENGTH_SHORT).show();
+				Log.e("ERROR", e.getClass().getName());
 			}
 			return serverResponse;
 		}
@@ -252,13 +250,15 @@ public class ConnectToGameActivity extends Activity {
 			try {
 				connectActivity.getSelectedGame().connect(
 						connectActivity.getSelectedGameId());
-            } catch( Game.AlreadyConnectedException e ) {
-                Log.e("ERROR", "Already connected");
+			} catch (Game.AlreadyConnectedException e) {
+				Log.e("ERROR", "Already connected");
 			} catch (Exception e) {
 				Log.e("ERROR", e.getClass().getName());
-                
-				/*Toast.makeText(connectActivity, "ERROR " + e.getMessage(),
-						Toast.LENGTH_SHORT).show();*/
+
+				/*
+				 * Toast.makeText(connectActivity, "ERROR " + e.getMessage(),
+				 * Toast.LENGTH_SHORT).show();
+				 */
 			}
 			return true;
 		}

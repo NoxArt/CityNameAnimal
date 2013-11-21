@@ -21,6 +21,9 @@
     <string name="playerLimit">Maximální počet hráčů</string>
     <string name="defaultPlayerLim">5</string>
     <string name="playerName">Vaše jméno</string>
+    <string name="your_message">Vaše zpráva</string>
+    <string name="send_message">Poslat</string>
+    <string name="too_short_message">Přílíš kratká zpáva</string>
     
     <!-- Types of inputs -->
     <string name="mesto">Město</string>

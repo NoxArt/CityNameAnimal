@@ -35,16 +35,17 @@ public class GameClient implements Serializable {
 	}
 
 	private static String COMMAND_GET_GAMES = "get_games";
-    private static String COMMAND_GET_PLAYERS = "get_players";
+	private static String COMMAND_GET_PLAYERS = "get_players";
 	private static String COMMAND_CREATE_GAME = "create_game";
 	private static String COMMAND_STOP_GAME = "stop_game";
-    private static String COMMAND_START_GAME = "start_game";
+	private static String COMMAND_START_GAME = "start_game";
 	private static String COMMAND_JOIN_GAME = "join_game";
 	private static String COMMAND_LEAVE_GAME = "leave_game";
 	private static String COMMAND_GET_MESSAGES = "get_messages";
 	private static String COMMAND_POST_MESSAGE = "post_message";
 	private static String ACTION_SEND_WORDS = "send_words";
-	//private static String ACTION_SEND_EVALUATION = "send_evaluation";
+	private static String CHATMESSAGE_TYPE = "chat";
+	// private static String ACTION_SEND_EVALUATION = "send_evaluation";
 
 	private MessageQueue messaging;
 
@@ -84,7 +85,7 @@ public class GameClient implements Serializable {
 		arguments.put("round_limit", game.getRoundLimit().toString());
 		arguments.put("evaluation", game.getEvaluation().toString());
 		arguments.put("categories", combine(game.getCategories()));
-        arguments.put("player_name", playerName);
+		arguments.put("player_name", playerName);
 
 		try {
 			JSONObject identifiers = messaging.sendMessage(arguments)
@@ -117,7 +118,7 @@ public class GameClient implements Serializable {
 		Map<String, String> arguments = new HashMap<String, String>();
 		arguments.put("command", GameClient.COMMAND_JOIN_GAME);
 		arguments.put("game_id", joiningGameId.toString());
-        arguments.put("player_name", playerName);
+		arguments.put("player_name", playerName);
 
 		try {
 			JSONObject identifiers = messaging.sendMessage(arguments)
@@ -173,55 +174,34 @@ public class GameClient implements Serializable {
 		}
 	}
 
-	public void sendWords(Integer round, String[] words) {
-		Map<String, String> arguments = new HashMap<String, String>();
-		arguments.put("command", GameClient.COMMAND_POST_MESSAGE);
-		arguments.put("game_id", gameId.toString());
-        arguments.put("token", player.getToken().getValue());
-        arguments.put("type", GameClient.ACTION_SEND_WORDS);
-        
-        Map<String, String> data = new HashMap<String, String>();
-        data.put("round", round.toString());
-		data.put("words", combine(words));
-        
-        arguments.put("data", (new JSONObject(data)).toString());
-
-		try {
-			messaging.sendMessage(arguments);
-			connected = false;
-		} catch (IOException ex) {
-			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE,
-					null, ex);
-			throw new CommandFailedException(ex);
-		}
-	}
-    
-    public void startGame(Integer gameId) {
-        Map<String, String> arguments = new HashMap<String, String>();
-		arguments.put("command", GameClient.COMMAND_START_GAME);
-		arguments.put("game_id", gameId.toString());
-        arguments.put("token", player.getToken().getValue());
-
-		try {
-			messaging.sendMessage(arguments);
-		} catch (IOException ex) {
-			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE,
-					null, ex);
-			throw new CommandFailedException(ex);
-		}
-    }
-
-    /*
-	public void sendEvaluation(Map<String, String[]> evaluations) {
+	public void sendChatMessage(String message) {
 		Map<String, String> arguments = new HashMap<String, String>();
 		arguments.put("command", GameClient.COMMAND_POST_MESSAGE);
 		arguments.put("game_id", gameId.toString());
 		arguments.put("token", player.getToken().getValue());
-        
-        Map<String, String> data = new HashMap<String, String>();
-		data.put("action", GameClient.ACTION_SEND_EVALUATION);
-		data.put("evaluations", combine(evaluations));
-        
+		arguments.put("type", GameClient.CHATMESSAGE_TYPE);
+		arguments.put("data", message);
+		try {
+			messaging.sendMessage(arguments);
+		} catch (IOException ex) {
+			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE,
+					null, ex);
+			throw new CommandFailedException(ex);
+		}
+	}
+
+	public void sendWords(Integer round, String[] words) {
+		Map<String, String> arguments = new HashMap<String, String>();
+		arguments.put("command", GameClient.COMMAND_POST_MESSAGE);
+		arguments.put("game_id", gameId.toString());
+		arguments.put("token", player.getToken().getValue());
+		arguments.put("type", GameClient.ACTION_SEND_WORDS);
+
+		Map<String, String> data = new HashMap<String, String>();
+		data.put("round", round.toString());
+		data.put("words", combine(words));
+
+		arguments.put("data", (new JSONObject(data)).toString());
 
 		try {
 			messaging.sendMessage(arguments);
@@ -232,7 +212,39 @@ public class GameClient implements Serializable {
 			throw new CommandFailedException(ex);
 		}
 	}
-    */
+
+	public void startGame(Integer gameId) {
+		Map<String, String> arguments = new HashMap<String, String>();
+		arguments.put("command", GameClient.COMMAND_START_GAME);
+		arguments.put("game_id", gameId.toString());
+		arguments.put("token", player.getToken().getValue());
+
+		try {
+			messaging.sendMessage(arguments);
+		} catch (IOException ex) {
+			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE,
+					null, ex);
+			throw new CommandFailedException(ex);
+		}
+	}
+
+	/*
+	 * public void sendEvaluation(Map<String, String[]> evaluations) {
+	 * Map<String, String> arguments = new HashMap<String, String>();
+	 * arguments.put("command", GameClient.COMMAND_POST_MESSAGE);
+	 * arguments.put("game_id", gameId.toString()); arguments.put("token",
+	 * player.getToken().getValue());
+	 * 
+	 * Map<String, String> data = new HashMap<String, String>();
+	 * data.put("action", GameClient.ACTION_SEND_EVALUATION);
+	 * data.put("evaluations", combine(evaluations));
+	 * 
+	 * 
+	 * try { messaging.sendMessage(arguments); connected = false; } catch
+	 * (IOException ex) {
+	 * Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
+	 * throw new CommandFailedException(ex); } }
+	 */
 
 	public List<GameProperties> getGames() {
 		return getGames(null);
@@ -274,20 +286,21 @@ public class GameClient implements Serializable {
 		}
 
 	}
-    
-    public List<Player> getPlayers(Integer gameId) {
+
+	public List<Player> getPlayers(Integer gameId) {
 		List<Player> players = new ArrayList<Player>();
 
 		Map<String, String> arguments = new HashMap<String, String>();
 		arguments.put("command", GameClient.COMMAND_GET_PLAYERS);
-        arguments.put("token", player.getToken().getValue());
+		arguments.put("token", player.getToken().getValue());
 		arguments.put("id", gameId.toString());
 
 		try {
-			String results = messaging.sendMessage(arguments).getString("result");
-            for(String name: results.split(",")) {
-                players.add(new Player(name));
-            }
+			String results = messaging.sendMessage(arguments).getString(
+					"result");
+			for (String name : results.split(",")) {
+				players.add(new Player(name));
+			}
 
 			return players;
 		} catch (JSONException ex) {
@@ -303,12 +316,12 @@ public class GameClient implements Serializable {
 	}
 
 	public List<Message> getNewMessages() throws MalformedURLException,
-			NotConnectedException {
+			NotConnectedException, JSONException {
 		return getNewMessages(null);
 	}
 
 	public List<Message> getNewChatMessages() throws MalformedURLException,
-			NotConnectedException {
+			NotConnectedException, JSONException {
 		return getNewMessages(new MessageQueue.MessageFilter() {
 
 			public boolean isValid(Message msg) {
@@ -318,7 +331,7 @@ public class GameClient implements Serializable {
 	}
 
 	public List<Message> getNewMessages(MessageQueue.MessageFilter filter)
-			throws MalformedURLException, NotConnectedException {
+			throws MalformedURLException, NotConnectedException, JSONException {
 		if (isConnected() == false) {
 			throw new NotConnectedException();
 		}
