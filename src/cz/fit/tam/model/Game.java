@@ -47,6 +47,10 @@ public class Game implements Serializable {
 		return properties;
 	}
 
+    public void setProperties(GameProperties properties) {
+        this.properties = properties;
+    }
+    
 	public GameClient getClient() {
 		return client;
 	}
@@ -85,7 +89,7 @@ public class Game implements Serializable {
 	}
 
 	public void connect(Integer id) {
-		if (isConnected() || this.getProperties().getId() != null) {
+		if (isConnected()) {
 			throw new AlreadyConnectedException();
 		}
 
@@ -93,18 +97,12 @@ public class Game implements Serializable {
 			throw new GameIsStoppedException();
 		}
 
-		try {
-			this.getProperties().setId(id);
-		} catch (Exception ex) {
-			Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-		}
-
 		client.connect(id);
 		properties.incrementNumberOfPlayers();
 		try {
 			properties.setId(id);
 		} catch (Exception ex) {
-			Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(Game.class.getName()).log(Level.INFO, null, ex);
 		}
 	}
     
@@ -117,6 +115,10 @@ public class Game implements Serializable {
 	}
     
     public List<Player> getPlayers() {
+        if( isConnected() == false ) {
+            throw new NotConnectedException();
+        }
+        
 		return client.getPlayers(getId());
 	}
 

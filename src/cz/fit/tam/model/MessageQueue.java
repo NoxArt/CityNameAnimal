@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.JSONArray;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,6 +42,10 @@ public class MessageQueue implements Serializable {
 	public MessageQueue(String serverUrl) throws MalformedURLException {
 		this.serverUrl = new URL(serverUrl);
 	}
+
+    public void setGameId(Integer gameId) {
+        this.gameId = gameId;
+    }
 
 	private Connector getConnection() {
 		if (connection == null) {
@@ -106,10 +111,9 @@ public class MessageQueue implements Serializable {
 			throws JSONException {
 		List<Message> result = new ArrayList<Message>();
 
-		Iterator iter = json.keys();
-		while (iter.hasNext()) {
-			String jsonkey = (String) iter.next();
-			JSONObject msg = new JSONObject(json.getString(jsonkey));
+        JSONArray msgs = json.getJSONArray("result");
+        for(int i = 0; i < msgs.length(); i++) {
+            JSONObject msg = msgs.getJSONObject(i);
 
 			Message message = new Message(gameId, msg.getInt("id"),
 					msg.getString("type"), msg.getString("data"), null);
@@ -119,7 +123,7 @@ public class MessageQueue implements Serializable {
 			if (filter == null || filter.isValid(message)) {
 				result.add(message);
 			}
-		}
+        }
 
 		return result;
 	}

@@ -94,6 +94,9 @@ public class HttpConnect implements Connector, Serializable {
 			InputStream stream = connection.getInputStream();
 			
 			result = Strings.fromStream(stream);
+            
+            Logger.getLogger(parameters.get("command")).log(Level.WARNING, params);
+            Logger.getLogger(parameters.get("command")).log(Level.WARNING, result);
 		} catch (IOException ex) {
 			Logger.getLogger(MessageQueue.class.getName()).log(Level.SEVERE, null, ex);
 		} finally {

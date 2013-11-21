@@ -7,7 +7,6 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 import cz.fit.tam.model.Game;
-import cz.fit.tam.model.GameClient;
 import cz.fit.tam.model.GameProperties;
 
 /*
