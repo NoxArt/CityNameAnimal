@@ -221,8 +221,8 @@ public class WaitForGameActivity extends Activity {
 		TextView chatMessages = (TextView) findViewById(R.id.chatMessages);
 		chatMessagesList.addAll(result);
 		String messages = "";
-		for (int i = chatMessagesList.size(); i > (chatMessagesList.size() - 5); i--) {
-			messages += chatMessagesList.get(i) + "\n";
+		for (Message message : chatMessagesList) {
+			messages += message.getData() + "\n";
 		}
 		chatMessages.setText(messages);
 
