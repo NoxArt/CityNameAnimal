@@ -67,6 +67,10 @@ public class GameClient implements Serializable {
 		this.playerName = playerName;
 	}
 
+	public void setConnected(boolean connected) {
+		this.connected = connected;
+	}
+
 	public boolean isConnected() {
 		return connected;
 	}
@@ -130,6 +134,7 @@ public class GameClient implements Serializable {
 
 			gameId = joiningGameId;
 			connected = true;
+			messaging.setGameId(joiningGameId);
 		} catch (JSONException ex) {
 			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE,
 					null, ex);
@@ -293,7 +298,7 @@ public class GameClient implements Serializable {
 		Map<String, String> arguments = new HashMap<String, String>();
 		arguments.put("command", GameClient.COMMAND_GET_PLAYERS);
 		arguments.put("token", player.getToken().getValue());
-		arguments.put("id", gameId.toString());
+		arguments.put("game_id", gameId.toString());
 
 		try {
 			String results = messaging.sendMessage(arguments).getString(
