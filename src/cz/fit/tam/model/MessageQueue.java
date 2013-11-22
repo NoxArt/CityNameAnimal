@@ -43,9 +43,9 @@ public class MessageQueue implements Serializable {
 		this.serverUrl = new URL(serverUrl);
 	}
 
-    public void setGameId(Integer gameId) {
-        this.gameId = gameId;
-    }
+	public void setGameId(Integer gameId) {
+		this.gameId = gameId;
+	}
 
 	private Connector getConnection() {
 		if (connection == null) {
@@ -77,13 +77,13 @@ public class MessageQueue implements Serializable {
 	public JSONObject sendMessage(Map<String, String> arguments)
 			throws IOException {
 		try {
-            String result = getConnection().post(arguments);
-            
-            if( result.length() == 0 ) {
-                return null;
-            } else {
-                return new JSONObject(result);
-            }
+			String result = getConnection().post(arguments);
+
+			if (result.length() == 0) {
+				return null;
+			} else {
+				return new JSONObject(result);
+			}
 		} catch (JSONException ex) {
 			Logger.getLogger(MessageQueue.class.getName()).log(Level.SEVERE,
 					null, ex);
@@ -101,8 +101,13 @@ public class MessageQueue implements Serializable {
 
 			return newMessages;
 		} catch (JSONException ex) {
-			Logger.getLogger(MessageQueue.class.getName()).log(Level.SEVERE,
-					null, ex);
+			// Logger.getLogger(MessageQueue.class.getName()).log(Level.SEVERE,
+			// null, ex);
+
+			// Not printing out this info as exception is thrown every
+			// second when getting new chat messages and it makes logs
+			// unreadable
+			// e.printStackTrace();
 			return null;
 		}
 	}
@@ -111,9 +116,9 @@ public class MessageQueue implements Serializable {
 			throws JSONException {
 		List<Message> result = new ArrayList<Message>();
 
-        JSONArray msgs = json.getJSONArray("result");
-        for(int i = 0; i < msgs.length(); i++) {
-            JSONObject msg = msgs.getJSONObject(i);
+		JSONArray msgs = json.getJSONArray("result");
+		for (int i = 0; i < msgs.length(); i++) {
+			JSONObject msg = msgs.getJSONObject(i);
 
 			Message message = new Message(gameId, msg.getInt("id"),
 					msg.getString("type"), msg.getString("data"), null);
@@ -123,7 +128,7 @@ public class MessageQueue implements Serializable {
 			if (filter == null || filter.isValid(message)) {
 				result.add(message);
 			}
-        }
+		}
 
 		return result;
 	}

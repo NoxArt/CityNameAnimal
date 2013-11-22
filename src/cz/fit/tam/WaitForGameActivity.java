@@ -31,7 +31,7 @@ import cz.fit.tam.model.Message;
 public class WaitForGameActivity extends Activity {
 	public static final String GAME_PROP_STR = "Game properties";
 	private final ScheduledExecutorService scheduler = Executors
-			.newScheduledThreadPool(2);
+			.newScheduledThreadPool(1);
 	private ScheduledFuture beeperHandle = null;
 	private List<Message> chatMessagesList = new ArrayList<Message>();
 	private String lastNewMessage = "fakemessage";
@@ -56,8 +56,8 @@ public class WaitForGameActivity extends Activity {
 				getChatMessagesTask.execute(WaitForGameActivity.this);
 			}
 		};
-		beeperHandle = scheduler.scheduleAtFixedRate(beeper, 0, 1,
-				TimeUnit.SECONDS);
+		beeperHandle = scheduler.scheduleAtFixedRate(beeper, 0, 1000,
+				TimeUnit.MILLISECONDS);
 
 	}
 
@@ -88,7 +88,7 @@ public class WaitForGameActivity extends Activity {
 	}
 
 	private void setEventListeners() {
-		Button btnNewMessage = (Button) findViewById(R.id.sendMessage);
+		Button btnNewMessage = (Button) findViewById(R.id.sendMessag);
 
 		btnNewMessage.setOnClickListener(new OnClickListener() {
 
@@ -97,7 +97,9 @@ public class WaitForGameActivity extends Activity {
 				EditText newMessage = (EditText) findViewById(R.id.newMessage);
 				String newMessageStr = newMessage.getText().toString();
 				if ((newMessageStr != null) && (newMessageStr.length() > 0)) {
-					WaitForGameActivity.this.sendMessage(newMessageStr);
+					WaitForGameActivity.this.sendMessage(getCurrentGame()
+							.getClient().getPlayer().getName()
+							+ ": " + newMessageStr);
 				} else {
 					String text = getResources().getString(
 							R.string.too_short_message);
@@ -221,8 +223,8 @@ public class WaitForGameActivity extends Activity {
 		TextView chatMessages = (TextView) findViewById(R.id.chatMessages);
 		chatMessagesList.addAll(result);
 		String messages = "";
-		for (Message message : chatMessagesList) {
-			messages += message.getData() + "\n";
+		for (int j = chatMessagesList.size() - 1; j >= 0; j--) {
+			messages += chatMessagesList.get(j).getData() + "\n";
 		}
 		chatMessages.setText(messages);
 
