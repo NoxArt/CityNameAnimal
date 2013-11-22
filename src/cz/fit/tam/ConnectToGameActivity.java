@@ -193,17 +193,6 @@ public class ConnectToGameActivity extends Activity {
 					selectedGame = new Game(chosenGameProps, gameClient);
 					ConnectToGameAsyncTask connectAsync = new ConnectToGameAsyncTask();
 					connectAsync.execute(ConnectToGameActivity.this);
-
-					// Intent myIntent1 = new Intent(ConnectToGameActivity.this,
-					// WaitForGameActivity.class);
-					/*
-					 * myIntent1.putExtra( getResources()
-					 * .getString(R.string.gamePropertiesStr), (Serializable)
-					 * props); myIntent1.putExtra(
-					 * getResources().getString(R.string.gameClientStr),
-					 * (Serializable) gameClient);
-					 * ConnectToGameActivity.this.startActivity(myIntent1);
-					 */
 				}
 			}
 		});

@@ -1,198 +1,191 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/shape"
     android:orientation="vertical"
     android:paddingLeft="5dp"
     android:paddingRight="5dp" >
-             <LinearLayout 
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:orientation="vertical">
-    <TextView
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/newGame"
-        android:textAllCaps="true"
-        android:textColor="@color/dirtyWhite"
-        android:textSize="20sp" />
-
-
-        
-           <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dip"
-        android:background="@color/grey" /> 
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
-
-        <TextView
-            android:id="@+id/game_nameText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/nazev"
-            android:textAllCaps="true"
-            android:textColor="@color/blue"
-            android:textSize="15sp" />
-
-        <EditText
-            android:id="@+id/game_name"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/game_nameText"
-            android:hint="@string/nazevHint" />
-    </RelativeLayout>
-    
-               <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dip"
-        android:background="@color/grey" /> 
-        
-               
-               
-                   <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
-
-        <TextView
-            android:id="@+id/game_playerNameText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/playerName"
-            android:textAllCaps="true"
-            android:textColor="@color/blue"
-            android:textSize="15sp" />
-
-        <EditText
-            android:id="@+id/game_playerName"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/game_playerNameText"
-            android:hint="@string/playerNameHint" />
-    </RelativeLayout>
-    
-               <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dip"
-        android:background="@color/grey" /> 
-               
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
-
-        <TextView
-            android:id="@+id/game_maxPlayersText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/playerLimit"
-            android:textAllCaps="true"
-            android:textColor="@color/blue"
-            android:textSize="15sp" />
-
-        <EditText
-            android:id="@+id/game_maxPlayers"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/game_maxPlayersText"
-            android:inputType="number"
-            android:text="@string/defaultPlayerLim"
-            android:hint="@string/limitPlayersHint" />
-    </RelativeLayout>
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dip"
-        android:layout_marginTop="5dp"
-        android:background="@color/grey" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="@string/scoring"
-        android:textAllCaps="true"
-        android:textColor="@color/blue"
-        android:textSize="15sp" />
-
-    <RadioGroup
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:checkedButton="@+id/radio_manually"
         android:orientation="vertical" >
 
-        <RadioButton
-            style="@style/Theme.CityName"
-            android:paddingLeft="80dp"
-            android:id="@+id/radio_auto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="1pt"
-            android:text="@string/scoringAuto" />
-
-        <RadioButton
-            android:id="@+id/radio_manually"
-            android:paddingLeft="80dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/scoringManually" />
-    </RadioGroup>
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dip"
-        android:layout_marginTop="5dp"
-        android:background="@color/grey" />
-
-
-    
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
-
         <TextView
-            android:id="@+id/timeLimitText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="@string/timeLimit"
+            android:text="@string/newGame"
             android:textAllCaps="true"
-            android:layout_centerVertical="true"
+            android:textColor="@color/dirtyWhite"
+            android:textSize="20sp" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:background="@color/grey" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/game_nameText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/nazev"
+                android:textAllCaps="true"
+                android:textColor="@color/blue"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/game_name"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/game_nameText"
+                android:hint="@string/nazevHint"
+                android:singleLine="true" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:background="@color/grey" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/game_playerNameText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/playerName"
+                android:textAllCaps="true"
+                android:textColor="@color/blue"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/game_playerName"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/game_playerNameText"
+                android:hint="@string/playerNameHint" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:background="@color/grey" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/game_maxPlayersText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/playerLimit"
+                android:textAllCaps="true"
+                android:textColor="@color/blue"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/game_maxPlayers"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/game_maxPlayersText"
+                android:hint="@string/limitPlayersHint"
+                android:inputType="number"
+                android:text="@string/defaultPlayerLim" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:layout_marginTop="5dp"
+            android:background="@color/grey" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/scoring"
+            android:textAllCaps="true"
             android:textColor="@color/blue"
             android:textSize="15sp" />
 
-                <NumberPicker
-        android:id="@+id/minutePicker"
-        android:layout_toRightOf="@id/timeLimitText"
-        android:layout_marginLeft="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-            
-                                <NumberPicker
-        android:id="@+id/secondPicker"
-        android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@id/minutePicker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <RadioGroup
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:checkedButton="@+id/radio_manually"
+            android:orientation="vertical" >
 
-        </RelativeLayout>
+            <RadioButton
+                android:id="@+id/radio_auto"
+                style="@style/Theme.CityName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1pt"
+                android:paddingLeft="80dp"
+                android:text="@string/scoringAuto" />
 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dip"
-        android:layout_marginTop="5dp"
-        android:background="@color/grey" />
+            <RadioButton
+                android:id="@+id/radio_manually"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="80dp"
+                android:text="@string/scoringManually" />
+        </RadioGroup>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:layout_marginTop="5dp"
+            android:background="@color/grey" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
 
             <TextView
+                android:id="@+id/timeLimitText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="10dp"
+                android:text="@string/timeLimit"
+                android:textAllCaps="true"
+                android:textColor="@color/blue"
+                android:textSize="15sp" />
+
+            <NumberPicker
+                android:id="@+id/minutePicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/timeLimitText" />
+
+            <NumberPicker
+                android:id="@+id/secondPicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/minutePicker" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:layout_marginTop="5dp"
+            android:background="@color/grey" />
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -200,45 +193,54 @@
             android:textAllCaps="true"
             android:textColor="@color/blue"
             android:textSize="15sp" />
-            
-     <CheckBox android:id="@+id/chkBxCity"
-        android:layout_width="wrap_content"
-        android:paddingLeft="80dp"
-        android:layout_height="wrap_content"
-        android:checked="true"
-        android:text="@string/mesto"/>
-    <CheckBox android:id="@+id/chkBxName"
-        android:paddingLeft="80dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:checked="true"
-        android:text="@string/jmeno"/>
-    <CheckBox android:id="@+id/chkBxAnimal"
-        android:paddingLeft="80dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:checked="true"
-        android:text="@string/zvire"/>
-    <CheckBox android:id="@+id/chkBxThing"
-        android:paddingLeft="80dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:checked="true"
-        android:text="@string/vec"/>
-    <CheckBox android:id="@+id/chkBxPlant"
-        android:paddingLeft="80dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:checked="true"
-        android:text="@string/rostlina"/>
-    
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dip"
-        android:layout_marginTop="5dp"
-        android:background="@color/grey" />
-    
-      <TextView
+
+        <CheckBox
+            android:id="@+id/chkBxCity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:paddingLeft="80dp"
+            android:text="@string/mesto" />
+
+        <CheckBox
+            android:id="@+id/chkBxName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:paddingLeft="80dp"
+            android:text="@string/jmeno" />
+
+        <CheckBox
+            android:id="@+id/chkBxAnimal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:paddingLeft="80dp"
+            android:text="@string/zvire" />
+
+        <CheckBox
+            android:id="@+id/chkBxThing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:paddingLeft="80dp"
+            android:text="@string/vec" />
+
+        <CheckBox
+            android:id="@+id/chkBxPlant"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:paddingLeft="80dp"
+            android:text="@string/rostlina" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:layout_marginTop="5dp"
+            android:background="@color/grey" />
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -246,36 +248,34 @@
             android:textAllCaps="true"
             android:textColor="@color/blue"
             android:textSize="15sp" />
-      <LinearLayout 
-          android:layout_width="fill_parent"
-          android:paddingRight="10dp"
-          android:layout_height="wrap_content">
 
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingRight="10dp" >
 
+            <SeekBar
+                android:id="@+id/numberOfCirles"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight=".90" />
 
-      <SeekBar
-          android:id="@+id/numberOfCirles"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_weight=".90" /> 
-          
-                <TextView
-          android:id="@+id/numberOfCirclesText"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_weight=".10" 
-          android:layout_marginTop="5dp" />
+            <TextView
+                android:id="@+id/numberOfCirclesText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_weight=".10" />
+        </LinearLayout>
 
-      </LinearLayout>
-      <Button
+        <Button
             android:id="@+id/createGame"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:layout_gravity="right"
+            android:layout_marginTop="10dp"
             android:minWidth="150dp"
             android:text="@string/create" />
     </LinearLayout>
-    
 
-    </ScrollView>
+</ScrollView>

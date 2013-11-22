@@ -44,7 +44,8 @@ public class GameClient implements Serializable {
 	private static String COMMAND_GET_MESSAGES = "get_messages";
 	private static String COMMAND_POST_MESSAGE = "post_message";
 	private static String ACTION_SEND_WORDS = "send_words";
-	private static String CHATMESSAGE_TYPE = "chat";
+	public static String CHATMESSAGE_TYPE = "chat";
+	public static String ROUND_STARTED_TYPE = "round_started";
 	// private static String ACTION_SEND_EVALUATION = "send_evaluation";
 
 	private MessageQueue messaging;

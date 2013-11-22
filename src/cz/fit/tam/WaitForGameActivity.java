@@ -1,5 +1,6 @@
 package cz.fit.tam;
 
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +10,10 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import cz.fit.tam.model.Game;
 import cz.fit.tam.model.GameClient.NotConnectedException;
+import cz.fit.tam.model.GameClient;
 import cz.fit.tam.model.GameProperties;
 import cz.fit.tam.model.Message;
 
@@ -36,11 +40,11 @@ public class WaitForGameActivity extends Activity {
 	private List<String> chatMessagesList = new ArrayList<String>();
 	private String lastNewMessage = "fakemessage";
 
+	private Game currentGame = null;
+
 	public String getLastNewMessage() {
 		return lastNewMessage;
 	}
-
-	Game currentGame = null;
 
 	public Game getCurrentGame() {
 		return currentGame;
@@ -214,10 +218,7 @@ public class WaitForGameActivity extends Activity {
 	private class GetNewMessagesAsyncTask extends
 			AsyncTask<WaitForGameActivity, Void, List<Message>> {
 
-		private WaitForGameActivity activityWait = null;
-
 		protected List<Message> doInBackground(WaitForGameActivity... activity) {
-			activityWait = activity[0];
 			List<Message> newMessages = null;
 			try {
 				newMessages = activity[0].getCurrentGame().getClient()
@@ -239,17 +240,40 @@ public class WaitForGameActivity extends Activity {
 
 		protected void onPostExecute(List<Message> result) {
 			if (result != null) {
+				Log.i("new message", "new message");
 				for (Message message : result) {
-					if (message.getType().compareTo("chat") == 0) {
+					Log.i("new message", message.getData());
+					Log.i("new message", message.getType());
+					if ((message.getType().compareTo(
+							GameClient.ROUND_STARTED_TYPE) == 0)) {
+						try {
+							JSONObject roundStarted = new JSONObject(
+									message.getData());
+							String firstLetter = (String) roundStarted
+									.get("letter");
+							WaitForGameActivity.this.startRound(firstLetter);
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					} else if (message.getType().compareTo(
+							GameClient.CHATMESSAGE_TYPE) == 0) {
 						WaitForGameActivity.this.updateChatMessages(message
 								.getData());
 
-					} else if (message.getType().compareTo("start_game") == 0) {
-						Log.i("message", "game started!!!!");
 					}
 				}
 			}
 		}
+	}
+
+	private void startRound(String firstLetter) {
+		Intent myIntent1 = new Intent(WaitForGameActivity.this,
+				PlayingActivity.class);
+		myIntent1.putExtra(getResources().getString(R.string.gameStr),
+				(Serializable) currentGame);
+		myIntent1.putExtra(getResources().getString(R.string.firstLetter),
+				(Serializable) firstLetter);
+		WaitForGameActivity.this.startActivity(myIntent1);
 	}
 
 	private void updateChatMessages(String newMessage) {

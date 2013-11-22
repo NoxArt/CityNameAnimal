@@ -26,6 +26,11 @@
     <string name="too_short_message">Přílíš kratká zpáva</string>
     <string name="start_game">Start hry</string>
     <string name="fillingout">Vyplňování</string>
+    <string name="letterA">A</string>
+    <string name="num1">1</string>
+    <string name="num30">30</string>
+    <string name="semicolon">:</string>
+    <string name="ready">Hotovo</string>
     
     <!-- Types of inputs -->
     <string name="mesto">Město</string>
@@ -55,4 +60,5 @@
     <string name="gamePropertiesStr">GameProperties</string>
     <string name="gameClientStr">GameClient</string>
     <string name="gameStr">Game</string>
+    <string name="firstLetter">FirstLetter</string>
 </resources>

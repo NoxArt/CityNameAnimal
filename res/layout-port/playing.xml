@@ -8,19 +8,260 @@
     android:paddingRight="5dp" >
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
-        
-         <TextView
-            android:layout_width="wrap_content"
+
+        <TextView
+            android:id="@+id/fillingOut"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:text="@string/fillingout"
             android:textAllCaps="true"
             android:textColor="@color/dirtyWhite"
             android:textSize="20sp" />
-         
-    </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:layout_marginTop="5dp"
+            android:background="@color/grey" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/currentLetter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:text="@string/letterA"
+                android:textAllCaps="true"
+                android:textColor="@color/green"
+                android:textSize="60sp" />
+
+            <TextView
+                android:id="@+id/timeLimitMinutes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="50dp"
+                android:layout_toRightOf="@id/currentLetter"
+                android:text="@string/num1"
+                android:textAllCaps="true"
+                android:textColor="@color/dirtyWhite"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/timeLimitSemicolon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/timeLimitMinutes"
+                android:text="@string/semicolon"
+                android:textAllCaps="true"
+                android:textColor="@color/dirtyWhite"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/timeLimitSeconds"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/timeLimitSemicolon"
+                android:text="@string/num30"
+                android:textAllCaps="true"
+                android:textColor="@color/dirtyWhite"
+                android:textSize="30sp" />
+        </RelativeLayout>
         
-        </ScrollView>
+        <RelativeLayout
+            android:id="@+id/layoutMesto"
+            android:visibility="gone"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="10dp" >
+
+            <TextView
+                android:id="@+id/textMesto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/mesto"
+                android:textAllCaps="true"
+                android:textColor="@color/blue"
+                android:textSize="15sp" >
+            </TextView>
+
+            <EditText
+                android:id="@+id/inputMesto"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:inputType="text"
+                android:textAllCaps="true"
+                android:textColor="@color/blue"
+                android:textSize="15sp" >
+            </EditText>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layoutJmeno"
+            android:visibility="gone"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="10dp" >
+
+            <TextView
+                android:id="@+id/textJmeno"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/jmeno"
+                android:textAllCaps="true"
+                android:textColor="@color/blue"
+                android:textSize="15sp" >
+            </TextView>
+
+            <EditText
+                android:id="@+id/inputJmeno"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:inputType="text"
+                android:textAllCaps="true"
+                android:textColor="@color/blue"
+                android:textSize="15sp" >
+            </EditText>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layoutAnimal"
+            android:visibility="gone"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="10dp" >
+
+            <TextView
+                android:id="@+id/textAnimal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/zvire"
+                android:textAllCaps="true"
+                android:textColor="@color/blue"
+                android:textSize="15sp" >
+            </TextView>
+
+            <EditText
+                android:id="@+id/inputAnimal"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_alignParentRight="true"
+                android:inputType="text"
+                android:textAllCaps="true"
+                android:textColor="@color/blue"
+                android:textSize="15sp" >
+            </EditText>
+        </RelativeLayout>
+        
+                <RelativeLayout
+            android:id="@+id/layoutVec"
+            android:visibility="gone"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="10dp" >
+
+            <TextView
+                android:id="@+id/textVec"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/vec"
+                android:textAllCaps="true"
+                android:textColor="@color/blue"
+                android:textSize="15sp" >
+            </TextView>
+
+            <EditText
+                android:id="@+id/inputVec"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_alignParentRight="true"
+                android:inputType="text"
+                android:textAllCaps="true"
+                android:textColor="@color/blue"
+                android:textSize="15sp" >
+            </EditText>
+        </RelativeLayout>
+        
+                
+                        
+                <RelativeLayout
+            android:id="@+id/layoutRostlina"
+            android:visibility="gone"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="10dp" >
+
+            <TextView
+                android:id="@+id/textRostlina"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/rostlina"
+                android:textAllCaps="true"
+                android:textColor="@color/blue"
+                android:textSize="15sp" >
+            </TextView>
+
+            <EditText
+                android:id="@+id/inputRostlina"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_alignParentRight="true"
+                android:inputType="text"
+                android:textAllCaps="true"
+                android:textColor="@color/blue"
+                android:textSize="15sp" >
+            </EditText>
+        </RelativeLayout>
+        <Button
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginRight="30dp"
+         android:text="@string/ready"
+         android:layout_gravity="right"
+         android:layout_marginTop="20dp">
+            
+        </Button>
+    </LinearLayout>
+
+</ScrollView>
