@@ -221,8 +221,10 @@ public class GameClient implements Serializable {
 	public void startGame(Integer gameId) {
 		Map<String, String> arguments = new HashMap<String, String>();
 		arguments.put("command", GameClient.COMMAND_START_GAME);
-		arguments.put("game_id", gameId.toString());
-		arguments.put("token", player.getToken().getValue());
+		arguments.put("id", gameId.toString());
+		Admin admin = (Admin) player;
+		arguments.put("admin_token", admin.getAdminToken().getValue());
+		// arguments.put("token", admin.getToken().getValue());
 
 		try {
 			messaging.sendMessage(arguments);

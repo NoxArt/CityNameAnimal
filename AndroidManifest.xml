@@ -23,6 +23,7 @@
 		<activity android:name="cz.fit.tam.NewGameActivity"/>
 		<activity android:name="cz.fit.tam.ConnectToGameActivity"/>
 		<activity android:name="cz.fit.tam.WaitForGameActivity"/>
+		<activity android:name="cz.fit.tam.PlayingActivity"/>
     </application>
 
 </manifest>

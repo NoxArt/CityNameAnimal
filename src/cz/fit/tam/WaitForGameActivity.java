@@ -33,7 +33,7 @@ public class WaitForGameActivity extends Activity {
 	private final ScheduledExecutorService scheduler = Executors
 			.newScheduledThreadPool(1);
 	private ScheduledFuture beeperHandle = null;
-	private List<Message> chatMessagesList = new ArrayList<Message>();
+	private List<String> chatMessagesList = new ArrayList<String>();
 	private String lastNewMessage = "fakemessage";
 
 	public String getLastNewMessage() {
@@ -52,8 +52,8 @@ public class WaitForGameActivity extends Activity {
 	public void getNewMessages() {
 		final Runnable beeper = new Runnable() {
 			public void run() {
-				GetChatMessagesAsyncTask getChatMessagesTask = new GetChatMessagesAsyncTask();
-				getChatMessagesTask.execute(WaitForGameActivity.this);
+				GetNewMessagesAsyncTask getNewMessagesTask = new GetNewMessagesAsyncTask();
+				getNewMessagesTask.execute(WaitForGameActivity.this);
 			}
 		};
 		beeperHandle = scheduler.scheduleAtFixedRate(beeper, 0, 1000,
@@ -67,6 +67,11 @@ public class WaitForGameActivity extends Activity {
 		currentGame = (Game) getIntent().getSerializableExtra(
 				getResources().getString(R.string.gameStr));
 		setGameInfo(currentGame.getProperties());
+
+		Button startNewGame = (Button) findViewById(R.id.startGame);
+		if (currentGame.isAdmin()) {
+			startNewGame.setVisibility(View.VISIBLE);
+		}
 		setEventListeners();
 		getNewMessages();
 	}
@@ -106,6 +111,16 @@ public class WaitForGameActivity extends Activity {
 					Toast.makeText(WaitForGameActivity.this, text,
 							Toast.LENGTH_SHORT).show();
 				}
+			}
+		});
+
+		Button btnStartGame = (Button) findViewById(R.id.startGame);
+		btnStartGame.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				StartGameAsyncTask startGameTask = new StartGameAsyncTask();
+				startGameTask.execute(WaitForGameActivity.this);
 			}
 		});
 	}
@@ -173,6 +188,16 @@ public class WaitForGameActivity extends Activity {
 		}
 	}
 
+	private class StartGameAsyncTask extends
+			AsyncTask<WaitForGameActivity, Void, Boolean> {
+
+		protected Boolean doInBackground(WaitForGameActivity... activity) {
+			activity[0].getCurrentGame().startGame();
+			;
+			return true;
+		}
+	}
+
 	private class SendMessageAsyncTask extends
 			AsyncTask<WaitForGameActivity, Void, Boolean> {
 
@@ -186,7 +211,7 @@ public class WaitForGameActivity extends Activity {
 		}
 	}
 
-	private class GetChatMessagesAsyncTask extends
+	private class GetNewMessagesAsyncTask extends
 			AsyncTask<WaitForGameActivity, Void, List<Message>> {
 
 		private WaitForGameActivity activityWait = null;
@@ -196,7 +221,7 @@ public class WaitForGameActivity extends Activity {
 			List<Message> newMessages = null;
 			try {
 				newMessages = activity[0].getCurrentGame().getClient()
-						.getNewChatMessages();
+						.getNewMessages();
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -214,17 +239,25 @@ public class WaitForGameActivity extends Activity {
 
 		protected void onPostExecute(List<Message> result) {
 			if (result != null) {
-				WaitForGameActivity.this.updateChatMessages(result);
+				for (Message message : result) {
+					if (message.getType().compareTo("chat") == 0) {
+						WaitForGameActivity.this.updateChatMessages(message
+								.getData());
+
+					} else if (message.getType().compareTo("start_game") == 0) {
+						Log.i("message", "game started!!!!");
+					}
+				}
 			}
 		}
 	}
 
-	private void updateChatMessages(List<Message> result) {
+	private void updateChatMessages(String newMessage) {
 		TextView chatMessages = (TextView) findViewById(R.id.chatMessages);
-		chatMessagesList.addAll(result);
+		chatMessagesList.add(newMessage);
 		String messages = "";
 		for (int j = chatMessagesList.size() - 1; j >= 0; j--) {
-			messages += chatMessagesList.get(j).getData() + "\n";
+			messages += chatMessagesList.get(j) + "\n";
 		}
 		chatMessages.setText(messages);
 

@@ -24,6 +24,8 @@
     <string name="your_message">Vaše zpráva</string>
     <string name="send_message">Poslat</string>
     <string name="too_short_message">Přílíš kratká zpáva</string>
+    <string name="start_game">Start hry</string>
+    <string name="fillingout">Vyplňování</string>
     
     <!-- Types of inputs -->
     <string name="mesto">Město</string>

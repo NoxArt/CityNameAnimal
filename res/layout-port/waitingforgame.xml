@@ -184,6 +184,14 @@
             android:layout_height="1dip"
             android:background="@color/grey" />
         
+        <Button 
+            android:id="@+id/startGame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/start_game"
+            android:layout_gravity="right"
+            android:visibility="gone"/>
+        
         <EditText 
             android:id="@+id/newMessage"
             android:layout_width="fill_parent"
@@ -196,6 +204,7 @@
             android:id="@+id/sendMessag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="right"
             android:text="@string/send_message" /> 
                
         <TextView 
