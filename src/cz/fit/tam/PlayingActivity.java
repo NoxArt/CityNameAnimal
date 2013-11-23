@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import cz.fit.tam.model.Game;
 import cz.fit.tam.model.GameProperties;
 
@@ -30,22 +31,46 @@ public class PlayingActivity extends Activity {
 		final Runnable beeper = new Runnable() {
 			public void run() {
 				currentTotalSeconds--;
-				// Run on UI
-				handler.post(new Runnable() {
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						updateTimeLimits();
-					}
-				});
+
+				if (currentTotalSeconds >= 0) {
+					// Run on UI thread
+					handler.post(new Runnable() {
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							updateTimeLimits();
+						}
+					});
+				} else {
+					// stop executing every second
+					scheduler.schedule(new Runnable() {
+						public void run() {
+							timeLimitHandler.cancel(true);
+						}
+					}, 0, TimeUnit.SECONDS);
+					handler.post(new Runnable() {
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							showMessage(getResources().getString(
+									R.string.noTimeLeft));
+						}
+					});
+				}
 			}
 		};
 		handler = new Handler();
 		minutesView = (TextView) findViewById(R.id.timeLimitMinutes);
 		secondsView = (TextView) findViewById(R.id.timeLimitSeconds);
+		// schedule to update time every second
 		timeLimitHandler = scheduler.scheduleAtFixedRate(beeper, 0, 1,
 				TimeUnit.SECONDS);
 
+	}
+
+	private void showMessage(String message) {
+		Toast toast = new Toast(this);
+		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 	}
 
 	private void updateTimeLimits() {

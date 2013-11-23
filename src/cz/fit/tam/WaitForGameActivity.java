@@ -28,6 +28,7 @@ import cz.fit.tam.model.GameClient;
 import cz.fit.tam.model.GameClient.NotConnectedException;
 import cz.fit.tam.model.GameProperties;
 import cz.fit.tam.model.Message;
+import cz.fit.tam.model.Player;
 
 /*
  * @author Ievgen
@@ -37,6 +38,7 @@ public class WaitForGameActivity extends Activity {
 	private final ScheduledExecutorService scheduler = Executors
 			.newScheduledThreadPool(1);
 	private ScheduledFuture beeperHandle = null;
+	private ScheduledFuture beeperHandlerPlayers = null;
 	private List<String> chatMessagesList = new ArrayList<String>();
 	private String lastNewMessage = "fakemessage";
 
@@ -63,6 +65,20 @@ public class WaitForGameActivity extends Activity {
 		beeperHandle = scheduler.scheduleAtFixedRate(beeper, 0, 1000,
 				TimeUnit.MILLISECONDS);
 
+	}
+
+	/*
+	 * Gets players' names every 3 seconds
+	 */
+	private void getPlayers() {
+		final Runnable beeperPlayers = new Runnable() {
+			public void run() {
+				GetPlayersAsyncTask getPlayersTask = new GetPlayersAsyncTask();
+				getPlayersTask.execute(WaitForGameActivity.this);
+			}
+		};
+		beeperHandlerPlayers = scheduler.scheduleAtFixedRate(beeperPlayers, 0,
+				3000, TimeUnit.MILLISECONDS);
 	}
 
 	@Override
@@ -105,6 +121,7 @@ public class WaitForGameActivity extends Activity {
 			startNewGame.setVisibility(View.VISIBLE);
 		}
 		setEventListeners();
+		getPlayers();
 		getNewMessages();
 	}
 
@@ -275,6 +292,18 @@ public class WaitForGameActivity extends Activity {
 		}
 	}
 
+	private class GetPlayersAsyncTask extends
+			AsyncTask<WaitForGameActivity, Void, List<Player>> {
+
+		protected List<Player> doInBackground(WaitForGameActivity... activity) {
+			return activity[0].getCurrentGame().getPlayers();
+		}
+
+		protected void onPostExecute(List<Player> result) {
+			WaitForGameActivity.this.updateConnectedPlayers(result);
+		}
+	}
+
 	private void startRound(String firstLetter) {
 		Intent myIntent1 = new Intent(WaitForGameActivity.this,
 				PlayingActivity.class);
@@ -283,6 +312,24 @@ public class WaitForGameActivity extends Activity {
 		myIntent1.putExtra(getResources().getString(R.string.firstLetter),
 				(Serializable) firstLetter);
 		WaitForGameActivity.this.startActivity(myIntent1);
+	}
+
+	private void updateConnectedPlayers(List<Player> result) {
+		TextView connectedPlayers = (TextView) findViewById(R.id.game_connectedPlayers);
+		TextView numberOfConnectedPlayers = (TextView) findViewById(R.id.playerCount);
+		numberOfConnectedPlayers.setText(String.valueOf(result.size()));
+		int i = 0;
+		String players = "";
+		for (Player player : result) {
+			if (i == (result.size() - 1)) {
+				players += player.getName();
+			} else {
+				players += player.getName() + ", ";
+			}
+			i++;
+		}
+		connectedPlayers.setText(players);
+
 	}
 
 	private void updateChatMessages(String newMessage) {

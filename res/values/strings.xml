@@ -31,6 +31,9 @@
     <string name="num30">30</string>
     <string name="semicolon">:</string>
     <string name="ready">Hotovo</string>
+    <string name="noTimeLeft">Není čas</string>
+    <string name="connectedPlayers">Hráči</string>
+    <string name="samplePlayerName">Honza</string>
     
     <!-- Types of inputs -->
     <string name="mesto">Město</string>

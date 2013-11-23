@@ -15,8 +15,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.text.TextUtils;
-import android.util.Log;
-import java.util.Calendar;
 
 public class GameClient implements Serializable {
 
@@ -304,10 +302,12 @@ public class GameClient implements Serializable {
 		arguments.put("game_id", gameId.toString());
 
 		try {
-			String results = messaging.sendMessage(arguments).getString(
+			// String results = messaging.sendMessage(arguments).getString(
+			// "result");
+			JSONArray results = messaging.sendMessage(arguments).getJSONArray(
 					"result");
-			for (String name : results.split(",")) {
-				players.add(new Player(name));
+			for (int i = 0; i < results.length(); i++) {
+				players.add(new Player(results.getString(i)));
 			}
 
 			return players;

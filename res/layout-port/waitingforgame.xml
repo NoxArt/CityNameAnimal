@@ -51,7 +51,7 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp" >
+            android:layout_marginTop="10dp" >
 
             <TextView
                 android:id="@+id/game_maxPlayersText"
@@ -74,11 +74,39 @@
             android:layout_width="fill_parent"
             android:layout_height="1dip"
             android:background="@color/grey" />
+        
+                <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp" >
+
+            <TextView
+                android:id="@+id/game_connectedPlayersText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/connectedPlayers"
+                android:textAllCaps="true"
+                android:textColor="@color/blue"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/game_connectedPlayers"
+                android:layout_width="fill_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_height="wrap_content"
+                android:text="@string/samplePlayerName"
+                android:layout_toRightOf="@id/game_connectedPlayersText" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:background="@color/grey" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp" >
+            android:layout_marginTop="10dp" >
 
             <TextView
                 android:id="@+id/playerCountText"
@@ -105,7 +133,7 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp" >
+            android:layout_marginTop="10dp" >
 
             <TextView
                 android:id="@+id/evaluationText"
@@ -132,7 +160,7 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" 
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="10dp">
 
             <TextView
                 android:id="@+id/timeLimitText"
@@ -159,7 +187,7 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp" >
+            android:layout_marginTop="10dp" >
 
             <TextView
                 android:id="@+id/categoriesText"
