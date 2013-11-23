@@ -64,4 +64,5 @@
     <string name="gameClientStr">GameClient</string>
     <string name="gameStr">Game</string>
     <string name="firstLetter">FirstLetter</string>
+    <string name="roundNum">roundNum</string>
 </resources>

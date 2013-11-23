@@ -6,8 +6,14 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +32,59 @@ public class PlayingActivity extends Activity {
 	private int currentTotalSeconds = 0;
 	private TextView minutesView = null;
 	private TextView secondsView = null;
+	private Integer currentRoundNum = null;
+
+	private boolean mestoCatActive = false;
+	private boolean jmenoCatActive = false;
+	private boolean zvireCatActive = false;
+	private boolean vecCatActive = false;
+	private boolean rostlinaCatActive = false;
+
+	private Game getCurrentGame() {
+		return currentGame;
+	}
+
+	private Integer getCurrentRoundNum() {
+		return currentRoundNum;
+	}
+
+	/*
+	 * Vrací slová zadal uživatel. Pořadí v poli - jmeno, mesto, zvire, vec,
+	 * rostlina. Pokud nějakou s kategorii v tuto chvili nehráme, tak pořadi se
+	 * nemění, jen že toto slovo v poli nebude. Třeba, nehráme zviře, dostaneme
+	 * jmeno, mesto, vec, rostlina
+	 */
+	private String[] getEnteredWords() {
+		int numOfCategories = currentGame.getProperties().getCategories().length;
+		String[] userInput = new String[numOfCategories];
+		int i = 0;
+		if (mestoCatActive) {
+			userInput[i] = ((EditText) findViewById(R.id.inputMesto)).getText()
+					.toString();
+			i++;
+		}
+		if (jmenoCatActive) {
+			userInput[i] = ((EditText) findViewById(R.id.inputJmeno)).getText()
+					.toString();
+			i++;
+		}
+		if (zvireCatActive) {
+			userInput[i] = ((EditText) findViewById(R.id.inputAnimal))
+					.getText().toString();
+			i++;
+		}
+		if (vecCatActive) {
+			userInput[i] = ((EditText) findViewById(R.id.inputVec)).getText()
+					.toString();
+			i++;
+		}
+		if (rostlinaCatActive) {
+			userInput[i] = ((EditText) findViewById(R.id.inputRostlina))
+					.getText().toString();
+			i++;
+		}
+		return userInput;
+	}
 
 	private void startTimeHandler() {
 		final Runnable beeper = new Runnable() {
@@ -88,18 +147,24 @@ public class PlayingActivity extends Activity {
 				getResources().getString(R.string.gameStr));
 		String currentLetter = (String) getIntent().getSerializableExtra(
 				getResources().getString(R.string.firstLetter));
+		currentRoundNum = (Integer) getIntent().getSerializableExtra(
+				getResources().getString(R.string.roundNum));
 		setGameInfo(currentGame.getProperties(), currentLetter);
 
 		startTimeHandler();
-		/*
-		 * currentGame = (Game) getIntent().getSerializableExtra(
-		 * getResources().getString(R.string.gameStr));
-		 * setGameInfo(currentGame.getProperties());
-		 * 
-		 * Button startNewGame = (Button) findViewById(R.id.startGame); if
-		 * (currentGame.isAdmin()) { startNewGame.setVisibility(View.VISIBLE); }
-		 * setEventListeners(); getNewMessages();
-		 */
+		setEventListeners();
+	}
+
+	private void setEventListeners() {
+		Button submitButton = (Button) findViewById(R.id.submit);
+		submitButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				SendWordsAsyncTask sendWordsTask = new SendWordsAsyncTask();
+				sendWordsTask.execute(PlayingActivity.this);
+			}
+		});
 	}
 
 	private void setGameInfo(GameProperties gameProps, String currentLetter) {
@@ -119,30 +184,42 @@ public class PlayingActivity extends Activity {
 			if (categories[i].equals(getResources().getString(R.string.mesto))) {
 				categoryLayout = (RelativeLayout) findViewById(R.id.layoutMesto);
 				categoryLayout.setVisibility(RelativeLayout.VISIBLE);
+				mestoCatActive = true;
 			} else if (categories[i].equals(getResources().getString(
 					R.string.jmeno))) {
 				categoryLayout = (RelativeLayout) findViewById(R.id.layoutJmeno);
 				categoryLayout.setVisibility(RelativeLayout.VISIBLE);
+				jmenoCatActive = true;
 			} else if (categories[i].equals(getResources().getString(
 					R.string.zvire))) {
 				categoryLayout = (RelativeLayout) findViewById(R.id.layoutAnimal);
 				categoryLayout.setVisibility(RelativeLayout.VISIBLE);
+				zvireCatActive = true;
 			} else if (categories[i].equals(getResources().getString(
 					R.string.vec))) {
 				categoryLayout = (RelativeLayout) findViewById(R.id.layoutVec);
 				categoryLayout.setVisibility(RelativeLayout.VISIBLE);
+				vecCatActive = true;
 			} else if (categories[i].equals(getResources().getString(
 					R.string.rostlina))) {
 				categoryLayout = (RelativeLayout) findViewById(R.id.layoutRostlina);
 				categoryLayout.setVisibility(RelativeLayout.VISIBLE);
+				rostlinaCatActive = true;
 			}
 		}
 
 	}
 
-	public int findUnusedId() {
-		while (findViewById(++fID) != null)
-			;
-		return fID;
+	private class SendWordsAsyncTask extends
+			AsyncTask<PlayingActivity, Void, Boolean> {
+
+		protected Boolean doInBackground(PlayingActivity... activity) {
+			Log.i("current_round_num",
+					String.valueOf(activity[0].getCurrentRoundNum()));
+			activity[0].getCurrentGame().sendWords(
+					activity[0].getCurrentRoundNum(),
+					activity[0].getEnteredWords());
+			return true;
+		}
 	}
 }

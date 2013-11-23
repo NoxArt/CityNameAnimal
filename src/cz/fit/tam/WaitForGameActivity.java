@@ -39,6 +39,8 @@ public class WaitForGameActivity extends Activity {
 			.newScheduledThreadPool(1);
 	private ScheduledFuture beeperHandle = null;
 	private ScheduledFuture beeperHandlerPlayers = null;
+	private Runnable beeper = null;
+	private Runnable beeperPlayers = null;
 	private List<String> chatMessagesList = new ArrayList<String>();
 	private String lastNewMessage = "fakemessage";
 
@@ -56,7 +58,7 @@ public class WaitForGameActivity extends Activity {
 	 * Gets new messages every second
 	 */
 	private void getNewMessages() {
-		final Runnable beeper = new Runnable() {
+		beeper = new Runnable() {
 			public void run() {
 				GetNewMessagesAsyncTask getNewMessagesTask = new GetNewMessagesAsyncTask();
 				getNewMessagesTask.execute(WaitForGameActivity.this);
@@ -71,7 +73,7 @@ public class WaitForGameActivity extends Activity {
 	 * Gets players' names every 3 seconds
 	 */
 	private void getPlayers() {
-		final Runnable beeperPlayers = new Runnable() {
+		beeperPlayers = new Runnable() {
 			public void run() {
 				GetPlayersAsyncTask getPlayersTask = new GetPlayersAsyncTask();
 				getPlayersTask.execute(WaitForGameActivity.this);
@@ -87,6 +89,7 @@ public class WaitForGameActivity extends Activity {
 		scheduler.schedule(new Runnable() {
 			public void run() {
 				beeperHandle.cancel(true);
+				beeperHandlerPlayers.cancel(true);
 			}
 		}, 0, TimeUnit.SECONDS);
 		if (currentGame.isAdmin()) {
@@ -105,8 +108,17 @@ public class WaitForGameActivity extends Activity {
 		scheduler.schedule(new Runnable() {
 			public void run() {
 				beeperHandle.cancel(true);
+				beeperHandlerPlayers.cancel(true);
 			}
 		}, 0, TimeUnit.SECONDS);
+	}
+
+	public void onRestart() {
+		super.onRestart();
+		beeperHandle = scheduler.scheduleAtFixedRate(beeper, 0, 1000,
+				TimeUnit.MILLISECONDS);
+		beeperHandlerPlayers = scheduler.scheduleAtFixedRate(beeperPlayers, 0,
+				3000, TimeUnit.MILLISECONDS);
 	}
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -277,7 +289,10 @@ public class WaitForGameActivity extends Activity {
 									message.getData());
 							String firstLetter = (String) roundStarted
 									.get("letter");
-							WaitForGameActivity.this.startRound(firstLetter);
+							Integer roundNum = (Integer) roundStarted
+									.get("round");
+							WaitForGameActivity.this.startRound(firstLetter,
+									roundNum);
 						} catch (JSONException e) {
 							e.printStackTrace();
 						}
@@ -304,13 +319,15 @@ public class WaitForGameActivity extends Activity {
 		}
 	}
 
-	private void startRound(String firstLetter) {
+	private void startRound(String firstLetter, Integer roundNum) {
 		Intent myIntent1 = new Intent(WaitForGameActivity.this,
 				PlayingActivity.class);
 		myIntent1.putExtra(getResources().getString(R.string.gameStr),
 				(Serializable) currentGame);
 		myIntent1.putExtra(getResources().getString(R.string.firstLetter),
 				(Serializable) firstLetter);
+		myIntent1.putExtra(getResources().getString(R.string.roundNum),
+				(Serializable) roundNum);
 		WaitForGameActivity.this.startActivity(myIntent1);
 	}
 
