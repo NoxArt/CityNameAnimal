@@ -24,8 +24,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import cz.fit.tam.model.Game;
-import cz.fit.tam.model.GameClient.NotConnectedException;
 import cz.fit.tam.model.GameClient;
+import cz.fit.tam.model.GameClient.NotConnectedException;
 import cz.fit.tam.model.GameProperties;
 import cz.fit.tam.model.Message;
 
@@ -53,7 +53,7 @@ public class WaitForGameActivity extends Activity {
 	/*
 	 * Gets new messages every second
 	 */
-	public void getNewMessages() {
+	private void getNewMessages() {
 		final Runnable beeper = new Runnable() {
 			public void run() {
 				GetNewMessagesAsyncTask getNewMessagesTask = new GetNewMessagesAsyncTask();
@@ -63,6 +63,34 @@ public class WaitForGameActivity extends Activity {
 		beeperHandle = scheduler.scheduleAtFixedRate(beeper, 0, 1000,
 				TimeUnit.MILLISECONDS);
 
+	}
+
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		scheduler.schedule(new Runnable() {
+			public void run() {
+				beeperHandle.cancel(true);
+			}
+		}, 0, TimeUnit.SECONDS);
+		if (currentGame.isAdmin()) {
+			StopGameAsyncTask stopTask = new StopGameAsyncTask();
+			stopTask.execute(this);
+		} else {
+			LeaveGameAsyncTask leaveTask = new LeaveGameAsyncTask();
+			leaveTask.execute(this);
+		}
+
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		scheduler.schedule(new Runnable() {
+			public void run() {
+				beeperHandle.cancel(true);
+			}
+		}, 0, TimeUnit.SECONDS);
 	}
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -78,22 +106,6 @@ public class WaitForGameActivity extends Activity {
 		}
 		setEventListeners();
 		getNewMessages();
-	}
-
-	public void onStop() {
-		super.onStop();
-		scheduler.schedule(new Runnable() {
-			public void run() {
-				beeperHandle.cancel(true);
-			}
-		}, 0, TimeUnit.SECONDS);
-		if (currentGame.isAdmin()) {
-			StopGameAsyncTask stopTask = new StopGameAsyncTask();
-			stopTask.execute(this);
-		} else {
-			LeaveGameAsyncTask leaveTask = new LeaveGameAsyncTask();
-			leaveTask.execute(this);
-		}
 	}
 
 	private void setEventListeners() {
@@ -240,10 +252,7 @@ public class WaitForGameActivity extends Activity {
 
 		protected void onPostExecute(List<Message> result) {
 			if (result != null) {
-				Log.i("new message", "new message");
 				for (Message message : result) {
-					Log.i("new message", message.getData());
-					Log.i("new message", message.getType());
 					if ((message.getType().compareTo(
 							GameClient.ROUND_STARTED_TYPE) == 0)) {
 						try {
