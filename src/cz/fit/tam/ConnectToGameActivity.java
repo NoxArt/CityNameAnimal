@@ -6,6 +6,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,7 +26,7 @@ import cz.fit.tam.model.GameProperties;
 /*
  * @author Ievgen
  */
-public class ConnectToGameActivity extends Activity {
+public class ConnectToGameActivity extends TamActivity {
 
 	private GameClient gameClient = null;
 	private List<GameProperties> gameProps = null;
@@ -74,6 +75,12 @@ public class ConnectToGameActivity extends Activity {
 		}
 		GetGamesAsyncTask getGames = new GetGamesAsyncTask();
 		getGames.execute(this);
+        
+        if( getPreferences().contains("game_playerName") ) {
+            ((TextView) findViewById(R.id.game_playerName)).setText(getPreferences().getString("game_playerName", ""));
+        } else {
+            findViewById(R.id.game_playerName).requestFocus();
+        }
 	}
 
 	public void onRestart() {
@@ -187,6 +194,11 @@ public class ConnectToGameActivity extends Activity {
 			public void onClick(View v) {
 				TextView userName = (TextView) findViewById(R.id.game_playerName);
 				if (isInputValid(userName)) {
+                    
+                    SharedPreferences.Editor edit = getPreferences().edit();
+                    edit.putString("game_playerName", userName.getText().toString());
+                    edit.commit();
+                    
 					selectedGameId = v.getId();
 					gameClient.setPlayerName(userName.getText().toString());
 					chosenGameProps = getGamePropertiesById(selectedGameId);
