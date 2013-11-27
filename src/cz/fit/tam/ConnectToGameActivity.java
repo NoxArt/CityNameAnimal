@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.util.List;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -75,12 +74,13 @@ public class ConnectToGameActivity extends TamActivity {
 		}
 		GetGamesAsyncTask getGames = new GetGamesAsyncTask();
 		getGames.execute(this);
-        
-        if( getPreferences().contains("game_playerName") ) {
-            ((TextView) findViewById(R.id.game_playerName)).setText(getPreferences().getString("game_playerName", ""));
-        } else {
-            findViewById(R.id.game_playerName).requestFocus();
-        }
+
+		if (getPreferences().contains("game_playerName")) {
+			((TextView) findViewById(R.id.game_playerName))
+					.setText(getPreferences().getString("game_playerName", ""));
+		} else {
+			findViewById(R.id.game_playerName).requestFocus();
+		}
 	}
 
 	public void onRestart() {
@@ -194,11 +194,12 @@ public class ConnectToGameActivity extends TamActivity {
 			public void onClick(View v) {
 				TextView userName = (TextView) findViewById(R.id.game_playerName);
 				if (isInputValid(userName)) {
-                    
-                    SharedPreferences.Editor edit = getPreferences().edit();
-                    edit.putString("game_playerName", userName.getText().toString());
-                    edit.commit();
-                    
+
+					SharedPreferences.Editor edit = getPreferences().edit();
+					edit.putString("game_playerName", userName.getText()
+							.toString());
+					edit.commit();
+
 					selectedGameId = v.getId();
 					gameClient.setPlayerName(userName.getText().toString());
 					chosenGameProps = getGamePropertiesById(selectedGameId);
@@ -237,8 +238,16 @@ public class ConnectToGameActivity extends TamActivity {
 		}
 
 		protected void onPostExecute(List<GameProperties> result) {
-			activity.setGameProperties(result);
+			try {
+				activity.setGameProperties(result);
+			} catch (NullPointerException e) {
+				displayErrorMessage("There are no games available");
+			}
 		}
+	}
+
+	private void displayErrorMessage(String error) {
+		Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
 	}
 
 	private class ConnectToGameAsyncTask extends
@@ -252,10 +261,10 @@ public class ConnectToGameActivity extends TamActivity {
 				connectActivity.getSelectedGame().connect(
 						connectActivity.getSelectedGameId());
 			} catch (Game.AlreadyConnectedException e) {
-				Log.e("ERROR", "Already connected");
+				displayErrorMessage("Already connected");
 			} catch (Exception e) {
 				Log.e("ERROR", e.getClass().getName());
-
+				displayErrorMessage("ERROR " + e.getClass().getName());
 				/*
 				 * Toast.makeText(connectActivity, "ERROR " + e.getMessage(),
 				 * Toast.LENGTH_SHORT).show();

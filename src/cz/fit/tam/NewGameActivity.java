@@ -3,6 +3,7 @@ package cz.fit.tam;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -48,7 +49,7 @@ public class NewGameActivity extends TamActivity {
 
 		configureSeekBar();
 		setEventClickListeners();
-        setDefaultValues();
+		setDefaultValues();
 	}
 
 	private void setEventClickListeners() {
@@ -57,7 +58,7 @@ public class NewGameActivity extends TamActivity {
 		btnNewGame.setOnClickListener(new View.OnClickListener() {
 
 			@Override
-			public void onClick(View arg0) {                
+			public void onClick(View arg0) {
 				/* Get user input */
 				String gameName = ((TextView) findViewById(R.id.game_name))
 						.getText().toString();
@@ -104,23 +105,23 @@ public class NewGameActivity extends TamActivity {
 						j++;
 					}
 				}
-                
-                /* Get user's player limit input */
+
+				/* Get user's player limit input */
 				int playerLimit = Integer
 						.parseInt(((TextView) findViewById(R.id.game_maxPlayers))
 								.getText().toString());
-                
-                /* Save preferences */
-                SharedPreferences.Editor edit = getPreferences().edit();
-                edit.putString("game_gameName", gameName);
-                edit.putString("game_playerName", playerName);
-                edit.putInt("game_playerLimit", playerLimit);
-                edit.putBoolean("game_evaluation", auto);
-                edit.putInt("game_minuteLimit", minuteLimit);
-                edit.putInt("game_secondLimit", secondLimit);
-                edit.putInt("game_roundLimit", roundLimit - 1);
-                edit.commit();
-                
+
+				/* Save preferences */
+				SharedPreferences.Editor edit = getPreferences().edit();
+				edit.putString("game_gameName", gameName);
+				edit.putString("game_playerName", playerName);
+				edit.putInt("game_playerLimit", playerLimit);
+				edit.putBoolean("game_evaluation", auto);
+				edit.putInt("game_minuteLimit", minuteLimit);
+				edit.putInt("game_secondLimit", secondLimit);
+				edit.putInt("game_roundLimit", roundLimit - 1);
+				edit.commit();
+
 				/* If user's input is valid, create game, go to next activity */
 				if (isUserInputValid(gameName, playerName, categories,
 						(TextView) findViewById(R.id.game_maxPlayers))) {
@@ -236,42 +237,53 @@ public class NewGameActivity extends TamActivity {
 					}
 				});
 	}
-    
-    private void setDefaultValues() {
-        SharedPreferences pref = getPreferences();
-        
-        if( pref.contains("game_gameName") ) {
-            ((TextView) findViewById(R.id.game_name)).setText(pref.getString("game_gameName", ""));
-        }
-        
-        if( pref.contains("game_playerName") ) {
-            ((TextView) findViewById(R.id.game_playerName)).setText(pref.getString("game_playerName", ""));
-        }
-        
-        if( pref.contains("game_playerLimit") ) {
-            Integer playerLimit = pref.getInt("game_playerLimit", 0);
-            
-            if( playerLimit > 0 ) {
-                ((TextView) findViewById(R.id.game_maxPlayers)).setText(playerLimit.toString());
-            }
-        }
-        
-        if( pref.contains("game_evaluation") && pref.getBoolean("game_evaluation", true) == true ) {
-            ((RadioButton)findViewById(R.id.radio_auto)).toggle();
-        }
-        
-        if( pref.contains("game_minuteLimit") ) {
-            ((NumberPicker) findViewById(R.id.minutePicker)).setValue(pref.getInt("game_minuteLimit", MINUTES_DEFAULT));
-        }
-        
-        if( pref.contains("game_secondLimit") ) {
-            ((NumberPicker) findViewById(R.id.secondPicker)).setValue(pref.getInt("game_secondLimit", SECONDS_DEFAULT));
-        }
-        
-        if( pref.contains("game_roundLimit") ) {
-            ((SeekBar) findViewById(R.id.numberOfCirles)).setProgress(pref.getInt("game_roundLimit", 1));
-        }
-    }
+
+	private void displayErrorMessage(String error) {
+		Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+	}
+
+	private void setDefaultValues() {
+		SharedPreferences pref = getPreferences();
+
+		if (pref.contains("game_gameName")) {
+			((TextView) findViewById(R.id.game_name)).setText(pref.getString(
+					"game_gameName", ""));
+		}
+
+		if (pref.contains("game_playerName")) {
+			((TextView) findViewById(R.id.game_playerName)).setText(pref
+					.getString("game_playerName", ""));
+		}
+
+		if (pref.contains("game_playerLimit")) {
+			Integer playerLimit = pref.getInt("game_playerLimit", 0);
+
+			if (playerLimit > 0) {
+				((TextView) findViewById(R.id.game_maxPlayers))
+						.setText(playerLimit.toString());
+			}
+		}
+
+		if (pref.contains("game_evaluation")
+				&& pref.getBoolean("game_evaluation", true) == true) {
+			((RadioButton) findViewById(R.id.radio_auto)).toggle();
+		}
+
+		if (pref.contains("game_minuteLimit")) {
+			((NumberPicker) findViewById(R.id.minutePicker)).setValue(pref
+					.getInt("game_minuteLimit", MINUTES_DEFAULT));
+		}
+
+		if (pref.contains("game_secondLimit")) {
+			((NumberPicker) findViewById(R.id.secondPicker)).setValue(pref
+					.getInt("game_secondLimit", SECONDS_DEFAULT));
+		}
+
+		if (pref.contains("game_roundLimit")) {
+			((SeekBar) findViewById(R.id.numberOfCirles)).setProgress(pref
+					.getInt("game_roundLimit", 1));
+		}
+	}
 
 	private class CreateGameAsyncTask extends
 			AsyncTask<NewGameActivity, Void, Boolean> {
@@ -282,8 +294,7 @@ public class NewGameActivity extends TamActivity {
 			try {
 				activity[0].getNewGame().create();
 			} catch (Exception e) {
-				Toast.makeText(activity[0], "ERROR " + e.getMessage(),
-						Toast.LENGTH_SHORT).show();
+				displayErrorMessage("ERROR " + e.getClass().getName());
 			}
 			return true;
 		}

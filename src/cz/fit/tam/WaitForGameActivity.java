@@ -256,6 +256,10 @@ public class WaitForGameActivity extends Activity {
 		}
 	}
 
+	private void displayErrorMessage(String error) {
+		Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+	}
+
 	private class GetNewMessagesAsyncTask extends
 			AsyncTask<WaitForGameActivity, Void, List<Message>> {
 
@@ -270,6 +274,7 @@ public class WaitForGameActivity extends Activity {
 			} catch (NotConnectedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				displayErrorMessage("No internet connection available");
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				// Not printing out this info as exception is thrown every

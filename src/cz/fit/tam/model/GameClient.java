@@ -44,6 +44,7 @@ public class GameClient implements Serializable {
 	private static String ACTION_SEND_WORDS = "send_words";
 	public static String CHATMESSAGE_TYPE = "chat";
 	public static String ROUND_STARTED_TYPE = "round_started";
+	public static String GAME_FINISHED_TYPE = "game_finished";
 	// private static String ACTION_SEND_EVALUATION = "send_evaluation";
 
 	private MessageQueue messaging;
@@ -204,12 +205,11 @@ public class GameClient implements Serializable {
 		Map<String, String> data = new HashMap<String, String>();
 		data.put("round", round.toString());
 		data.put("words", combine(words));
-
 		arguments.put("data", (new JSONObject(data)).toString());
 
 		try {
 			messaging.sendMessage(arguments);
-			connected = false;
+			// connected = false;
 		} catch (IOException ex) {
 			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE,
 					null, ex);

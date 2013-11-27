@@ -1,22 +1,21 @@
 package cz.fit.tam.model;
 
-import cz.fit.tam.utils.Connector;
-import cz.fit.tam.utils.HttpConnect;
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.json.JSONArray;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import cz.fit.tam.utils.Connector;
+import cz.fit.tam.utils.HttpConnect;
 
 public class MessageQueue implements Serializable {
 
@@ -79,7 +78,7 @@ public class MessageQueue implements Serializable {
 		try {
 			String result = getConnection().post(arguments);
 
-			if (result.length() == 0) {
+			if ((result == null) || (result.length() == 0)) {
 				return null;
 			} else {
 				return new JSONObject(result);

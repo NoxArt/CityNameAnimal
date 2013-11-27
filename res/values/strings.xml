@@ -25,7 +25,7 @@
     <string name="send_message">Poslat</string>
     <string name="too_short_message">Přílíš kratká zpáva</string>
     <string name="start_game">Start hry</string>
-    <string name="fillingout">Vyplňování</string>
+    <string name="fillingout">Vyplňování. Kolo: </string>
     <string name="letterA">A</string>
     <string name="num1">1</string>
     <string name="num30">30</string>
@@ -34,6 +34,8 @@
     <string name="noTimeLeft">Není čas</string>
     <string name="connectedPlayers">Hráči</string>
     <string name="samplePlayerName">Honza</string>
+    <string name="roundEvaluation">Vyhodnocení kola</string>
+    <string name="intro">Úvod</string>
     
     <!-- Types of inputs -->
     <string name="mesto">Město</string>

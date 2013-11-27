@@ -24,6 +24,7 @@
 		<activity android:name="cz.fit.tam.ConnectToGameActivity"/>
 		<activity android:name="cz.fit.tam.WaitForGameActivity"/>
 		<activity android:name="cz.fit.tam.PlayingActivity"/>
+		<activity android:name="cz.fit.tam.RoundEvaluationActivity"/>
     </application>
 
 </manifest>
