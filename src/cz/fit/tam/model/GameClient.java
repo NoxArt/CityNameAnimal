@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.text.TextUtils;
+import java.util.Iterator;
 
 public class GameClient implements Serializable {
 
@@ -41,11 +42,11 @@ public class GameClient implements Serializable {
 	private static String COMMAND_LEAVE_GAME = "leave_game";
 	private static String COMMAND_GET_MESSAGES = "get_messages";
 	private static String COMMAND_POST_MESSAGE = "post_message";
+    private static String COMMAND_GET_SCORES = "get_scores";
 	private static String ACTION_SEND_WORDS = "send_words";
 	public static String CHATMESSAGE_TYPE = "chat";
 	public static String ROUND_STARTED_TYPE = "round_started";
 	public static String GAME_FINISHED_TYPE = "game_finished";
-	// private static String ACTION_SEND_EVALUATION = "send_evaluation";
 
 	private MessageQueue messaging;
 
@@ -281,6 +282,40 @@ public class GameClient implements Serializable {
 			}
 
 			return games;
+		} catch (JSONException ex) {
+			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE,
+					null, ex);
+			throw new CommandFailedException(ex);
+		} catch (IOException ex) {
+			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE,
+					null, ex);
+			throw new CommandFailedException(ex);
+		}
+
+	}
+    
+    public Map<String, Integer> getScores() {
+		Map<String, Integer> scores = new HashMap<String, Integer>();
+
+		Map<String, String> arguments = new HashMap<String, String>();
+		arguments.put("command", GameClient.COMMAND_GET_SCORES);
+		arguments.put("game_id", gameId.toString());
+
+		try {
+			JSONObject result = messaging.sendMessage(arguments);
+            if( result == null ) {
+                return scores;
+            }
+            
+            result = result.getJSONObject("result");
+            Iterator<?> keys = result.keys();
+            while(keys.hasNext()) {
+                String key = (String)keys.next();
+                
+                scores.put(key, result.getInt(key));
+            }
+
+			return scores;
 		} catch (JSONException ex) {
 			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE,
 					null, ex);

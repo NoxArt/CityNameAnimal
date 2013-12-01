@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import android.util.Log;
+import java.util.Map;
 
 public class Game implements Serializable {
 
@@ -163,13 +164,8 @@ public class Game implements Serializable {
 		client.sendWords(round, words);
 	}
 
-	/*
-	 * public void sendEvaluations(Map<String, String[]> evaluations) { if
-	 * (isConnected()) { throw new IllegalStateException(); }
-	 * 
-	 * if (isStopped()) { throw new GameIsStoppedException(); }
-	 * 
-	 * client.sendEvaluation(evaluations); }
-	 */
+	public Map<String, Integer> getScores() {
+        return client.getScores();
+    }
 
 }
