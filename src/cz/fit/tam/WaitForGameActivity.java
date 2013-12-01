@@ -303,6 +303,7 @@ public class WaitForGameActivity extends Activity {
 						}
 					} else if (message.getType().compareTo(
 							GameClient.CHATMESSAGE_TYPE) == 0) {
+						Log.i("CHAT", message.getData());
 						WaitForGameActivity.this.updateChatMessages(message
 								.getData());
 
@@ -359,6 +360,7 @@ public class WaitForGameActivity extends Activity {
 		chatMessagesList.add(newMessage);
 		String messages = "";
 		for (int j = chatMessagesList.size() - 1; j >= 0; j--) {
+			Log.i("CHAT", chatMessagesList.get(j));
 			messages += chatMessagesList.get(j) + "\n";
 		}
 		chatMessages.setText(messages);

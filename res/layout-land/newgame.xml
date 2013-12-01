@@ -106,21 +106,24 @@
         </RelativeLayout>
 
         <View
+            android:visibility="gone"
             android:layout_width="fill_parent"
             android:layout_height="1dip"
             android:layout_marginTop="5dp"
             android:background="@color/grey" />
 
         <TextView
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="@string/scoring"
+            android:text="@string/scoring_full"
             android:textAllCaps="true"
             android:textColor="@color/blue"
             android:textSize="15sp" />
 
         <RadioGroup
+            android:visibility="gone"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:checkedButton="@+id/radio_manually"

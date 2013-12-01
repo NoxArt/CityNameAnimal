@@ -91,10 +91,9 @@ public class PlayingActivity extends Activity {
 
 		}
 		if (zvireCatActive) {
-			Log.i("zvire", "category active");
+
 			userInput[i] = ((EditText) findViewById(R.id.inputAnimal))
 					.getText().toString();
-			Log.i("zvire", userInput[i]);
 			if (userInput[i] == null) {
 				userInput[i] = "";
 			}
@@ -210,13 +209,7 @@ public class PlayingActivity extends Activity {
 
 	@Override
 	public void onBackPressed() {
-		super.onBackPressed();
-		scheduler.schedule(new Runnable() {
-			public void run() {
-				timeLimitHandler.cancel(true);
-				newRoundHandler.cancel(true);
-			}
-		}, 0, TimeUnit.SECONDS);
+
 	}
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -246,10 +239,7 @@ public class PlayingActivity extends Activity {
 
 	private void startNewRound(String currentLetter, Integer newRoundNum) {
 		stopTimeHandler();
-		Log.i("before sending new messages, round_num",
-				String.valueOf(this.currentRoundNum));
 		this.currentLetter = currentLetter;
-
 		sendEnteredWordsStartNewRound(newRoundNum); // Before starting
 													// round, send words.
 		// The one who
@@ -262,6 +252,7 @@ public class PlayingActivity extends Activity {
 	}
 
 	private void sendEnteredWords() {
+		stopTimeHandler();
 		SendWordsAsyncTask sendWordsTask = new SendWordsAsyncTask();
 		sendWordsTask.execute(this.currentRoundNum);
 	}
@@ -357,7 +348,6 @@ public class PlayingActivity extends Activity {
 		Integer newRound = null;
 
 		protected Boolean doInBackground(Integer... round) {
-			Log.i("current_round_num_while_sending", String.valueOf(round[0]));
 			newRound = round[0];
 			PlayingActivity.this.getCurrentGame().sendWords(
 					PlayingActivity.this.getCurrentRoundNum(),
@@ -396,21 +386,58 @@ public class PlayingActivity extends Activity {
 			if (result != null) {
 				for (Message message : result) {
 					if ((message.getType().compareTo(
-							GameClient.ROUND_STARTED_TYPE) == 0)) {
+							GameClient.ROUND_ENDED_TYPE) == 0)) {
+						PlayingActivity.this.sendEnteredWords();
+						Log.i("Message processed", "Round ended type");
+						// JSONObject roundStarted = new JSONObject(
+						// message.getData());
+						// String firstLetter = (String) roundStarted
+						// .get("letter");
+						// Integer roundNum = (Integer) roundStarted
+						// .get("round");
+						// PlayingActivity.this.startNewRound(firstLetter,
+						// roundNum);
+
+					} else if (message.getType().compareTo(
+							GameClient.ROUND_STARTED_TYPE) == 0) {
+						JSONObject roundStarted;
+						Log.i("Message processed", "Round started type");
 						try {
-							JSONObject roundStarted = new JSONObject(
-									message.getData());
+							roundStarted = new JSONObject(message.getData());
 							String firstLetter = (String) roundStarted
 									.get("letter");
 							Integer roundNum = (Integer) roundStarted
 									.get("round");
-							PlayingActivity.this.startNewRound(firstLetter,
-									roundNum);
+							Integer timeStamp = (Integer) roundStarted
+									.get("time");
+							Intent myIntent1 = new Intent(PlayingActivity.this,
+									RoundEvaluationActivity.class);
+							myIntent1.putExtra(
+									getResources()
+											.getString(R.string.timeStamp),
+									(Serializable) timeStamp);
+							myIntent1
+									.putExtra(
+											getResources().getString(
+													R.string.roundNum),
+											(Serializable) roundNum);
+							myIntent1.putExtra(
+									getResources().getString(
+											R.string.firstLetter),
+									(Serializable) firstLetter);
+							myIntent1.putExtra(
+									getResources().getString(R.string.gameStr),
+									(Serializable) currentGame);
+							PlayingActivity.this.startActivity(myIntent1);
+
 						} catch (JSONException e) {
+							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+
 					} else if ((message.getType().compareTo(
 							GameClient.GAME_FINISHED_TYPE) == 0)) {
+						Log.i("Message processed", "Game finished type");
 						Intent myIntent1 = new Intent(PlayingActivity.this,
 								RoundEvaluationActivity.class);
 						myIntent1.putExtra(

@@ -44,6 +44,7 @@ public class GameClient implements Serializable {
 	private static String ACTION_SEND_WORDS = "send_words";
 	public static String CHATMESSAGE_TYPE = "chat";
 	public static String ROUND_STARTED_TYPE = "round_started";
+	public static String ROUND_ENDED_TYPE = "round_ended";
 	public static String GAME_FINISHED_TYPE = "game_finished";
 	// private static String ACTION_SEND_EVALUATION = "send_evaluation";
 

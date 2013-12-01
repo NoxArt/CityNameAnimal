@@ -12,6 +12,9 @@ import cz.fit.tam.model.Game;
 public class RoundEvaluationActivity extends Activity {
 
 	private Game currentGame = null;
+	private Integer newRound = null;
+	private String newLetter = null;
+	private Integer timeOfStart = null;
 
 	public Game getCurrentGame() {
 		return currentGame;
@@ -21,6 +24,12 @@ public class RoundEvaluationActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		currentGame = (Game) getIntent().getSerializableExtra(
 				getResources().getString(R.string.gameStr));
+		newRound = (Integer) getIntent().getSerializableExtra(
+				getResources().getString(R.string.roundNum));
+		newLetter = (String) getIntent().getSerializableExtra(
+				getResources().getString(R.string.firstLetter));
+		timeOfStart = (Integer) getIntent().getSerializableExtra(
+				getResources().getString(R.string.timeStamp));
 		setContentView(R.layout.roundevaluation);
 		setEventClickListeners();
 	}
@@ -44,6 +53,11 @@ public class RoundEvaluationActivity extends Activity {
 				RoundEvaluationActivity.this.startActivity(myIntent1);
 			}
 		});
+	}
+
+	@Override
+	public void onBackPressed() {
+
 	}
 
 	private class LeaveGameAsyncTask extends AsyncTask<Void, Void, Boolean> {
