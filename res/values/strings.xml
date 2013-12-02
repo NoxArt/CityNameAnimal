@@ -36,6 +36,7 @@
     <string name="samplePlayerName">Honza</string>
     <string name="roundEvaluation">Vyhodnocení kola</string>
     <string name="intro">Úvod</string>
+    <string name="timeLeftToNextRound">Příští kolo začne za: </string>
     
     <!-- Types of inputs -->
     <string name="mesto">Město</string>
@@ -68,4 +69,6 @@
     <string name="firstLetter">FirstLetter</string>
     <string name="roundNum">roundNum</string>
     <string name="timeStamp">timeStamp</string>
+    <string name="roundEvaluationStr">roundEvaluation</string>
+    <string name="roundEvaluationWords">roundEvaluationWords</string>
 </resources>

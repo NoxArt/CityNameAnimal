@@ -13,6 +13,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
+  
+        
         <TextView
             android:id="@+id/fillingOut"
             android:layout_width="fill_parent"
@@ -22,11 +24,34 @@
             android:textAllCaps="true"
             android:textColor="@color/dirtyWhite"
             android:textSize="20sp" />
-        <Button 
-            android:id="@+id/goToIntro"
+        
+                      <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/intro"/>
+            android:layout_marginTop="20dp" >
+
+            <TextView
+                android:id="@+id/timeLeftText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/timeLeftToNextRound"
+                android:textAllCaps="true"
+                android:textColor="@color/blue"
+                android:textSize="15sp" />
+
+           <TextView
+            android:id="@+id/timeLeft"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAllCaps="true"
+            android:text="@string/num30"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/dirtyWhite"
+            android:layout_toRightOf="@id/timeLeftText"
+            android:textSize="20sp" />
+        </RelativeLayout>
+        
+
     </LinearLayout>
 
 </ScrollView>

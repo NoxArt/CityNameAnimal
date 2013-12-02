@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -15,7 +16,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.text.TextUtils;
-import java.util.Iterator;
 
 public class GameClient implements Serializable {
 
@@ -42,7 +42,7 @@ public class GameClient implements Serializable {
 	private static String COMMAND_LEAVE_GAME = "leave_game";
 	private static String COMMAND_GET_MESSAGES = "get_messages";
 	private static String COMMAND_POST_MESSAGE = "post_message";
-    private static String COMMAND_GET_SCORES = "get_scores";
+	private static String COMMAND_GET_SCORES = "get_scores";
 	private static String ACTION_SEND_WORDS = "send_words";
 	public static String CHATMESSAGE_TYPE = "chat";
 	public static String ROUND_STARTED_TYPE = "round_started";
@@ -294,8 +294,8 @@ public class GameClient implements Serializable {
 		}
 
 	}
-    
-    public Map<String, Integer> getScores() {
+
+	public Map<String, Integer> getScores() {
 		Map<String, Integer> scores = new HashMap<String, Integer>();
 
 		Map<String, String> arguments = new HashMap<String, String>();
@@ -304,17 +304,17 @@ public class GameClient implements Serializable {
 
 		try {
 			JSONObject result = messaging.sendMessage(arguments);
-            if( result == null ) {
-                return scores;
-            }
-            
-            result = result.getJSONObject("result");
-            Iterator<?> keys = result.keys();
-            while(keys.hasNext()) {
-                String key = (String)keys.next();
-                
-                scores.put(key, result.getInt(key));
-            }
+			if (result == null) {
+				return scores;
+			}
+
+			result = result.getJSONObject("result");
+			Iterator<?> keys = result.keys();
+			while (keys.hasNext()) {
+				String key = (String) keys.next();
+
+				scores.put(key, result.getInt(key));
+			}
 
 			return scores;
 		} catch (JSONException ex) {

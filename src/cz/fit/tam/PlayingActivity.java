@@ -2,12 +2,17 @@ package cz.fit.tam;
 
 import java.io.Serializable;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,6 +34,7 @@ import cz.fit.tam.model.GameClient;
 import cz.fit.tam.model.GameClient.NotConnectedException;
 import cz.fit.tam.model.GameProperties;
 import cz.fit.tam.model.Message;
+import cz.fit.tam.model.Player;
 
 public class PlayingActivity extends Activity {
 
@@ -54,6 +60,7 @@ public class PlayingActivity extends Activity {
 	private boolean zvireCatActive = false;
 	private boolean vecCatActive = false;
 	private boolean rostlinaCatActive = false;
+	private List<Player> connectedPlayers = null;
 
 	private Game getCurrentGame() {
 		return currentGame;
@@ -200,7 +207,6 @@ public class PlayingActivity extends Activity {
 	}
 
 	public void onRestart() {
-		super.onRestart();
 		timeLimitHandler = scheduler.scheduleAtFixedRate(beeper, 0, 1,
 				TimeUnit.SECONDS);
 		newRoundHandler = scheduler.scheduleAtFixedRate(newRoundRunnable, 0, 1,
@@ -214,10 +220,17 @@ public class PlayingActivity extends Activity {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.i("create", "recreating activity");
 		setContentView(R.layout.playing);
-
 		currentGame = (Game) getIntent().getSerializableExtra(
 				getResources().getString(R.string.gameStr));
+		if (currentGame == null) {
+			Log.i("CREATE", "current game null");
+		} else {
+			Log.i("CREATE", "current game NOT null");
+		}
+		GetPlayersAsyncTask getPlayersTask = new GetPlayersAsyncTask();
+		getPlayersTask.execute(this);
 		String currentLetter = (String) getIntent().getSerializableExtra(
 				getResources().getString(R.string.firstLetter));
 		currentRoundNum = (Integer) getIntent().getSerializableExtra(
@@ -333,6 +346,47 @@ public class PlayingActivity extends Activity {
 
 	}
 
+	private void updateConnectedPlayers(List<Player> result) {
+		connectedPlayers = result;
+	}
+
+	private Map<String, List<String>> jsonResultsToMap(JSONObject results)
+			throws JSONException {
+		Map<String, List<String>> converted = new HashMap<String, List<String>>();
+		List<String> evaluationsList = new ArrayList<String>();
+		for (Player player : connectedPlayers) {
+			JSONArray evaluations = (JSONArray) results.getJSONArray(player
+					.getName());
+			if (evaluations != null) {
+				for (int i = 0; i < evaluations.length(); i++) {
+					evaluationsList.add(evaluations.get(i).toString());
+				}
+				converted.put(player.getName(), evaluationsList);
+			}
+		}
+		return converted;
+	}
+
+	private Map<String, List<String>> jsonResultsWordsToMap(JSONObject results)
+			throws JSONException {
+		Map<String, List<String>> converted = new HashMap<String, List<String>>();
+		List<String> evaluationsWordsList = new ArrayList<String>();
+		for (Player player : connectedPlayers) {
+			String evaluationsWords = (String) results.getString(player
+					.getName());
+			if (evaluationsWords != null) {
+				evaluationsWordsList = Arrays.asList(evaluationsWords.split(
+						",", -1));
+				Log.i("evaluations words", evaluationsWordsList.get(0));
+				converted.put(player.getName(), evaluationsWordsList);
+				Log.i("EVALUATIONWORDS", evaluationsWords);
+				Log.i("Evaluationwords size",
+						String.valueOf(evaluationsWordsList.size()));
+			}
+		}
+		return converted;
+	}
+
 	private class SendWordsAsyncTask extends AsyncTask<Integer, Void, Boolean> {
 
 		protected Boolean doInBackground(Integer... round) {
@@ -359,6 +413,18 @@ public class PlayingActivity extends Activity {
 			PlayingActivity.this.currentRoundNum = newRound;
 			setGameInfo(currentGame.getProperties(), currentLetter, newRound);
 			startTimeHandler();
+		}
+	}
+
+	private class GetPlayersAsyncTask extends
+			AsyncTask<PlayingActivity, Void, List<Player>> {
+
+		protected List<Player> doInBackground(PlayingActivity... activity) {
+			return activity[0].getCurrentGame().getPlayers();
+		}
+
+		protected void onPostExecute(List<Player> result) {
+			PlayingActivity.this.updateConnectedPlayers(result);
 		}
 	}
 
@@ -389,14 +455,6 @@ public class PlayingActivity extends Activity {
 							GameClient.ROUND_ENDED_TYPE) == 0)) {
 						PlayingActivity.this.sendEnteredWords();
 						Log.i("Message processed", "Round ended type");
-						// JSONObject roundStarted = new JSONObject(
-						// message.getData());
-						// String firstLetter = (String) roundStarted
-						// .get("letter");
-						// Integer roundNum = (Integer) roundStarted
-						// .get("round");
-						// PlayingActivity.this.startNewRound(firstLetter,
-						// roundNum);
 
 					} else if (message.getType().compareTo(
 							GameClient.ROUND_STARTED_TYPE) == 0) {
@@ -406,12 +464,29 @@ public class PlayingActivity extends Activity {
 							roundStarted = new JSONObject(message.getData());
 							String firstLetter = (String) roundStarted
 									.get("letter");
+							currentLetter = firstLetter;
 							Integer roundNum = (Integer) roundStarted
 									.get("round");
 							Integer timeStamp = (Integer) roundStarted
 									.get("time");
 							Intent myIntent1 = new Intent(PlayingActivity.this,
 									RoundEvaluationActivity.class);
+							JSONObject roundEvaluation = roundStarted
+									.getJSONObject("evaluation");
+							JSONObject roundEvaluationWords = roundStarted
+									.getJSONObject("words");
+							Map<String, List<String>> mapEvaluations = jsonResultsToMap(roundEvaluation);
+							Map<String, List<String>> mapEvaluationsWords = jsonResultsWordsToMap(roundEvaluationWords);
+							Log.i("EVALUATION", roundEvaluation.toString());
+							Log.i("EVALUATION", roundEvaluationWords.toString());
+							myIntent1.putExtra(
+									getResources().getString(
+											R.string.roundEvaluation),
+									(Serializable) mapEvaluations);
+							myIntent1.putExtra(
+									getResources().getString(
+											R.string.roundEvaluationWords),
+									(Serializable) mapEvaluationsWords);
 							myIntent1.putExtra(
 									getResources()
 											.getString(R.string.timeStamp),
@@ -438,12 +513,7 @@ public class PlayingActivity extends Activity {
 					} else if ((message.getType().compareTo(
 							GameClient.GAME_FINISHED_TYPE) == 0)) {
 						Log.i("Message processed", "Game finished type");
-						Intent myIntent1 = new Intent(PlayingActivity.this,
-								RoundEvaluationActivity.class);
-						myIntent1.putExtra(
-								getResources().getString(R.string.gameStr),
-								(Serializable) currentGame);
-						PlayingActivity.this.startActivity(myIntent1);
+						PlayingActivity.this.sendEnteredWords();
 					}
 				}
 			}
