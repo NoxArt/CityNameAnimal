@@ -8,50 +8,65 @@
     android:paddingRight="5dp" >
 
     <LinearLayout
-        android:id="@+id/linearLayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
-  
-        
-        <TextView
-            android:id="@+id/fillingOut"
+        <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="@string/roundEvaluation"
-            android:textAllCaps="true"
-            android:textColor="@color/dirtyWhite"
-            android:textSize="20sp" />
-        
-                      <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp" >
+            android:orientation="vertical" >
 
             <TextView
-                android:id="@+id/timeLeftText"
+                android:id="@+id/fillingOut"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/roundEvaluation"
+                android:textAllCaps="true"
+                android:textColor="@color/dirtyWhite"
+                android:textSize="20sp" />
+
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/timeLeftToNextRound"
-                android:textAllCaps="true"
-                android:textColor="@color/blue"
-                android:textSize="15sp" />
+                android:layout_marginTop="20dp" >
 
-           <TextView
-            android:id="@+id/timeLeft"
+                <TextView
+                    android:id="@+id/timeLeftText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/timeLeftToNextRound"
+                    android:textAllCaps="true"
+                    android:textColor="@color/blue"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/timeLeft"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@id/timeLeftText"
+                    android:text="@string/num30"
+                    android:textAllCaps="true"
+                    android:textColor="@color/dirtyWhite"
+                    android:textSize="18sp" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:textAllCaps="true"
-            android:text="@string/num30"
-            android:layout_marginLeft="10dp"
-            android:textColor="@color/dirtyWhite"
-            android:layout_toRightOf="@id/timeLeftText"
-            android:textSize="20sp" />
-        </RelativeLayout>
-        
+            android:orientation="vertical" >
 
+            <Button
+                android:id="@+id/endGame"
+                android:layout_marginTop="15dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/endGame" />
+        </LinearLayout>
     </LinearLayout>
 
 </ScrollView>

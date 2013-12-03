@@ -85,11 +85,12 @@ public class NewGameActivity extends TamActivity {
 
 				int numOfCategories = 0;
 				ArrayList<CheckBox> checkboxes = new ArrayList<CheckBox>();
-				checkboxes.add((CheckBox) findViewById(R.id.chkBxAnimal));
 				checkboxes.add((CheckBox) findViewById(R.id.chkBxCity));
 				checkboxes.add((CheckBox) findViewById(R.id.chkBxName));
-				checkboxes.add((CheckBox) findViewById(R.id.chkBxPlant));
+				checkboxes.add((CheckBox) findViewById(R.id.chkBxAnimal));
 				checkboxes.add((CheckBox) findViewById(R.id.chkBxThing));
+				checkboxes.add((CheckBox) findViewById(R.id.chkBxPlant));
+
 				/* Count number of categories user has selected */
 				for (CheckBox chkBx : checkboxes) {
 					if (chkBx.isChecked()) {

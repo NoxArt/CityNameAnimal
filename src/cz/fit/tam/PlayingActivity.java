@@ -220,15 +220,9 @@ public class PlayingActivity extends Activity {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.i("create", "recreating activity");
 		setContentView(R.layout.playing);
 		currentGame = (Game) getIntent().getSerializableExtra(
 				getResources().getString(R.string.gameStr));
-		if (currentGame == null) {
-			Log.i("CREATE", "current game null");
-		} else {
-			Log.i("CREATE", "current game NOT null");
-		}
 		GetPlayersAsyncTask getPlayersTask = new GetPlayersAsyncTask();
 		getPlayersTask.execute(this);
 		String currentLetter = (String) getIntent().getSerializableExtra(
@@ -350,21 +344,30 @@ public class PlayingActivity extends Activity {
 		connectedPlayers = result;
 	}
 
-	private Map<String, List<String>> jsonResultsToMap(JSONObject results)
+	private Map<String, List<Integer>> jsonResultsToMap(JSONObject results)
 			throws JSONException {
-		Map<String, List<String>> converted = new HashMap<String, List<String>>();
-		List<String> evaluationsList = new ArrayList<String>();
+		Map<String, List<Integer>> converted = new HashMap<String, List<Integer>>();
+		List<Integer> evaluationsList = new ArrayList<Integer>();
 		for (Player player : connectedPlayers) {
 			JSONArray evaluations = (JSONArray) results.getJSONArray(player
 					.getName());
 			if (evaluations != null) {
 				for (int i = 0; i < evaluations.length(); i++) {
-					evaluationsList.add(evaluations.get(i).toString());
+					evaluationsList.add(Integer.valueOf(evaluations.get(i)
+							.toString()));
 				}
 				converted.put(player.getName(), evaluationsList);
 			}
 		}
 		return converted;
+	}
+
+	private List<Integer> convertStrToIntList(List<String> strList) {
+		List<Integer> intList = new ArrayList<Integer>();
+		for (String s : strList) {
+			intList.add(Integer.valueOf(s));
+		}
+		return intList;
 	}
 
 	private Map<String, List<String>> jsonResultsWordsToMap(JSONObject results)
@@ -377,11 +380,7 @@ public class PlayingActivity extends Activity {
 			if (evaluationsWords != null) {
 				evaluationsWordsList = Arrays.asList(evaluationsWords.split(
 						",", -1));
-				Log.i("evaluations words", evaluationsWordsList.get(0));
 				converted.put(player.getName(), evaluationsWordsList);
-				Log.i("EVALUATIONWORDS", evaluationsWords);
-				Log.i("Evaluationwords size",
-						String.valueOf(evaluationsWordsList.size()));
 			}
 		}
 		return converted;
@@ -390,7 +389,6 @@ public class PlayingActivity extends Activity {
 	private class SendWordsAsyncTask extends AsyncTask<Integer, Void, Boolean> {
 
 		protected Boolean doInBackground(Integer... round) {
-			Log.i("current_round_num_while_sending", String.valueOf(round[0]));
 			PlayingActivity.this.getCurrentGame().sendWords(round[0],
 					PlayingActivity.this.getEnteredWords());
 			return true;
@@ -475,10 +473,8 @@ public class PlayingActivity extends Activity {
 									.getJSONObject("evaluation");
 							JSONObject roundEvaluationWords = roundStarted
 									.getJSONObject("words");
-							Map<String, List<String>> mapEvaluations = jsonResultsToMap(roundEvaluation);
+							Map<String, List<Integer>> mapEvaluations = jsonResultsToMap(roundEvaluation);
 							Map<String, List<String>> mapEvaluationsWords = jsonResultsWordsToMap(roundEvaluationWords);
-							Log.i("EVALUATION", roundEvaluation.toString());
-							Log.i("EVALUATION", roundEvaluationWords.toString());
 							myIntent1.putExtra(
 									getResources().getString(
 											R.string.roundEvaluation),
@@ -519,4 +515,5 @@ public class PlayingActivity extends Activity {
 			}
 		}
 	}
+
 }

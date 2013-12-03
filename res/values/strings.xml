@@ -35,7 +35,7 @@
     <string name="connectedPlayers">Hráči</string>
     <string name="samplePlayerName">Honza</string>
     <string name="roundEvaluation">Vyhodnocení kola</string>
-    <string name="intro">Úvod</string>
+    <string name="endGame">Ukončení hry</string>
     <string name="timeLeftToNextRound">Příští kolo začne za: </string>
     
     <!-- Types of inputs -->
