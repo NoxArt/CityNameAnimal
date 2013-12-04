@@ -106,7 +106,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
-                android:inputType="text"
+                android:inputType="textFilter|textVisiblePassword"
                 android:textAllCaps="true"
                 android:textColor="@color/blue"
                 android:textSize="15sp" >
@@ -140,7 +140,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
-                android:inputType="text"
+				android:inputType="textFilter|textVisiblePassword"
                 android:textAllCaps="true"
                 android:textColor="@color/blue"
                 android:textSize="15sp" >
@@ -175,7 +175,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
                 android:layout_alignParentRight="true"
-                android:inputType="text"
+                android:inputType="textFilter|textVisiblePassword"
                 android:textAllCaps="true"
                 android:textColor="@color/blue"
                 android:textSize="15sp" >
@@ -210,7 +210,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
                 android:layout_alignParentRight="true"
-                android:inputType="text"
+                android:inputType="textFilter|textVisiblePassword"
                 android:textAllCaps="true"
                 android:textColor="@color/blue"
                 android:textSize="15sp" >
@@ -247,7 +247,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
                 android:layout_alignParentRight="true"
-                android:inputType="text"
+                android:inputType="textFilter|textVisiblePassword"
                 android:textAllCaps="true"
                 android:textColor="@color/blue"
                 android:textSize="15sp" >
