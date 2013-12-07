@@ -49,6 +49,14 @@ public class RoundEvaluationActivity extends Activity {
 
 	private Handler handler = null;
 
+	int fID = 0;
+
+	public int findUnusedId() {
+		while (findViewById(++fID) != null)
+			;
+		return fID;
+	}
+
 	public Game getCurrentGame() {
 		return currentGame;
 	}
@@ -171,7 +179,6 @@ public class RoundEvaluationActivity extends Activity {
 		TextView roundScores = new TextView(this);
 		roundScores.setLayoutParams(params);
 		int sumRoundScore = sumValuesInArrayList(scores);
-		Log.i("SUM SCORE", String.valueOf(sumRoundScore));
 		roundScores.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 		roundScores.setTextColor(getResources().getColor(R.color.green));
 		roundScores.setText("(" + String.valueOf(sumRoundScore) + ")");
@@ -185,7 +192,6 @@ public class RoundEvaluationActivity extends Activity {
 		params.setMargins(10, 0, 0, 0);
 		TextView roundScores = new TextView(this);
 		roundScores.setLayoutParams(params);
-		Log.i("WHOLE GAME SCORE", String.valueOf(wholeGameScore));
 		roundScores.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
 		roundScores.setTextColor(getResources().getColor(R.color.red));
 		roundScores.setText(String.valueOf(wholeGameScore));
@@ -202,42 +208,51 @@ public class RoundEvaluationActivity extends Activity {
 	private RelativeLayout newRelativeHorizontalContainerInstance() {
 		RelativeLayout relativeLayout = new RelativeLayout(this);
 		RelativeLayout.LayoutParams relativeParamsCat = new RelativeLayout.LayoutParams(
-				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+				RelativeLayout.LayoutParams.MATCH_PARENT,
+				RelativeLayout.LayoutParams.WRAP_CONTENT);
 		return relativeLayout;
 	}
 
 	private TextView newScoreViewInstance(Integer score) {
-		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-				new LayoutParams(LayoutParams.WRAP_CONTENT,
-						LayoutParams.WRAP_CONTENT));
-		params.setMargins(10, 0, 0, 0);
+		/*
+		 * LinearLayout.LayoutParams params = new LinearLayout.LayoutParams( new
+		 * LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		 */
+		// params.setMargins(10, 0, 0, 0);
 		TextView scoreView = new TextView(this);
-		scoreView.setLayoutParams(params);
+		// scoreView.setLayoutParams(params);
 		scoreView.setTextColor(getResources().getColor(R.color.blue));
-		scoreView.setText(String.valueOf(score));
+		scoreView.setText(String.valueOf(score) + "   ");
+		Log.i("EVALUATION TO SET", String.valueOf(score));
 		return scoreView;
 	}
 
 	private TextView newScoreWordViewInstance(String word) {
-		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-				new LayoutParams(LayoutParams.WRAP_CONTENT,
-						LayoutParams.WRAP_CONTENT));
-		params.setMargins(0, 0, 20, 0);
+		/*
+		 * LinearLayout.LayoutParams params = new LinearLayout.LayoutParams( new
+		 * LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		 */
+		// params.setMargins(0, 0, 20, 0);
 		TextView scoreView = new TextView(this);
-		scoreView.setLayoutParams(params);
+		// scoreView.setLayoutParams(params);
 		scoreView.setTextColor(getResources().getColor(R.color.dirtyWhite));
+		if (word.length() == 0) {
+			word = "________";
+		}
 		scoreView.setText(word);
+		Log.i("EVALUATION TO SET", word);
 		return scoreView;
 	}
 
 	private TextView newCategoryView(String categoryName) {
-		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-				new LayoutParams(LayoutParams.WRAP_CONTENT,
-						LayoutParams.WRAP_CONTENT));
+		/*
+		 * LinearLayout.LayoutParams params = new LinearLayout.LayoutParams( new
+		 * LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		 */
 
 		TextView categoryView = new TextView(this);
-		categoryView.setLayoutParams(params);
-		categoryView.setGravity(Gravity.LEFT);
+		// categoryView.setLayoutParams(params);
+		// categoryView.setGravity(Gravity.LEFT);
 		categoryView.setTextColor(getResources().getColor(R.color.blue));
 		categoryView.setText(categoryName);
 		return categoryView;
@@ -261,17 +276,20 @@ public class RoundEvaluationActivity extends Activity {
 		/* Layout params for category */
 		RelativeLayout.LayoutParams relativeParamsCat = new RelativeLayout.LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		relativeParamsCat.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+
+		// relativeParamsCat.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 		relativeParamsCat.setMargins(5, 0, 0, 0);
+
 		/* Layout params for score */
 		RelativeLayout.LayoutParams relativeParamsScore = new RelativeLayout.LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		relativeParamsScore.addRule(RelativeLayout.CENTER_HORIZONTAL);
+		relativeParamsScore.setMargins(0, 0, 0, 0);
 		/* Layout params for score word */
 		RelativeLayout.LayoutParams relativeParamsWord = new RelativeLayout.LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		relativeParamsWord.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-		relativeParamsWord.setMargins(0, 0, 0, 0);
+		// relativeParamsWord.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		relativeParamsWord.setMargins(5, 0, 0, 0);
 
 		while (it.hasNext()) {
 			Map.Entry pairs = (Map.Entry) it.next();
@@ -296,6 +314,14 @@ public class RoundEvaluationActivity extends Activity {
 				playerScore = newScoreViewInstance(evaluations.get(i));
 				playerScoreWord = newScoreWordViewInstance(evaluationsWords
 						.get(i));
+
+				int idCat = findUnusedId();
+				int idScore = findUnusedId();
+				playerCategoryName.setId(idCat);
+				playerScore.setId(idScore);
+				// relativeParamsScore.addRule(RelativeLayout.RIGHT_OF, idCat);
+				relativeParamsWord.addRule(RelativeLayout.RIGHT_OF, idScore);
+
 				scoreRowContainer
 						.addView(playerCategoryName, relativeParamsCat);
 				scoreRowContainer.addView(playerScore, relativeParamsScore);
@@ -310,6 +336,13 @@ public class RoundEvaluationActivity extends Activity {
 	private void setBasicViewInfo(int startInSeconds) {
 		TextView timeLeftText = (TextView) findViewById(R.id.timeLeftText);
 		TextView timeLeft = (TextView) findViewById(R.id.timeLeft);
+		TextView evaluationText = (TextView) findViewById(R.id.fillingOut);
+		evaluationText.setText(evaluationText.getText()
+				+ " "
+				+ String.valueOf(newRound - 1)
+				+ "/"
+				+ String.valueOf(this.currentGame.getProperties()
+						.getRoundLimit()));
 		if (newRound > getCurrentGame().getProperties().getRoundLimit()) {
 			timeLeft.setVisibility(TextView.GONE);
 			timeLeftText.setVisibility(TextView.GONE);

@@ -129,6 +129,7 @@ public class WaitForGameActivity extends Activity {
 		setGameInfo(currentGame.getProperties());
 
 		Button startNewGame = (Button) findViewById(R.id.startGame);
+		startNewGame.setEnabled(true);
 		if (currentGame.isAdmin()) {
 			startNewGame.setVisibility(View.VISIBLE);
 		}
@@ -150,6 +151,7 @@ public class WaitForGameActivity extends Activity {
 					WaitForGameActivity.this.sendMessage(getCurrentGame()
 							.getClient().getPlayer().getName()
 							+ ": " + newMessageStr);
+					newMessage.setText("");
 				} else {
 					String text = getResources().getString(
 							R.string.too_short_message);
@@ -164,6 +166,8 @@ public class WaitForGameActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
+				Button btnStartGame = (Button) findViewById(R.id.startGame);
+				btnStartGame.setEnabled(false);
 				StartGameAsyncTask startGameTask = new StartGameAsyncTask();
 				startGameTask.execute(WaitForGameActivity.this);
 			}

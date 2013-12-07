@@ -40,10 +40,16 @@ public class NewGameActivity extends TamActivity {
 		return newGame;
 	}
 
+	public void onRestart() {
+		super.onRestart();
+		Button btnNewGame = (Button) findViewById(R.id.createGame);
+		btnNewGame.setEnabled(true);
+	}
+
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		setContentView(R.layout.newgame);
+
 		/* Configure number pickers */
 		configureNumberPickers();
 
@@ -59,6 +65,8 @@ public class NewGameActivity extends TamActivity {
 
 			@Override
 			public void onClick(View arg0) {
+				Button btnNewGame = (Button) findViewById(R.id.createGame);
+				btnNewGame.setEnabled(false);
 				/* Get user input */
 				String gameName = ((TextView) findViewById(R.id.game_name))
 						.getText().toString();

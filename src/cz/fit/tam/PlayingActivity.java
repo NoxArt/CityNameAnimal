@@ -60,6 +60,8 @@ public class PlayingActivity extends Activity {
 	private boolean zvireCatActive = false;
 	private boolean vecCatActive = false;
 	private boolean rostlinaCatActive = false;
+	private boolean alreadySentWordsForCurrentRound = false;
+
 	private List<Player> connectedPlayers = null;
 
 	private Game getCurrentGame() {
@@ -211,6 +213,9 @@ public class PlayingActivity extends Activity {
 				TimeUnit.SECONDS);
 		newRoundHandler = scheduler.scheduleAtFixedRate(newRoundRunnable, 0, 1,
 				TimeUnit.SECONDS);
+		Button submitButton = (Button) findViewById(R.id.submit);
+		submitButton.setEnabled(true);
+		alreadySentWordsForCurrentRound = false;
 	}
 
 	@Override
@@ -221,6 +226,8 @@ public class PlayingActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.playing);
+		Button submitButton = (Button) findViewById(R.id.submit);
+		submitButton.setEnabled(true);
 		currentGame = (Game) getIntent().getSerializableExtra(
 				getResources().getString(R.string.gameStr));
 		GetPlayersAsyncTask getPlayersTask = new GetPlayersAsyncTask();
@@ -275,6 +282,8 @@ public class PlayingActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
+				Button submitButton = (Button) findViewById(R.id.submit);
+				submitButton.setEnabled(false);
 				PlayingActivity.this.sendEnteredWords();
 			}
 		});
@@ -391,6 +400,7 @@ public class PlayingActivity extends Activity {
 		protected Boolean doInBackground(Integer... round) {
 			PlayingActivity.this.getCurrentGame().sendWords(round[0],
 					PlayingActivity.this.getEnteredWords());
+			alreadySentWordsForCurrentRound = true;
 			return true;
 		}
 	}
@@ -409,6 +419,7 @@ public class PlayingActivity extends Activity {
 
 		protected void onPostExecute(Boolean result) {
 			PlayingActivity.this.currentRoundNum = newRound;
+			alreadySentWordsForCurrentRound = true;
 			setGameInfo(currentGame.getProperties(), currentLetter, newRound);
 			startTimeHandler();
 		}
@@ -509,7 +520,10 @@ public class PlayingActivity extends Activity {
 					} else if ((message.getType().compareTo(
 							GameClient.GAME_FINISHED_TYPE) == 0)) {
 						Log.i("Message processed", "Game finished type");
-						PlayingActivity.this.sendEnteredWords();
+						if (!alreadySentWordsForCurrentRound) {
+							alreadySentWordsForCurrentRound = true;
+							PlayingActivity.this.sendEnteredWords();
+						}
 					}
 				}
 			}
