@@ -3,12 +3,17 @@ package cz.fit.tam;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -35,6 +40,28 @@ public class ConnectToGameActivity extends TamActivity {
 
 	TableLayout tableGamesInfo = null;
 
+	private final ScheduledExecutorService scheduler = Executors
+			.newScheduledThreadPool(1);
+
+	private ScheduledFuture gamesUpdaterHandler = null;
+	private Runnable gamesUpdater = null;
+	private Handler handler = null;
+
+	private void startGamesUpdaterHanlder() {
+		gamesUpdater = new Runnable() {
+
+			@Override
+			public void run() {
+				GetGamesAsyncTask getGames = new GetGamesAsyncTask();
+				getGames.execute(ConnectToGameActivity.this);
+			}
+		};
+		handler = new Handler();
+		// schedule to update time every two seconds
+		gamesUpdaterHandler = scheduler.scheduleAtFixedRate(gamesUpdater, 0, 2,
+				TimeUnit.SECONDS);
+	}
+
 	public Integer getSelectedGameId() {
 		return selectedGameId;
 	}
@@ -55,11 +82,21 @@ public class ConnectToGameActivity extends TamActivity {
 		this.gameProps = gameProperties;
 		int orientation = getResources().getConfiguration().orientation;
 		getResources().getConfiguration();
+		Log.i("SET GAME PROPS", "after getting configuration");
 		if (orientation == Configuration.ORIENTATION_PORTRAIT) {
 			setGamesInfoPortrait(gameProps);
 		} else {
 			setGamesInfoLandscape(gameProps);
 		}
+	}
+
+	public void onStop() {
+		super.onStop();
+		scheduler.schedule(new Runnable() {
+			public void run() {
+				gamesUpdaterHandler.cancel(true);
+			}
+		}, 0, TimeUnit.SECONDS);
 	}
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -81,6 +118,7 @@ public class ConnectToGameActivity extends TamActivity {
 		} else {
 			findViewById(R.id.game_playerName).requestFocus();
 		}
+		startGamesUpdaterHanlder();
 	}
 
 	public void onRestart() {
@@ -92,7 +130,7 @@ public class ConnectToGameActivity extends TamActivity {
 
 	private void setGamesInfoPortrait(List<GameProperties> props) {
 		tableGamesInfo = (TableLayout) findViewById(R.id.tableGamesInfo);
-
+		tableGamesInfo.removeAllViews();
 		/* Make all columns have the same width */
 		LayoutParams layoutParams = new LayoutParams();
 		layoutParams.weight = 1f;
@@ -105,7 +143,8 @@ public class ConnectToGameActivity extends TamActivity {
 			Button connectToGameButton = new Button(this);
 
 			gameName.setText(prop.getName());
-			playerNum.setText(String.valueOf(prop.getPlayerCount()));
+			playerNum.setText(String.valueOf(prop.getPlayerCount()) + "/"
+					+ String.valueOf(prop.getPlayerLimit()));
 			connectToGameButton.setText(getResources().getString(
 					R.string.connect));
 			connectToGameButton.setId(prop.getId());
@@ -204,8 +243,13 @@ public class ConnectToGameActivity extends TamActivity {
 					gameClient.setPlayerName(userName.getText().toString());
 					chosenGameProps = getGamePropertiesById(selectedGameId);
 					selectedGame = new Game(chosenGameProps, gameClient);
-					ConnectToGameAsyncTask connectAsync = new ConnectToGameAsyncTask();
-					connectAsync.execute(ConnectToGameActivity.this);
+					if (chosenGameProps.getPlayerCount() >= chosenGameProps
+							.getPlayerLimit()) {
+						displayErrorMessage("Hra už má maximalní počet hračů");
+					} else {
+						ConnectToGameAsyncTask connectAsync = new ConnectToGameAsyncTask();
+						connectAsync.execute(ConnectToGameActivity.this);
+					}
 				}
 			}
 		});
