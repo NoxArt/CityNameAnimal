@@ -32,6 +32,8 @@ public class GameProperties implements Serializable {
 
 	private String[] categories;
 
+	private String phase;
+
 	public GameProperties(String language, String name, Integer playerLimit,
 			Integer playerCount, Integer timeLimit, Integer roundLimit,
 			String evaluation, String[] categories) {
@@ -47,7 +49,8 @@ public class GameProperties implements Serializable {
 
 	public GameProperties(Integer id, String language, String name,
 			Integer playerLimit, Integer playerCount, Integer timeLimit,
-			Integer roundLimit, String evaluation, String[] categories) {
+			Integer roundLimit, String evaluation, String[] categories,
+			String phase) {
 		this.id = id;
 		this.language = language;
 		this.name = name;
@@ -57,6 +60,7 @@ public class GameProperties implements Serializable {
 		this.roundLimit = roundLimit;
 		this.evaluation = evaluation;
 		this.categories = categories;
+		this.phase = phase;
 	}
 
 	public GameProperties(String language, String name, int playerLimit,
@@ -116,6 +120,10 @@ public class GameProperties implements Serializable {
 		return categories;
 	}
 
+	public String getPhase() {
+		return phase;
+	}
+
 	public void incrementNumberOfPlayers() {
 		if (playerCount != null) {
 			playerCount++;
@@ -133,7 +141,6 @@ public class GameProperties implements Serializable {
 				Integer.valueOf(json.getString("time_limit")),
 				Integer.valueOf(json.getString("round_limit")),
 				json.getString("evaluation"), json.getString("categories")
-						.split(","));
+						.split(","), json.getString("phase"));
 	}
-
 }

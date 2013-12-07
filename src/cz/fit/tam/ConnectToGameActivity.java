@@ -137,22 +137,25 @@ public class ConnectToGameActivity extends TamActivity {
 		layoutParams.width = 0;
 
 		for (GameProperties prop : props) {
-			TableRow gameInfoRow = new TableRow(this);
-			TextView gameName = new TextView(this);
-			TextView playerNum = new TextView(this);
-			Button connectToGameButton = new Button(this);
+			if ((prop.getPhase() != null)
+					&& ("waiting".equals(prop.getPhase()))) {
+				TableRow gameInfoRow = new TableRow(this);
+				TextView gameName = new TextView(this);
+				TextView playerNum = new TextView(this);
+				Button connectToGameButton = new Button(this);
 
-			gameName.setText(prop.getName());
-			playerNum.setText(String.valueOf(prop.getPlayerCount()) + "/"
-					+ String.valueOf(prop.getPlayerLimit()));
-			connectToGameButton.setText(getResources().getString(
-					R.string.connect));
-			connectToGameButton.setId(prop.getId());
-			gameInfoRow.addView(gameName, layoutParams);
-			gameInfoRow.addView(playerNum, layoutParams);
-			gameInfoRow.addView(connectToGameButton);
-			tableGamesInfo.addView(gameInfoRow);
-			setConnectClickEventListenter(connectToGameButton);
+				gameName.setText(prop.getName());
+				playerNum.setText(String.valueOf(prop.getPlayerCount()) + "/"
+						+ String.valueOf(prop.getPlayerLimit()));
+				connectToGameButton.setText(getResources().getString(
+						R.string.connect));
+				connectToGameButton.setId(prop.getId());
+				gameInfoRow.addView(gameName, layoutParams);
+				gameInfoRow.addView(playerNum, layoutParams);
+				gameInfoRow.addView(connectToGameButton);
+				tableGamesInfo.addView(gameInfoRow);
+				setConnectClickEventListenter(connectToGameButton);
+			}
 		}
 	}
 
@@ -165,41 +168,44 @@ public class ConnectToGameActivity extends TamActivity {
 		layoutParams.width = 0;
 
 		for (GameProperties prop : props) {
-			TableRow gameInfoRow = new TableRow(this);
-			TextView gameName = new TextView(this);
-			TextView evaluation = new TextView(this);
-			TextView limit = new TextView(this);
-			TextView kategorie = new TextView(this);
-			TextView playerNum = new TextView(this);
-			Button connectToGameButton = new Button(this);
+			if ((prop.getPhase() != null)
+					&& ("waiting".equals(prop.getPhase()))) {
+				TableRow gameInfoRow = new TableRow(this);
+				TextView gameName = new TextView(this);
+				TextView evaluation = new TextView(this);
+				TextView limit = new TextView(this);
+				TextView kategorie = new TextView(this);
+				TextView playerNum = new TextView(this);
+				Button connectToGameButton = new Button(this);
 
-			gameName.setText(prop.getName());
-			evaluation.setText(prop.getEvaluation());
-			limit.setText(String.valueOf(prop.getRoundLimit()));
-			String[] categories = prop.getCategories();
-			String categoriesShort = "";
-			for (int i = 0; i < categories.length; i++) {
-				if (i > 0) {
-					categoriesShort += " ," + categories[i].substring(0, 1);
-				} else {
-					categoriesShort += categories[i].substring(0, 1);
+				gameName.setText(prop.getName());
+				evaluation.setText(prop.getEvaluation());
+				limit.setText(String.valueOf(prop.getRoundLimit()));
+				String[] categories = prop.getCategories();
+				String categoriesShort = "";
+				for (int i = 0; i < categories.length; i++) {
+					if (i > 0) {
+						categoriesShort += " ," + categories[i].substring(0, 1);
+					} else {
+						categoriesShort += categories[i].substring(0, 1);
+					}
+
 				}
+				kategorie.setText(categoriesShort);
+				playerNum.setText(String.valueOf(prop.getPlayerCount()));
+				connectToGameButton.setText(getResources().getString(
+						R.string.connect));
+				connectToGameButton.setId(prop.getId());
+				gameInfoRow.addView(gameName, layoutParams);
+				gameInfoRow.addView(evaluation, layoutParams);
+				gameInfoRow.addView(limit, layoutParams);
+				gameInfoRow.addView(kategorie, layoutParams);
+				gameInfoRow.addView(playerNum, layoutParams);
+				gameInfoRow.addView(connectToGameButton);
 
+				tableGamesInfo.addView(gameInfoRow);
+				setConnectClickEventListenter(connectToGameButton);
 			}
-			kategorie.setText(categoriesShort);
-			playerNum.setText(String.valueOf(prop.getPlayerCount()));
-			connectToGameButton.setText(getResources().getString(
-					R.string.connect));
-			connectToGameButton.setId(prop.getId());
-			gameInfoRow.addView(gameName, layoutParams);
-			gameInfoRow.addView(evaluation, layoutParams);
-			gameInfoRow.addView(limit, layoutParams);
-			gameInfoRow.addView(kategorie, layoutParams);
-			gameInfoRow.addView(playerNum, layoutParams);
-			gameInfoRow.addView(connectToGameButton);
-
-			tableGamesInfo.addView(gameInfoRow);
-			setConnectClickEventListenter(connectToGameButton);
 		}
 	}
 
