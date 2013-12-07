@@ -218,12 +218,9 @@ public class RoundEvaluationActivity extends Activity {
 		 * LinearLayout.LayoutParams params = new LinearLayout.LayoutParams( new
 		 * LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		 */
-		// params.setMargins(10, 0, 0, 0);
 		TextView scoreView = new TextView(this);
-		// scoreView.setLayoutParams(params);
 		scoreView.setTextColor(getResources().getColor(R.color.blue));
 		scoreView.setText(String.valueOf(score) + "   ");
-		Log.i("EVALUATION TO SET", String.valueOf(score));
 		return scoreView;
 	}
 
@@ -232,15 +229,12 @@ public class RoundEvaluationActivity extends Activity {
 		 * LinearLayout.LayoutParams params = new LinearLayout.LayoutParams( new
 		 * LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		 */
-		// params.setMargins(0, 0, 20, 0);
 		TextView scoreView = new TextView(this);
-		// scoreView.setLayoutParams(params);
 		scoreView.setTextColor(getResources().getColor(R.color.dirtyWhite));
 		if (word.length() == 0) {
 			word = "________";
 		}
 		scoreView.setText(word);
-		Log.i("EVALUATION TO SET", word);
 		return scoreView;
 	}
 
@@ -251,10 +245,8 @@ public class RoundEvaluationActivity extends Activity {
 		 */
 
 		TextView categoryView = new TextView(this);
-		// categoryView.setLayoutParams(params);
-		// categoryView.setGravity(Gravity.LEFT);
 		categoryView.setTextColor(getResources().getColor(R.color.blue));
-		categoryView.setText(categoryName);
+		categoryView.setText(categoryName + "   ");
 		return categoryView;
 	}
 
@@ -270,14 +262,13 @@ public class RoundEvaluationActivity extends Activity {
 		TextView playerScore = null;
 		TextView playerScoreWord = null;
 
-		Iterator it = wholeGameEvaluation.entrySet().iterator();
 		String[] categories = getCurrentGame().getProperties().getCategories();
 
 		/* Layout params for category */
 		RelativeLayout.LayoutParams relativeParamsCat = new RelativeLayout.LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 
-		// relativeParamsCat.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+		relativeParamsCat.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 		relativeParamsCat.setMargins(5, 0, 0, 0);
 
 		/* Layout params for score */
@@ -288,20 +279,21 @@ public class RoundEvaluationActivity extends Activity {
 		/* Layout params for score word */
 		RelativeLayout.LayoutParams relativeParamsWord = new RelativeLayout.LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		// relativeParamsWord.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		relativeParamsWord.setMargins(5, 0, 0, 0);
-
+		Iterator it = wholeGameEvaluation.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry pairs = (Map.Entry) it.next();
-			List<Integer> evaluations = (List<Integer>) roundEvaluation
-					.get((String) pairs.getKey());
+			List<Integer> evaluations = roundEvaluation.get((String) pairs
+					.getKey());
 			List<String> evaluationsWords = roundEvaluationWords
 					.get((String) pairs.getKey());
+
 			playerNameScoreCont = newLinearHorizontalContainerInstance();
 			playerName = newPlayerNameInstance((String) pairs.getKey());
 			playerScoreRound = newRoundScoreViewInstantce(evaluations);
 			wholeGameScore = newWholeGameScoreViewInstance((Integer) pairs
 					.getValue());
+
 			playerNameScoreCont.addView(playerName);
 			playerNameScoreCont.addView(playerScoreRound);
 			playerNameScoreCont.addView(wholeGameScore);
@@ -319,7 +311,6 @@ public class RoundEvaluationActivity extends Activity {
 				int idScore = findUnusedId();
 				playerCategoryName.setId(idCat);
 				playerScore.setId(idScore);
-				// relativeParamsScore.addRule(RelativeLayout.RIGHT_OF, idCat);
 				relativeParamsWord.addRule(RelativeLayout.RIGHT_OF, idScore);
 
 				scoreRowContainer
@@ -328,7 +319,6 @@ public class RoundEvaluationActivity extends Activity {
 				scoreRowContainer.addView(playerScoreWord, relativeParamsWord);
 				linearLayout.addView(scoreRowContainer);
 			}
-			System.out.println(pairs.getKey() + " = " + pairs.getValue());
 			it.remove();
 		}
 	}
@@ -402,8 +392,8 @@ public class RoundEvaluationActivity extends Activity {
 		// sort list based on comparator
 		Collections.sort(list, new Comparator() {
 			public int compare(Object o1, Object o2) {
-				return ((Comparable) ((Map.Entry) (o1)).getValue())
-						.compareTo(((Map.Entry) (o2)).getValue());
+				return ((Comparable) ((Map.Entry) (o2)).getValue())
+						.compareTo(((Map.Entry) (o1)).getValue());
 			}
 		});
 

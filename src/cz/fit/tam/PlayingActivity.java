@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -357,17 +358,22 @@ public class PlayingActivity extends Activity {
 			throws JSONException {
 		Map<String, List<Integer>> converted = new HashMap<String, List<Integer>>();
 		List<Integer> evaluationsList = new ArrayList<Integer>();
-		for (Player player : connectedPlayers) {
-			JSONArray evaluations = (JSONArray) results.getJSONArray(player
-					.getName());
+		Iterator it = results.keys();
+		while (it.hasNext()) {
+			String playerName = (String) it.next();
+			JSONArray evaluations = (JSONArray) results
+					.getJSONArray(playerName);
+			evaluationsList = new ArrayList<Integer>();
 			if (evaluations != null) {
 				for (int i = 0; i < evaluations.length(); i++) {
 					evaluationsList.add(Integer.valueOf(evaluations.get(i)
 							.toString()));
 				}
-				converted.put(player.getName(), evaluationsList);
+
 			}
+			converted.put(playerName, evaluationsList);
 		}
+
 		return converted;
 	}
 
@@ -463,12 +469,10 @@ public class PlayingActivity extends Activity {
 					if ((message.getType().compareTo(
 							GameClient.ROUND_ENDED_TYPE) == 0)) {
 						PlayingActivity.this.sendEnteredWords();
-						Log.i("Message processed", "Round ended type");
 
 					} else if (message.getType().compareTo(
 							GameClient.ROUND_STARTED_TYPE) == 0) {
 						JSONObject roundStarted;
-						Log.i("Message processed", "Round started type");
 						try {
 							roundStarted = new JSONObject(message.getData());
 							String firstLetter = (String) roundStarted
