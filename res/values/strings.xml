@@ -58,6 +58,7 @@
     <string name="enterPlayerName">Napíš své jméno</string>
     <string name="chooseGameCategory">Vyber aspon jednu kategorii</string>
     <string name="enterMorePlayers">Musíme mit aspon 2 hráče</string>
+    <string name="noInternetAvailable">Server není dostupný. Ověřte zda jste připojený k Internetu</string>
     
     <!-- Configurations -->
     <string name="serverUrl">https://fit.noxart.cz/tam/</string>

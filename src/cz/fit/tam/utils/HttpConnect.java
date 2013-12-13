@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
@@ -70,7 +71,6 @@ public class HttpConnect implements Connector, Serializable {
 	public String post(Map<String, String> parameters) throws IOException {
 		HttpsURLConnection connection = (HttpsURLConnection) rootUrl
 				.openConnection();
-
 		connection.setHostnameVerifier(new NullHostNameVerifier());
 		TrustManager[] myTrustManagerArray = new TrustManager[] { new TrustEveryoneManager() };
 
@@ -97,9 +97,7 @@ public class HttpConnect implements Connector, Serializable {
 		connection.setUseCaches(false);
 		connection.setDoInput(true);
 		connection.setDoOutput(true);
-
 		addParameters(params, connection);
-
 		String result = null;
 		try {
 			InputStream stream = connection.getInputStream();
@@ -127,7 +125,7 @@ public class HttpConnect implements Connector, Serializable {
 	 * @author XyzWS.com
 	 */
 	private void addParameters(String parameters, HttpsURLConnection connection)
-			throws IOException {
+			throws IOException, UnknownHostException {
 		DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
 		wr.writeBytes(parameters);
 		wr.flush();

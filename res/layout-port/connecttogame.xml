@@ -58,11 +58,6 @@
             android:hint="@string/playerNameHint" />
     </RelativeLayout>
 
-        <TableLayout
-            android:id="@+id/tableGamesInfo"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:stretchColumns="1" >
 
             <TableRow
                 android:id="@+id/tableRow1"
@@ -88,6 +83,12 @@
                     android:textStyle="bold"
                     android:layout_weight="1" />
             </TableRow>
+        
+        <TableLayout
+            android:id="@+id/tableGamesInfo"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:stretchColumns="1" >
         </TableLayout>
     </LinearLayout>
 

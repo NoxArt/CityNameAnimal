@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -74,7 +75,7 @@ public class MessageQueue implements Serializable {
 	}
 
 	public JSONObject sendMessage(Map<String, String> arguments)
-			throws IOException {
+			throws IOException, UnknownHostException {
 		try {
 			String result = getConnection().post(arguments);
 

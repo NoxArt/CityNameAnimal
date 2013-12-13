@@ -2,6 +2,7 @@ package cz.fit.tam;
 
 import java.io.Serializable;
 import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -10,7 +11,6 @@ import java.util.concurrent.TimeUnit;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import cz.fit.tam.model.Game;
 import cz.fit.tam.model.GameClient;
+import cz.fit.tam.model.GameClient.CommandFailedException;
 import cz.fit.tam.model.GameProperties;
 
 /*
@@ -82,12 +83,12 @@ public class ConnectToGameActivity extends TamActivity {
 		this.gameProps = gameProperties;
 		int orientation = getResources().getConfiguration().orientation;
 		getResources().getConfiguration();
-		Log.i("SET GAME PROPS", "after getting configuration");
-		if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-			setGamesInfoPortrait(gameProps);
-		} else {
-			setGamesInfoLandscape(gameProps);
-		}
+		setGamesInfoPortrait(gameProps);
+		/*
+		 * if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+		 * setGamesInfoPortrait(gameProps); } else {
+		 * setGamesInfoLandscape(gameProps); }
+		 */
 	}
 
 	public void onStop() {
@@ -161,7 +162,7 @@ public class ConnectToGameActivity extends TamActivity {
 
 	private void setGamesInfoLandscape(List<GameProperties> props) {
 		TableLayout tableGamesInfo = (TableLayout) findViewById(R.id.tableGamesInfo);
-
+		tableGamesInfo.removeAllViews();
 		/* Make all columns have the same width */
 		LayoutParams layoutParams = new LayoutParams();
 		layoutParams.weight = 1f;
@@ -172,14 +173,12 @@ public class ConnectToGameActivity extends TamActivity {
 					&& ("waiting".equals(prop.getPhase()))) {
 				TableRow gameInfoRow = new TableRow(this);
 				TextView gameName = new TextView(this);
-				TextView evaluation = new TextView(this);
 				TextView limit = new TextView(this);
 				TextView kategorie = new TextView(this);
 				TextView playerNum = new TextView(this);
 				Button connectToGameButton = new Button(this);
 
 				gameName.setText(prop.getName());
-				evaluation.setText(prop.getEvaluation());
 				limit.setText(String.valueOf(prop.getRoundLimit()));
 				String[] categories = prop.getCategories();
 				String categoriesShort = "";
@@ -197,7 +196,6 @@ public class ConnectToGameActivity extends TamActivity {
 						R.string.connect));
 				connectToGameButton.setId(prop.getId());
 				gameInfoRow.addView(gameName, layoutParams);
-				gameInfoRow.addView(evaluation, layoutParams);
 				gameInfoRow.addView(limit, layoutParams);
 				gameInfoRow.addView(kategorie, layoutParams);
 				gameInfoRow.addView(playerNum, layoutParams);
@@ -273,6 +271,7 @@ public class ConnectToGameActivity extends TamActivity {
 	private class GetGamesAsyncTask extends
 			AsyncTask<ConnectToGameActivity, Void, List<GameProperties>> {
 		ConnectToGameActivity activity = null;
+		private String errors = "";
 
 		protected List<GameProperties> doInBackground(
 				ConnectToGameActivity... activity) {
@@ -281,6 +280,10 @@ public class ConnectToGameActivity extends TamActivity {
 			List<GameProperties> serverResponse = null;
 			try {
 				serverResponse = gameClient.getGames();
+			} catch (UnknownHostException e) {
+				errors = getResources().getString(R.string.noInternetAvailable);
+			} catch (CommandFailedException e) {
+				errors = getResources().getString(R.string.noInternetAvailable);
 			} catch (Exception e) {
 				Log.e("ERROR", e.getClass().getName());
 			}
@@ -288,21 +291,26 @@ public class ConnectToGameActivity extends TamActivity {
 		}
 
 		protected void onPostExecute(List<GameProperties> result) {
-			try {
-				activity.setGameProperties(result);
-			} catch (NullPointerException e) {
-				displayErrorMessage("There are no games available");
+			if (errors.length() == 0) {
+				try {
+					activity.setGameProperties(result);
+				} catch (NullPointerException e) {
+					displayErrorMessage("There are no games available");
+				}
+			} else {
+				displayErrorMessage(errors);
 			}
 		}
 	}
 
-	private void displayErrorMessage(String error) {
+	public void displayErrorMessage(String error) {
 		Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
 	}
 
 	private class ConnectToGameAsyncTask extends
 			AsyncTask<ConnectToGameActivity, Void, Boolean> {
 		private ConnectToGameActivity connectActivity = null;
+		private String errors = "";
 
 		protected Boolean doInBackground(ConnectToGameActivity... wrapper) {
 			connectActivity = wrapper[0];
@@ -311,25 +319,29 @@ public class ConnectToGameActivity extends TamActivity {
 				connectActivity.getSelectedGame().connect(
 						connectActivity.getSelectedGameId());
 			} catch (Game.AlreadyConnectedException e) {
-				displayErrorMessage("Already connected");
+				Log.e("ERROR", "Already connected exception");
+			} catch (UnknownHostException e) {
+				errors = getResources().getString(R.string.noInternetAvailable);
+			} catch (CommandFailedException e) {
+				errors = getResources().getString(R.string.noInternetAvailable);
 			} catch (Exception e) {
 				Log.e("ERROR", e.getClass().getName());
-				displayErrorMessage("ERROR " + e.getClass().getName());
-				/*
-				 * Toast.makeText(connectActivity, "ERROR " + e.getMessage(),
-				 * Toast.LENGTH_SHORT).show();
-				 */
+
 			}
 			return true;
 		}
 
 		protected void onPostExecute(Boolean result) {
 			// activity.setGameProperties(result);
-			Intent myIntent1 = new Intent(ConnectToGameActivity.this,
-					WaitForGameActivity.class);
-			myIntent1.putExtra(getResources().getString(R.string.gameStr),
-					(Serializable) connectActivity.getSelectedGame());
-			ConnectToGameActivity.this.startActivity(myIntent1);
+			if (errors.length() == 0) {
+				Intent myIntent1 = new Intent(ConnectToGameActivity.this,
+						WaitForGameActivity.class);
+				myIntent1.putExtra(getResources().getString(R.string.gameStr),
+						(Serializable) connectActivity.getSelectedGame());
+				ConnectToGameActivity.this.startActivity(myIntent1);
+			} else {
+				displayErrorMessage(errors);
+			}
 		}
 	}
 

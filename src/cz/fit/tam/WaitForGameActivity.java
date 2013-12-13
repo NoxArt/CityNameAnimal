@@ -2,6 +2,7 @@ package cz.fit.tam;
 
 import java.io.Serializable;
 import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import cz.fit.tam.model.Game;
 import cz.fit.tam.model.GameClient;
+import cz.fit.tam.model.GameClient.CommandFailedException;
 import cz.fit.tam.model.GameClient.NotConnectedException;
 import cz.fit.tam.model.GameProperties;
 import cz.fit.tam.model.Message;
@@ -211,124 +213,6 @@ public class WaitForGameActivity extends Activity {
 		return returnVal;
 	}
 
-	private class LeaveGameAsyncTask extends
-			AsyncTask<WaitForGameActivity, Void, Boolean> {
-
-		protected Boolean doInBackground(WaitForGameActivity... activity) {
-			try {
-				activity[0].getCurrentGame().leave();
-			} catch (Game.NotConnectedException e) {
-				Log.e("ERROR", "Leaving when not connected");
-			} catch (Exception e) {
-				Toast.makeText(activity[0], "ERROR " + e.getMessage(),
-						Toast.LENGTH_SHORT).show();
-			}
-			return true;
-		}
-
-	}
-
-	private class StopGameAsyncTask extends
-			AsyncTask<WaitForGameActivity, Void, Boolean> {
-
-		protected Boolean doInBackground(WaitForGameActivity... activity) {
-			activity[0].getCurrentGame().stop();
-			return true;
-		}
-	}
-
-	private class StartGameAsyncTask extends
-			AsyncTask<WaitForGameActivity, Void, Boolean> {
-
-		protected Boolean doInBackground(WaitForGameActivity... activity) {
-			activity[0].getCurrentGame().startGame();
-			;
-			return true;
-		}
-	}
-
-	private class SendMessageAsyncTask extends
-			AsyncTask<WaitForGameActivity, Void, Boolean> {
-
-		private WaitForGameActivity activityWait = null;
-
-		protected Boolean doInBackground(WaitForGameActivity... activity) {
-			activityWait = activity[0];
-			activity[0].getCurrentGame().getClient()
-					.sendChatMessage(activityWait.getLastNewMessage());
-			return true;
-		}
-	}
-
-	private void displayErrorMessage(String error) {
-		Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
-	}
-
-	private class GetNewMessagesAsyncTask extends
-			AsyncTask<WaitForGameActivity, Void, List<Message>> {
-
-		protected List<Message> doInBackground(WaitForGameActivity... activity) {
-			List<Message> newMessages = null;
-			try {
-				newMessages = activity[0].getCurrentGame().getClient()
-						.getNewMessages();
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (NotConnectedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				displayErrorMessage("No internet connection available");
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				// Not printing out this info as exception is thrown every
-				// second and it makes logs unreadable
-				// e.printStackTrace();
-			}
-			return newMessages;
-		}
-
-		protected void onPostExecute(List<Message> result) {
-			if (result != null) {
-				for (Message message : result) {
-					if ((message.getType().compareTo(
-							GameClient.ROUND_STARTED_TYPE) == 0)) {
-						try {
-							JSONObject roundStarted = new JSONObject(
-									message.getData());
-							String firstLetter = (String) roundStarted
-									.get("letter");
-							Integer roundNum = (Integer) roundStarted
-									.get("round");
-							WaitForGameActivity.this.startRound(firstLetter,
-									roundNum);
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
-					} else if (message.getType().compareTo(
-							GameClient.CHATMESSAGE_TYPE) == 0) {
-						Log.i("CHAT", message.getData());
-						WaitForGameActivity.this.updateChatMessages(message
-								.getData());
-
-					}
-				}
-			}
-		}
-	}
-
-	private class GetPlayersAsyncTask extends
-			AsyncTask<WaitForGameActivity, Void, List<Player>> {
-
-		protected List<Player> doInBackground(WaitForGameActivity... activity) {
-			return activity[0].getCurrentGame().getPlayers();
-		}
-
-		protected void onPostExecute(List<Player> result) {
-			WaitForGameActivity.this.updateConnectedPlayers(result);
-		}
-	}
-
 	private void startRound(String firstLetter, Integer roundNum) {
 		Intent myIntent1 = new Intent(WaitForGameActivity.this,
 				PlayingActivity.class);
@@ -368,6 +252,192 @@ public class WaitForGameActivity extends Activity {
 			messages += chatMessagesList.get(j) + "\n";
 		}
 		chatMessages.setText(messages);
+	}
 
+	private void displayErrorMessage(String error) {
+		Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+	}
+
+	private class LeaveGameAsyncTask extends
+			AsyncTask<WaitForGameActivity, Void, Boolean> {
+		private String errors = "";
+
+		protected Boolean doInBackground(WaitForGameActivity... activity) {
+			try {
+				activity[0].getCurrentGame().leave();
+			} catch (Game.NotConnectedException e) {
+				Log.e("ERROR", "Leaving when not connected");
+			} catch (UnknownHostException e) {
+				errors = getResources().getString(R.string.noInternetAvailable);
+			} catch (CommandFailedException e) {
+				errors = getResources().getString(R.string.noInternetAvailable);
+			} catch (Exception e) {
+				Toast.makeText(activity[0], "ERROR " + e.getMessage(),
+						Toast.LENGTH_SHORT).show();
+			}
+			return true;
+		}
+
+		protected void onPostExecute(Boolean result) {
+			if (errors.length() == 0) {
+			} else {
+				displayErrorMessage(errors);
+			}
+		}
+
+	}
+
+	private class StopGameAsyncTask extends
+			AsyncTask<WaitForGameActivity, Void, Boolean> {
+		private String errors = "";
+
+		protected Boolean doInBackground(WaitForGameActivity... activity) {
+			try {
+				activity[0].getCurrentGame().stop();
+			} catch (UnknownHostException e) {
+				errors = getResources().getString(R.string.noInternetAvailable);
+			} catch (CommandFailedException e) {
+				errors = getResources().getString(R.string.noInternetAvailable);
+			}
+			return true;
+		}
+
+		protected void onPostExecute(Boolean result) {
+			if (errors.length() == 0) {
+			} else {
+				displayErrorMessage(errors);
+			}
+		}
+	}
+
+	private class StartGameAsyncTask extends
+			AsyncTask<WaitForGameActivity, Void, Boolean> {
+		private String errors = "";
+
+		protected Boolean doInBackground(WaitForGameActivity... activity) {
+			try {
+				activity[0].getCurrentGame().startGame();
+			} catch (UnknownHostException e) {
+				errors = getResources().getString(R.string.noInternetAvailable);
+			} catch (CommandFailedException e) {
+				errors = getResources().getString(R.string.noInternetAvailable);
+			}
+			return true;
+		}
+
+		protected void onPostExecute(Boolean result) {
+			if (errors.length() == 0) {
+			} else {
+				displayErrorMessage(errors);
+			}
+		}
+	}
+
+	private class SendMessageAsyncTask extends
+			AsyncTask<WaitForGameActivity, Void, Boolean> {
+		private String errors = "";
+
+		private WaitForGameActivity activityWait = null;
+
+		protected Boolean doInBackground(WaitForGameActivity... activity) {
+			activityWait = activity[0];
+			try {
+				activity[0].getCurrentGame().getClient()
+						.sendChatMessage(activityWait.getLastNewMessage());
+			} catch (UnknownHostException e) {
+				errors = getResources().getString(R.string.noInternetAvailable);
+			} catch (CommandFailedException e) {
+				errors = getResources().getString(R.string.noInternetAvailable);
+			}
+			return true;
+		}
+
+		protected void onPostExecute(Boolean result) {
+			if (errors.length() == 0) {
+			} else {
+				displayErrorMessage(errors);
+			}
+		}
+	}
+
+	private class GetNewMessagesAsyncTask extends
+			AsyncTask<WaitForGameActivity, Void, List<Message>> {
+		private String errors = "";
+
+		protected List<Message> doInBackground(WaitForGameActivity... activity) {
+			List<Message> newMessages = null;
+			try {
+				newMessages = activity[0].getCurrentGame().getClient()
+						.getNewMessages();
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NotConnectedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				displayErrorMessage("No internet connection available");
+			} catch (JSONException e) {
+			} catch (UnknownHostException e) {
+				errors = getResources().getString(R.string.noInternetAvailable);
+			} catch (CommandFailedException e) {
+				errors = getResources().getString(R.string.noInternetAvailable);
+			}
+			return newMessages;
+		}
+
+		protected void onPostExecute(List<Message> result) {
+			if (errors.length() == 0) {
+				if (result != null) {
+					for (Message message : result) {
+						if ((message.getType().compareTo(
+								GameClient.ROUND_STARTED_TYPE) == 0)) {
+							try {
+								JSONObject roundStarted = new JSONObject(
+										message.getData());
+								String firstLetter = (String) roundStarted
+										.get("letter");
+								Integer roundNum = (Integer) roundStarted
+										.get("round");
+								WaitForGameActivity.this.startRound(
+										firstLetter, roundNum);
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+						} else if (message.getType().compareTo(
+								GameClient.CHATMESSAGE_TYPE) == 0) {
+							WaitForGameActivity.this.updateChatMessages(message
+									.getData());
+
+						}
+					}
+				}
+			} else {
+				displayErrorMessage(errors);
+			}
+		}
+	}
+
+	private class GetPlayersAsyncTask extends
+			AsyncTask<WaitForGameActivity, Void, List<Player>> {
+		private String errors = "";
+
+		protected List<Player> doInBackground(WaitForGameActivity... activity) {
+			try {
+				return activity[0].getCurrentGame().getPlayers();
+			} catch (UnknownHostException e) {
+				errors = getResources().getString(R.string.noInternetAvailable);
+			} catch (CommandFailedException e) {
+				errors = getResources().getString(R.string.noInternetAvailable);
+			}
+			return null;
+		}
+
+		protected void onPostExecute(List<Player> result) {
+			if (errors.length() == 0) {
+				WaitForGameActivity.this.updateConnectedPlayers(result);
+			} else {
+				displayErrorMessage(errors);
+			}
+		}
 	}
 }

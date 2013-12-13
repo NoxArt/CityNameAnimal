@@ -2,6 +2,7 @@ package cz.fit.tam;
 
 import java.io.Serializable;
 import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -32,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import cz.fit.tam.model.Game;
 import cz.fit.tam.model.GameClient;
+import cz.fit.tam.model.GameClient.CommandFailedException;
 import cz.fit.tam.model.GameClient.NotConnectedException;
 import cz.fit.tam.model.GameProperties;
 import cz.fit.tam.model.Message;
@@ -188,7 +190,6 @@ public class PlayingActivity extends Activity {
 	}
 
 	private void showMessage(String message) {
-		Toast toast = new Toast(this);
 		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 	}
 
@@ -252,29 +253,10 @@ public class PlayingActivity extends Activity {
 		}, 0, TimeUnit.SECONDS);
 	}
 
-	private void startNewRound(String currentLetter, Integer newRoundNum) {
-		stopTimeHandler();
-		this.currentLetter = currentLetter;
-		sendEnteredWordsStartNewRound(newRoundNum); // Before starting
-													// round, send words.
-		// The one who
-		// ended the round first, sends his results twice,
-		// but this shouldn't be a problem
-		// We set new game info after sending words in onPostExecutedActivity. I
-		// know it's confusing. Sorry.
-		// If we start round in this activity, we have a problem because sending
-		// is asyncronous
-	}
-
 	private void sendEnteredWords() {
 		stopTimeHandler();
 		SendWordsAsyncTask sendWordsTask = new SendWordsAsyncTask();
 		sendWordsTask.execute(this.currentRoundNum);
-	}
-
-	private void sendEnteredWordsStartNewRound(Integer newRoundNum) {
-		SendWordsStartNewRound sendWordsTask = new SendWordsStartNewRound();
-		sendWordsTask.execute(newRoundNum);
 	}
 
 	private void setEventListeners() {
@@ -377,14 +359,6 @@ public class PlayingActivity extends Activity {
 		return converted;
 	}
 
-	private List<Integer> convertStrToIntList(List<String> strList) {
-		List<Integer> intList = new ArrayList<Integer>();
-		for (String s : strList) {
-			intList.add(Integer.valueOf(s));
-		}
-		return intList;
-	}
-
 	private Map<String, List<String>> jsonResultsWordsToMap(JSONObject results)
 			throws JSONException {
 		Map<String, List<String>> converted = new HashMap<String, List<String>>();
@@ -401,6 +375,10 @@ public class PlayingActivity extends Activity {
 		return converted;
 	}
 
+	private void displayErrorMessage(String error) {
+		Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+	}
+
 	private class SendWordsAsyncTask extends AsyncTask<Integer, Void, Boolean> {
 
 		protected Boolean doInBackground(Integer... round) {
@@ -411,40 +389,38 @@ public class PlayingActivity extends Activity {
 		}
 	}
 
-	private class SendWordsStartNewRound extends
-			AsyncTask<Integer, Void, Boolean> {
-		Integer newRound = null;
-
-		protected Boolean doInBackground(Integer... round) {
-			newRound = round[0];
-			PlayingActivity.this.getCurrentGame().sendWords(
-					PlayingActivity.this.getCurrentRoundNum(),
-					PlayingActivity.this.getEnteredWords());
-			return true;
-		}
-
-		protected void onPostExecute(Boolean result) {
-			PlayingActivity.this.currentRoundNum = newRound;
-			alreadySentWordsForCurrentRound = true;
-			setGameInfo(currentGame.getProperties(), currentLetter, newRound);
-			startTimeHandler();
-		}
-	}
-
 	private class GetPlayersAsyncTask extends
 			AsyncTask<PlayingActivity, Void, List<Player>> {
+		private String errors = "";
 
 		protected List<Player> doInBackground(PlayingActivity... activity) {
-			return activity[0].getCurrentGame().getPlayers();
+			try {
+				return activity[0].getCurrentGame().getPlayers();
+			} catch (UnknownHostException e) {
+				errors = getResources().getString(R.string.noInternetAvailable);
+			} catch (CommandFailedException e) {
+				errors = getResources().getString(R.string.noInternetAvailable);
+			} catch (Exception e) {
+				Log.e("Get players error", e.getClass().getName());
+			}
+			return null;
 		}
 
 		protected void onPostExecute(List<Player> result) {
-			PlayingActivity.this.updateConnectedPlayers(result);
+			if (errors.length() == 0) {
+				PlayingActivity.this.updateConnectedPlayers(result);
+			} else {
+				Button submitButton = (Button) findViewById(R.id.submit);
+				submitButton.setEnabled(true);
+				displayErrorMessage(errors);
+			}
+
 		}
 	}
 
 	private class GetNewMessagesAsyncTask extends
 			AsyncTask<PlayingActivity, Void, List<Message>> {
+		private String errors = "";
 
 		protected List<Message> doInBackground(PlayingActivity... activity) {
 			List<Message> newMessages = null;
@@ -459,6 +435,10 @@ public class PlayingActivity extends Activity {
 				// Not printing out this info as exception is thrown every
 				// second and it makes logs unreadable
 				// e.printStackTrace();
+			} catch (UnknownHostException e) {
+				errors = getResources().getString(R.string.noInternetAvailable);
+			} catch (CommandFailedException e) {
+				errors = getResources().getString(R.string.noInternetAvailable);
 			}
 			return newMessages;
 		}
@@ -488,6 +468,7 @@ public class PlayingActivity extends Activity {
 									.getJSONObject("evaluation");
 							JSONObject roundEvaluationWords = roundStarted
 									.getJSONObject("words");
+
 							Map<String, List<Integer>> mapEvaluations = jsonResultsToMap(roundEvaluation);
 							Map<String, List<String>> mapEvaluationsWords = jsonResultsWordsToMap(roundEvaluationWords);
 							myIntent1.putExtra(
@@ -523,7 +504,6 @@ public class PlayingActivity extends Activity {
 
 					} else if ((message.getType().compareTo(
 							GameClient.GAME_FINISHED_TYPE) == 0)) {
-						Log.i("Message processed", "Game finished type");
 						if (!alreadySentWordsForCurrentRound) {
 							alreadySentWordsForCurrentRound = true;
 							PlayingActivity.this.sendEnteredWords();

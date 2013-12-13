@@ -1,14 +1,13 @@
 package cz.fit.tam.model;
 
 import java.io.Serializable;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import android.util.Log;
-import java.util.Map;
 
 public class Game implements Serializable {
 
@@ -86,7 +85,7 @@ public class Game implements Serializable {
 		return chatMessages;
 	}
 
-	public void create() {
+	public void create() throws UnknownHostException {
 		if (isConnected()) {
 			throw new AlreadyConnectedException();
 		}
@@ -95,7 +94,7 @@ public class Game implements Serializable {
 		properties.incrementNumberOfPlayers();
 	}
 
-	public void connect(Integer id) {
+	public void connect(Integer id) throws UnknownHostException {
 		if (isConnected()) {
 			throw new AlreadyConnectedException();
 		}
@@ -113,15 +112,15 @@ public class Game implements Serializable {
 		}
 	}
 
-	public void startGame() {
+	public void startGame() throws UnknownHostException {
 		client.startGame(getId());
 	}
 
-	public List<GameProperties> getGames() {
+	public List<GameProperties> getGames() throws UnknownHostException {
 		return client.getGames();
 	}
 
-	public List<Player> getPlayers() {
+	public List<Player> getPlayers() throws UnknownHostException {
 		if (isConnected() == false) {
 			throw new NotConnectedException();
 		}
@@ -129,8 +128,7 @@ public class Game implements Serializable {
 		return client.getPlayers(getId());
 	}
 
-	public void stop() {
-		Log.i("Stop game with id", String.valueOf(getId()));
+	public void stop() throws UnknownHostException {
 		if (isConnected() == false) {
 			throw new NotConnectedException();
 		}
@@ -143,7 +141,7 @@ public class Game implements Serializable {
 		phase = PHASE_FINISHED;
 	}
 
-	public void leave() {
+	public void leave() throws UnknownHostException {
 		if (isConnected() == false) {
 			throw new NotConnectedException();
 		}
@@ -165,7 +163,7 @@ public class Game implements Serializable {
 	}
 
 	public Map<String, Integer> getScores() {
-        return client.getScores();
-    }
+		return client.getScores();
+	}
 
 }

@@ -28,14 +28,9 @@
             android:layout_marginTop="10dp"
             android:minWidth="150dp"
             android:text="@string/newGame" />
+        
 
-        <TableLayout
-            android:id="@+id/tableGamesInfo"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:stretchColumns="1" >
-
-            
+        
                    <RelativeLayout
         android:layout_width="wrap_content"
 		android:descendantFocusability="beforeDescendants"
@@ -62,7 +57,8 @@
             android:layout_toRightOf="@id/game_playerNameText"
             android:hint="@string/playerNameHint" />
     </RelativeLayout>
-            
+
+
             <TableRow
                 android:id="@+id/tableRow1"
                 android:layout_width="fill_parent"
@@ -79,31 +75,20 @@
                     android:layout_width="0dip"
                     android:layout_weight="1"
                     android:textStyle="bold"
-                    android:text="@string/scoring" />
-
-                <TextView
-                    android:layout_width="0dip"
-                    android:layout_weight="1"
-                    android:textStyle="bold"
-                    android:text="@string/limit" />
-
-                <TextView
-                    android:layout_width="0dip"
-                    android:layout_weight="1"
-                    android:textStyle="bold"
-                    android:text="@string/categories" />
-
-                <TextView
-                    android:layout_width="0dip"
-                    android:layout_weight="1"
-                    android:textStyle="bold"
                     android:text="@string/numberOfPlayers" />
 
                 <TextView
                     android:layout_width="0dip"
                     android:layout_gravity="right"
+                    android:textStyle="bold"
                     android:layout_weight="1" />
             </TableRow>
+        
+        <TableLayout
+            android:id="@+id/tableGamesInfo"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:stretchColumns="1" >
         </TableLayout>
     </LinearLayout>
 

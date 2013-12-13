@@ -1,6 +1,7 @@
 package cz.fit.tam;
 
 import java.io.Serializable;
+import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -29,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import cz.fit.tam.model.Game;
+import cz.fit.tam.model.GameClient.CommandFailedException;
 
 public class RoundEvaluationActivity extends Activity {
 
@@ -86,7 +88,6 @@ public class RoundEvaluationActivity extends Activity {
 						public void run() {
 							if (newRound > currentGame.getProperties()
 									.getRoundLimit()) {
-								Log.i("LAST", "LAST");
 							} else {
 								startNewRound();
 							}
@@ -214,10 +215,6 @@ public class RoundEvaluationActivity extends Activity {
 	}
 
 	private TextView newScoreViewInstance(Integer score) {
-		/*
-		 * LinearLayout.LayoutParams params = new LinearLayout.LayoutParams( new
-		 * LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-		 */
 		TextView scoreView = new TextView(this);
 		scoreView.setTextColor(getResources().getColor(R.color.blue));
 		scoreView.setText(String.valueOf(score) + "   ");
@@ -225,10 +222,6 @@ public class RoundEvaluationActivity extends Activity {
 	}
 
 	private TextView newScoreWordViewInstance(String word) {
-		/*
-		 * LinearLayout.LayoutParams params = new LinearLayout.LayoutParams( new
-		 * LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-		 */
 		TextView scoreView = new TextView(this);
 		scoreView.setTextColor(getResources().getColor(R.color.dirtyWhite));
 		if (word.length() == 0) {
@@ -239,10 +232,6 @@ public class RoundEvaluationActivity extends Activity {
 	}
 
 	private TextView newCategoryView(String categoryName) {
-		/*
-		 * LinearLayout.LayoutParams params = new LinearLayout.LayoutParams( new
-		 * LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-		 */
 
 		TextView categoryView = new TextView(this);
 		categoryView.setTextColor(getResources().getColor(R.color.blue));
@@ -278,7 +267,7 @@ public class RoundEvaluationActivity extends Activity {
 		relativeParamsScore.setMargins(0, 0, 0, 0);
 		/* Layout params for score word */
 		RelativeLayout.LayoutParams relativeParamsWord = new RelativeLayout.LayoutParams(
-				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		relativeParamsWord.setMargins(5, 0, 0, 0);
 		Iterator it = wholeGameEvaluation.entrySet().iterator();
 		while (it.hasNext()) {
@@ -297,7 +286,6 @@ public class RoundEvaluationActivity extends Activity {
 			playerNameScoreCont.addView(playerName);
 			playerNameScoreCont.addView(playerScoreRound);
 			playerNameScoreCont.addView(wholeGameScore);
-
 			linearLayout.addView(playerNameScoreCont);
 
 			for (int i = 0; i < evaluationsWords.size(); i++) {
@@ -306,13 +294,11 @@ public class RoundEvaluationActivity extends Activity {
 				playerScore = newScoreViewInstance(evaluations.get(i));
 				playerScoreWord = newScoreWordViewInstance(evaluationsWords
 						.get(i));
-
 				int idCat = findUnusedId();
 				int idScore = findUnusedId();
 				playerCategoryName.setId(idCat);
 				playerScore.setId(idScore);
 				relativeParamsWord.addRule(RelativeLayout.RIGHT_OF, idScore);
-
 				scoreRowContainer
 						.addView(playerCategoryName, relativeParamsCat);
 				scoreRowContainer.addView(playerScore, relativeParamsScore);
@@ -423,9 +409,16 @@ public class RoundEvaluationActivity extends Activity {
 	}
 
 	private class StopGameAsyncTask extends AsyncTask<Void, Void, Boolean> {
+		private String errors = "";
 
 		protected Boolean doInBackground(Void... input) {
-			RoundEvaluationActivity.this.getCurrentGame().stop();
+			try {
+				RoundEvaluationActivity.this.getCurrentGame().stop();
+			} catch (UnknownHostException e) {
+				errors = getResources().getString(R.string.noInternetAvailable);
+			} catch (CommandFailedException e) {
+				errors = getResources().getString(R.string.noInternetAvailable);
+			}
 			return true;
 		}
 	}

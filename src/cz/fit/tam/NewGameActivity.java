@@ -2,12 +2,14 @@ package cz.fit.tam;
 
 import java.io.Serializable;
 import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -19,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import cz.fit.tam.model.Game;
 import cz.fit.tam.model.GameClient;
+import cz.fit.tam.model.GameClient.CommandFailedException;
 import cz.fit.tam.model.GameProperties;
 
 /*
@@ -248,7 +251,7 @@ public class NewGameActivity extends TamActivity {
 	}
 
 	private void displayErrorMessage(String error) {
-		Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, error, Toast.LENGTH_LONG).show();
 	}
 
 	private void setDefaultValues() {
@@ -297,24 +300,34 @@ public class NewGameActivity extends TamActivity {
 	private class CreateGameAsyncTask extends
 			AsyncTask<NewGameActivity, Void, Boolean> {
 		private Game newGame = null;
+		private String errors = "";
 
 		protected Boolean doInBackground(NewGameActivity... activity) {
 			newGame = activity[0].getNewGame();
 			try {
 				activity[0].getNewGame().create();
+			} catch (UnknownHostException e) {
+				errors = getResources().getString(R.string.noInternetAvailable);
+			} catch (CommandFailedException e) {
+				errors = getResources().getString(R.string.noInternetAvailable);
 			} catch (Exception e) {
-				displayErrorMessage("ERROR " + e.getClass().getName());
+				Log.e("CREATE GAME error", e.getClass().getName());
 			}
 			return true;
 		}
 
 		protected void onPostExecute(Boolean result) {
-
-			Intent myIntent1 = new Intent(NewGameActivity.this,
-					WaitForGameActivity.class);
-			myIntent1.putExtra(getResources().getString(R.string.gameStr),
-					(Serializable) newGame);
-			NewGameActivity.this.startActivity(myIntent1);
+			if (errors.length() == 0) {
+				Intent myIntent1 = new Intent(NewGameActivity.this,
+						WaitForGameActivity.class);
+				myIntent1.putExtra(getResources().getString(R.string.gameStr),
+						(Serializable) newGame);
+				NewGameActivity.this.startActivity(myIntent1);
+			} else {
+				Button btnNewGame = (Button) findViewById(R.id.createGame);
+				btnNewGame.setEnabled(true);
+				displayErrorMessage(errors);
+			}
 		}
 	}
 }

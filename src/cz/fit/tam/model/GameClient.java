@@ -3,6 +3,7 @@ package cz.fit.tam.model;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -81,7 +82,7 @@ public class GameClient implements Serializable {
 		return player;
 	}
 
-	public void createGame(GameProperties game) {
+	public void createGame(GameProperties game) throws UnknownHostException {
 		Map<String, String> arguments = new HashMap<String, String>();
 		arguments.put("command", GameClient.COMMAND_CREATE_GAME);
 		arguments.put("name", game.getName());
@@ -181,7 +182,7 @@ public class GameClient implements Serializable {
 		}
 	}
 
-	public void sendChatMessage(String message) {
+	public void sendChatMessage(String message) throws UnknownHostException {
 		Map<String, String> arguments = new HashMap<String, String>();
 		arguments.put("command", GameClient.COMMAND_POST_MESSAGE);
 		arguments.put("game_id", gameId.toString());
@@ -254,7 +255,7 @@ public class GameClient implements Serializable {
 	 * throw new CommandFailedException(ex); } }
 	 */
 
-	public List<GameProperties> getGames() {
+	public List<GameProperties> getGames() throws UnknownHostException {
 		return getGames(null);
 	}
 
@@ -278,7 +279,6 @@ public class GameClient implements Serializable {
 
 			for (int i = 0; i < results.length(); i++) {
 				JSONObject game = results.getJSONObject(i);
-
 				games.add(GameProperties.jsonToGame(game));
 			}
 
@@ -360,7 +360,7 @@ public class GameClient implements Serializable {
 	}
 
 	public List<Message> getNewMessages() throws MalformedURLException,
-			NotConnectedException, JSONException {
+			NotConnectedException, JSONException, UnknownHostException {
 		return getNewMessages(null);
 	}
 
